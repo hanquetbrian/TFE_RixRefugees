@@ -1,3 +1,7 @@
+/*
+TODO set a new font for the project
+*/
+
 h1 {
     font-size: 1.6em;
     color: #343434;
@@ -14,6 +18,34 @@ h3 {
     font-size: 1.3em;
     color: #343434;
     padding-top: 1em;
+    margin-bottom: 1em;
+}
+
+.btn-primary {
+    background-color: #fb964d;
+    border-color: #eb8b43;
+    border-radius: 10px;
+    padding: 0.2em 0.8em;
+}
+
+.btn-primary:hover {
+    background-color: #d9742b;
+    border-color: #bf5f21;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show > .btn-primary.dropdown-toggle {
+    background-color: #fb964d;
+    border-color: #eb8b43;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 .2rem .2rem #d9742b;
+}
+
+.btn-primary.focus, .btn-primary:focus {
+    background-color: #fb964d;
+    border-color: #eb8b43;
+    box-shadow: 0 0 .2rem .2rem #d9742b;
 }
 
 .headerSep {
@@ -60,4 +92,19 @@ h3 {
 
 .lodging-item h3 {
     font-weight: bold;
+}
+
+.lodging-item-content img {
+    border: solid #c3c3c3 2px;
+    box-shadow: 1px 1px 5px #c3c3c3;
+}
+
+.lodgingOption-item {
+    border-bottom: #f0f0f0 solid 1px;
+    padding-top: 0.4em;
+    padding-bottom: 0.6em;
+}
+
+.lodgingOption-address {
+    color: #e69250;
 }
