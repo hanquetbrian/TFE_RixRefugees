@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css"
           integrity="sha256-/sdxenK1NDowSNuphgwjv8wSosSNZB0t5koXqd7XqOI=" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css"
@@ -22,34 +23,43 @@
 
 <header class="navbar navbar-expand-lg navbar-dark main-navbar">
     <div class="container">
-        <a class="navbar-brand mr-auto" href="index.html">RixRefugees</a>
+        <a class="navbar-brand mr-auto" href="/">RixRefugees</a>
         <span class="user-name">Prénom Nom</span>
     </div>
 
 </header>
-
-<nav class="navbar navbar-expand-lg navbar-light sub-navbar">
+<nav class="navbar navbar-expand-sm navbar-light sub-navbar">
+    <h1 class="d-sm-none" href="#">Hébergement</h1>
+    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#nav"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="container">
-        <ul class="nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#"><i class="fas fa-home"></i></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Réfugier</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Logement</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Bénévole</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Niveau stock</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Coordinateur</a>
-            </li>
-        </ul>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Logement</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Bénévole</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Niveau stock</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Coordinateur</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">A propos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
     </div>
 
 </nav>
