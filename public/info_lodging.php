@@ -63,7 +63,7 @@ include_once "../include/header.php"
                 <button class="btn btn-primary">Voir le stock</button>
 
                 <div class="event">
-                    <h3>Evenment à venir</h3>
+                    <h3>Evénment à venir</h3>
                     <div class="listLodging">
                         <div class="lodging-item">
                             <p>Atelier 6 jours</p>

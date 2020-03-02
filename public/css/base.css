@@ -114,3 +114,19 @@ img.thumbnail {
     list-style: none;
     margin-bottom: 0.5em;
 }
+
+/* Survey */
+.form-survey div {
+    margin-bottom: 2em;
+}
+
+.form-number {
+    width: 50px;
+}
+
+.survey {
+    margin-top: 2.5em;
+    padding: 2em 2.5em;
+    border: #bfbfbf solid 1px;
+    border-radius: 20px;
+}
