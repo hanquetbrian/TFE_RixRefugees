@@ -38,7 +38,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#"><i class="fas fa-home"></i></a>
+                    <a class="nav-link" href="/"><i class="fas fa-home"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Logement</a>
