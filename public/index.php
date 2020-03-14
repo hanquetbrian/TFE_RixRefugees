@@ -22,12 +22,12 @@ include_once "../include/header.php"
                             <div class="lodging-item-content row justify-content-between mb-4">
                                 <div class="lodgingOptions col-sm-7">
                                     <div class="row justify-content-between lodgingOption-item ">
-                                        <div class="col-8">Nombre de place disponible</div>
+                                        <div class="col-8">Nombre de place disponibles</div>
                                         <div class="col-4"><span class="lodgingOption-nbDispo">8</span></div>
                                     </div>
                                     <div class="row justify-content-between lodgingOption-item ">
                                         <div class="col-8"><span
-                                                    class="lodgingOption-nbMax">Nombre maximun de place</span></div>
+                                                    class="lodgingOption-nbMax">Nombre maximun de places</span></div>
                                         <div class="col-4">25</div>
                                     </div>
                                     <div class="row justify-content-between lodgingOption-item ">
@@ -58,12 +58,12 @@ include_once "../include/header.php"
                             <div class="lodging-item-content row justify-content-between mb-4">
                                 <div class="lodgingOptions col-sm-7">
                                     <div class="row justify-content-between lodgingOption-item ">
-                                        <div class="col-8">Nombre de place disponible</div>
+                                        <div class="col-8">Nombre de place disponibles</div>
                                         <div class="col-4"><span class="lodgingOption-nbDispo">10</span></div>
                                     </div>
                                     <div class="row justify-content-between lodgingOption-item ">
                                         <div class="col-8"><span
-                                                    class="lodgingOption-nbMax">Nombre maximun de place</span></div>
+                                                    class="lodgingOption-nbMax">Nombre maximun de places</span></div>
                                         <div class="col-4">20</div>
                                     </div>
                                     <div class="row justify-content-between lodgingOption-item ">
