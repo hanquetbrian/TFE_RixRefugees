@@ -129,6 +129,22 @@ img.thumbnail {
     background-color: #e0e0e0;
 }
 
+.btn-image-picker img {
+    display: block;
+    max-width: 80%;
+    max-height: 20em;
+    margin: 2em auto;
+}
+
+#listEquipments {
+    width: 60%;
+    margin-top: 1em;
+}
+
+#listEquipments input{
+    border: none;
+}
+
 /* Survey */
 .form-survey div {
     margin-bottom: 2em;

@@ -22,29 +22,38 @@ include_once "../include/header.php"
                         <h5 class="modal-title" id="addLodgingTitle">Ajouter un hébergement</h5>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form id="addLodgingForm">
                             <div class="form-group">
                                 <div class="btn-image-picker">
+                                    <img src="" alt="preview_file" id="previewFile" class="thumbnail">
                                     <label for="upload-photo"><i class="fas fa-images"></i></label>
-                                    <input type="file" name="photo" id="upload-photo" class="d-none">
+                                    <input type="file" name="photo" id="upload-photo" class="d-none" accept="image/*">
                                 </div>
 
                                 <label for="inputLodgingName">Nom de l'hébergement:</label>
-                                <input type="text" class="form-control" id="inputLodgingName">
+                                <input type="text" class="form-control" id="inputLodgingName" required>
                                 <label for="inputLodgingDateFrom">Date Début de l'hébergement:</label>
-                                <input type="text" class="form-control" id="inputLodgingDateFrom">
+                                <input type="date" class="form-control" id="inputLodgingDateFrom" required>
                                 <label for="inputLodgingDateTo">Date fin de l'hébergement:</label>
-                                <input type="text" class="form-control" id="inputLodgingDateTo">
+                                <input type="date" class="form-control" id="inputLodgingDateTo" required>
                                 <label for="inputMaxPlaces">Nombre maximun de places: </label>
-                                <input type="text" class="form-control" id="inputMaxPlaces">
+                                <input type="number" class="form-control" id="inputMaxPlaces" required>
                                 <label for="inputAddress">Adresse:</label>
                                 <input type="text" class="form-control" id="inputAddress">
+
+                                <div id="listEquipments">
+                                    <label for="inputListEquipments">Liste des équipements:</label>
+                                    <ul class="list-group">
+                                        <li class="list-group-item"><input type="text" id="inputListEquipments" placeholder="Equipement"></li>
+                                    </ul>
+                                </div>
+
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" id="addLodgingButton">Save changes</button>
                     </div>
                 </div>
             </div>
