@@ -24,8 +24,6 @@ h3 {
 .btn-primary {
     background-color: #fb964d;
     border-color: #eb8b43;
-    border-radius: 10px;
-    padding: 0.2em 0.8em;
 }
 
 .btn-primary:hover {
@@ -49,13 +47,13 @@ h3 {
 }
 
 .headerSep {
-    border-bottom: solid #ff9147 1px;
+    border-bottom: solid #483e3e 1px;
     margin-top: 0;
     width: 98%;
 }
 
 .main-navbar {
-    background-color: #ff9438; /* #ff9b58 */
+    background-color: #5b5656; /* #ff9b58 */
     font-size: 1.3em;
 }
 
@@ -66,7 +64,7 @@ h3 {
 }
 
 .user-name {
-    color: #7f6d60;
+    color: #c5afa7;
 
 }
 
@@ -113,6 +111,22 @@ img.thumbnail {
 .info_lodging li {
     list-style: none;
     margin-bottom: 0.5em;
+}
+
+.btn-image-picker label {
+    display: block;
+    text-align: center;
+    font-size: 2em;
+    width: 2em;
+    border: solid #c3c3c3 2px;
+    border-radius: 3px;
+    background-color: #eeeeee;
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+.btn-image-picker label:hover {
+    background-color: #e0e0e0;
 }
 
 /* Survey */

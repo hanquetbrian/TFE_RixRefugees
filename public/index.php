@@ -13,10 +13,51 @@ include_once "../include/header.php"
             <hr class="headerSep">
         </div>
 
+        <!-- Modal -->
+        <div class="modal fade" id="addLodging" tabindex="-1" role="dialog" aria-labelledby="addLodgingTitle"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addLodgingTitle">Ajouter un hébergement</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <div class="btn-image-picker">
+                                    <label for="upload-photo"><i class="fas fa-images"></i></label>
+                                    <input type="file" name="photo" id="upload-photo" class="d-none">
+                                </div>
+
+                                <label for="inputLodgingName">Nom de l'hébergement:</label>
+                                <input type="text" class="form-control" id="inputLodgingName">
+                                <label for="inputLodgingDateFrom">Date Début de l'hébergement:</label>
+                                <input type="text" class="form-control" id="inputLodgingDateFrom">
+                                <label for="inputLodgingDateTo">Date fin de l'hébergement:</label>
+                                <input type="text" class="form-control" id="inputLodgingDateTo">
+                                <label for="inputMaxPlaces">Nombre maximun de places: </label>
+                                <input type="text" class="form-control" id="inputMaxPlaces">
+                                <label for="inputAddress">Adresse:</label>
+                                <input type="text" class="form-control" id="inputAddress">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <section>
             <div class="container">
                 <div class="listLodging">
                     <article>
+                        <button class="btn btn-secondary d-block w-100" data-toggle="modal" data-target="#addLodging">
+                            Ajouter un hébergement
+                        </button>
+
                         <div class="lodging-item">
                             <h3>HC du lundi 13/01 au jeudi 16/01</h3>
                             <div class="lodging-item-content row justify-content-between mb-4">
