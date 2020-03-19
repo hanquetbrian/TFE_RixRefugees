@@ -17,13 +17,28 @@ $(document).ready(function () {
 
     // Action to perform when the add lodging button is pressed.
     $("#addLodgingButton").click(function () {
+        let required = false;
         $("#addLodgingForm").find("input[required]").each(function () {
             if(!this.value) {
                 this.style.border = "red solid 1px";
-            } else {
-
+                required = true;
             }
         });
+        if(!required) {
+            let data = {
+                name: $('#inputLodgingName').val(),
+                date_from: $('#inputLodgingDateFrom').val(),
+                date_to: $('#inputLodgingDateTo').val(),
+                nb_place: $('#inputMaxPlaces').val(),
+                address: $('#inputAddress').val()
+            };
+            $.ajax( "/api/addLodging.php", {
+                type: "POST",
+                data: data
+            }).done(function (returned_data) {
+                alert(returned_data);
+            });
+        }
     });
 
 });
