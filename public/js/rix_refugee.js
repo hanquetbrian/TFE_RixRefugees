@@ -6,6 +6,7 @@ $(document).ready(function () {
     });
 
     $("#inputListEquipments").keypress(function (event) {
+        e.preventDefault();
         let keycode = (event.keycode ? event.keycode : event.which);
         if(keycode === 13) {
             val = this.value;
