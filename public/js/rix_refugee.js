@@ -7,14 +7,15 @@ $(document).ready(function () {
     });
 
     // Add the equipment in the list when the user press ENTER
-    $("#inputListEquipments").keypress(function (event) {
-        e.preventDefault();
-        let keycode = (event.keycode ? event.keycode : event.which);
-        if(keycode === 13) {
-            val = this.value;
-            $('<li class="list-group-item"></li>').text(val).append("<a href='#' class='float-right' onclick='removeEquipmentItem(this)'><i class='fas fa-trash-alt'></i></a>").appendTo("#listEquipments ul");
+    let inputTextAddEquipment = $('#inputListEquipments');
+    inputTextAddEquipment.keypress(function (event) {
+        // check if ENTER is pressed
+        if(event.which === 13) {
+            let val = this.value;
+            $('<li class="list-group-item equipment"></li>').text(val).append("<a href='#' class='float-right' onclick='removeEquipmentItem(this)'><i class='fas fa-trash-alt'></i></a>")
+                .appendTo(inputTextAddEquipment.parent().parent("ul"));
 
-            $("#inputListEquipments").val("");
+            inputTextAddEquipment.val("");
         }
     });
 
@@ -31,12 +32,18 @@ $(document).ready(function () {
             }
         });
         if(!required) {
+            let equipments = [];
+            $("#listEquipments ul li.equipment").each(function () {
+                equipments.push($(this).text());
+            });
+
             let data = {
                 name: $('#inputLodgingName').val(),
                 date_from: $('#inputLodgingDateFrom').val(),
                 date_to: $('#inputLodgingDateTo').val(),
                 nb_place: $('#inputMaxPlaces').val(),
-                address: $('#inputAddress').val()
+                address: $('#inputAddress').val(),
+                equipments: equipments
             };
             $.ajax( "/api/addLodging.php", {
                 type: "POST",

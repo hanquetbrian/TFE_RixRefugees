@@ -1,8 +1,10 @@
 <?php
 $title = "RixRefugiees";
 require_once "../php_function/db_connection.php";
+require_once "../php_function/utils.php";
+
 $sql = "
-    SELECT lodging_name, date_from, date_to, address, nb_place, Coordinator.name
+    SELECT Lodging.id, lodging_name, date_from, date_to, address, nb_place, Coordinator.name
     FROM rix_refugee.Lodging
     LEFT JOIN Coordinator on Lodging.coordinator_id = Coordinator.id
 ";
@@ -79,7 +81,7 @@ include_once "../include/header.php"
                     <?php foreach($lodgings as $lodging): ?>
                         <article>
                             <div class="lodging-item">
-                                <h3><?=$lodging['lodging_name']?> du <?=$lodging['date_from']?> au <?=$lodging['date_to']?></h3>
+                                <h3><?=$lodging['lodging_name']?> du <?= formatStrDate($lodging['date_from'])?> au <?=formatStrDate($lodging['date_to'])?></h3>
                                 <div class="lodging-item-content row justify-content-between mb-4">
                                     <div class="lodgingOptions col-sm-7">
                                         <div class="row justify-content-between lodgingOption-item ">
@@ -108,7 +110,7 @@ include_once "../include/header.php"
 
                                 </div>
                                 <button class="btn btn-primary"
-                                        onclick="document.location.href = 'info_lodging.php?lodging_id=1';">Plus d'info ▶
+                                        onclick="document.location.href = 'info_lodging.php?lodging_id=<?=$lodging['id']?>';">Plus d'info ▶
                                 </button>
                             </div>
                         </article>
