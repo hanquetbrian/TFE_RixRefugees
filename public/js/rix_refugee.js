@@ -1,10 +1,12 @@
 $(document).ready(function () {
 
+    // Preview of the image when adding a new lodging
     $("#previewFile").hide();
     $("#upload-photo").change(function () {
         previewImage(this, "#previewFile")
     });
 
+    // Add the equipment in the list when the user press ENTER
     $("#inputListEquipments").keypress(function (event) {
         e.preventDefault();
         let keycode = (event.keycode ? event.keycode : event.which);
@@ -19,10 +21,13 @@ $(document).ready(function () {
     // Action to perform when the add lodging button is pressed.
     $("#addLodgingButton").click(function () {
         let required = false;
-        $("#addLodgingForm").find("input[required]").each(function () {
+        let addLodgingForm = $("#addLodgingForm");
+        addLodgingForm.find("input[required]").each(function () {
             if(!this.value) {
                 this.style.border = "red solid 1px";
                 required = true;
+            } else {
+                this.style.border = "1px solid #ced4da";
             }
         });
         if(!required) {
@@ -37,7 +42,17 @@ $(document).ready(function () {
                 type: "POST",
                 data: data
             }).done(function (returned_data) {
-                alert(returned_data);
+                let result = JSON.parse(returned_data);
+                if(result.error) {
+                    //TODO Change this to a message on top of the page
+                    alert('error: ' + result.error.msg);
+                }
+                if(result.success){
+                    addLodgingForm.find("input").each(function () {
+                        this.value = "";
+                    });
+                    $('#addLodging').modal('hide');
+                }
             });
         }
     });
