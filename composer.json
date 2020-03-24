@@ -1,0 +1,14 @@
+{
+  "name": "rix_refugee/rix_refugee",
+  "description": "Rix_Refugee is an web application that manage multiple lodging for someone",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Brian Hanquet",
+      "email": "b.hanquet@students.ephec.be"
+    }
+  ],
+  "require": {
+    "facebook/graph-sdk": "^5.7"
+  }
+}

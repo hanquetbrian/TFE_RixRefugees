@@ -1,5 +1,5 @@
 <?php
-require_once '/var/html/config.php';
+require_once __DIR__ . '/../config.php';
 
 $dbh;
 try {

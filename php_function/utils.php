@@ -15,6 +15,7 @@ function checkStrDate($date) {
  * @return bool
  */
 function formatStrDate($date) {
+    //TODO add the year at the end only when the year is different
     if (!is_string($date)) {return false;}
     $formatDate = date("w-j-m", strtotime($date));
     $splitFormatDate = explode("-", $formatDate);

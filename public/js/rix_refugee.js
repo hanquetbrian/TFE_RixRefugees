@@ -63,7 +63,6 @@ $(document).ready(function () {
             });
         }
     });
-
 });
 
 function removeEquipmentItem(equipment) {
