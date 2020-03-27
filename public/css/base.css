@@ -53,7 +53,7 @@ h3 {
 }
 
 .main-navbar {
-    background-color: #5b5656; /* #ff9b58 */
+    background-color: #697c7c;
     font-size: 1.3em;
 }
 
@@ -64,8 +64,7 @@ h3 {
 }
 
 .user-name {
-    color: #c5afa7;
-
+    color: #dfd7d0;
 }
 
 .nav-item a {

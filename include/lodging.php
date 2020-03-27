@@ -1,11 +1,4 @@
 <?php
-echo "name: " . $_SESSION['fb_name'] . '<br/>';
-echo "<img src='".$_SESSION['fb_profile_pic']."'/>";
-echo "id: " . $_SESSION['fb_id'];
-
-die();
-
-
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 $sql = "

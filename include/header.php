@@ -24,7 +24,7 @@
 <header class="navbar navbar-expand-lg navbar-dark main-navbar">
     <div class="container">
         <a class="navbar-brand mr-auto" href="/">RixRefugees</a>
-        <span class="user-name">Prénom Nom</span>
+        <span class="user-name"><?=$_SESSION['fb_name']?></span>
     </div>
 
 </header>
