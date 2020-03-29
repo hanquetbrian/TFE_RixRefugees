@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css"
           integrity="sha256-8DcgqUGhWHHsTLj1qcGr0OuPbKkN1RwDjIbZ6DKh/RA=" crossorigin="anonymous"/>
     <!-- Base CSS -->
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="../public/css/base.css">
 
     <title>Survey</title>
 </head>

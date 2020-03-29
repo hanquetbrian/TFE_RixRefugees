@@ -2,7 +2,7 @@
 $url = (isset($_GET["q"])?$_GET["q"]:"/");
 session_start();
 
-if(isset($_GET['user']) && $_GET['user'] = 'guess') {
+if(isset($_GET['user']) && $_GET['user'] = 'guest') {
     $_SESSION['fb_access_token'] = "";
     $_SESSION['fb_name'] = "Prénom Nom";
     $_SESSION['fb_profile_pic'] = "";
@@ -22,7 +22,13 @@ switch ($url) {
             include "../php_function/loginFacebook.php";
         }
         break;
-
+    case "/info_lodging":
+        $title = "RixRefugiees info";
+        include "../include/info_lodging.php";
+        break;
+    case "/survey":
+        include "../include/survey.php";
+        break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
         break;

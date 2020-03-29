@@ -108,7 +108,7 @@ include_once "../include/header.php";
 
                                 </div>
                                 <button class="btn btn-primary"
-                                        onclick="document.location.href = 'info_lodging.php?lodging_id=<?=$lodging['id']?>';">Plus d'info ▶
+                                        onclick="document.location.href = 'info_lodging?lodging_id=<?=$lodging['id']?>';">Plus d'info ▶
                                 </button>
                             </div>
                         </article>
