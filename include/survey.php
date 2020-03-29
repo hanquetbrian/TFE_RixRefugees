@@ -118,17 +118,11 @@
 
                             <button type="submit" class="btn btn-primary">Envoyer</button>
                         </div>
-
-
                     </fieldset>
-
                 </form>
             </div>
-
         </div>
     </section>
-
-
 </main>
 
 <?php

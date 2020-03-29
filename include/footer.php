@@ -10,5 +10,7 @@
         crossorigin="anonymous"></script>
 
 <script src="js/rix_refugee.js"></script>
+<script src="js/survey.js"></script>
+
 </body>
 </html>

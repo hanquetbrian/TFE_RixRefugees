@@ -13,7 +13,7 @@ switch ($url) {
     case "/":
         if (isset($_SESSION['fb_access_token'])) {
 
-            $title = "RixRefugiees";
+            $title = "RixRefugee";
             include "../include/lodging.php";
         } elseif (isset($_SESSION['ERROR']['FB'])) {
             include "../error/access_denied.html";
@@ -23,11 +23,15 @@ switch ($url) {
         }
         break;
     case "/info_lodging":
-        $title = "RixRefugiees info";
+        $title = "RixRefugee info";
         include "../include/info_lodging.php";
         break;
     case "/survey":
         include "../include/survey.php";
+        break;
+    case "/add_survey":
+        $title = "RixRefugee add survey";
+        include "../include/add_survey.php";
         break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";

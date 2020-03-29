@@ -63,6 +63,7 @@ $(document).ready(function () {
             });
         }
     });
+
 });
 
 function removeEquipmentItem(equipment) {
@@ -84,3 +85,4 @@ function previewImage(inputFile, idPreviewElement) {
         reader.readAsDataURL(inputFile.files[0]);
     }
 }
+

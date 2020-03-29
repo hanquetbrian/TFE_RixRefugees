@@ -159,3 +159,38 @@ img.thumbnail {
     border: #bfbfbf solid 1px;
     border-radius: 20px;
 }
+
+.survey-from-group {
+    margin: 2em;
+    padding: 1em 2em;
+    background-color: #fafafa;
+    border-radius: 10px;
+    border: 1px #bfbfbf solid;
+}
+
+.survey-form-header {
+    border-left: .5em #7e80af solid;
+    padding: 1em 3em;
+}
+
+.survey-form-control {
+    border: none;
+    border-bottom: 1px #bfbfbf solid;
+    margin-bottom: 1em;
+    background-color: inherit;
+}
+
+.survey-form-control:focus {
+    border-bottom-color: #7e80af;
+    border-bottom-width: 2px;
+}
+
+textarea.survey-form-control {
+    overflow: hidden;
+    padding: 0;
+    width: 80%;
+}
+
+.survey-form-title {
+    font-size: 2em;
+}

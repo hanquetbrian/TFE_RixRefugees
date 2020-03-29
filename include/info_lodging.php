@@ -23,16 +23,13 @@ $sth->execute([$idLodging]);
 $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 $imgSrc = 'img/house.jpg';
-$coordinateur = "Prénom nom";
 $nombrePlaceDispo = 25;
-$address = "4924 Barlett Avenue";
-$equipement = ['Climatisation', 'Wifi', 'Sèche-cheveux', '2 Douche'];
 
 ?>
 
 
 <?php
-include_once "../include/header.php"
+include_once "../include/header.php";
 
 ?>
 
@@ -57,7 +54,7 @@ include_once "../include/header.php"
                         <ul class="info_lodging">
                             <li>Date: <?= formatStrDate($lodgings[0]['date_from'])?> au <?=formatStrDate($lodgings[0]['date_to'])?></li>
                             <li>Coordinateur: <?= $lodgings[0]['name'] ?></li>
-                            <li>Nombre de place disponible: <?= $lodgings[0]['equipment_name'] ?></li>
+                            <li>Nombre de places disponibles: <?= $lodgings[0]['nb_place'] ?></li>
                             <li class="address"><?= $lodgings[0]['address'] ?></li>
                         </ul>
                     </div>
@@ -80,11 +77,12 @@ include_once "../include/header.php"
 <!--                <button class="btn btn-primary">Voir le stock</button>-->
 
                 <div class="event">
-                    <h3>Evénment à venir</h3>
+                    <h3>Sondage pour les bébévoles</h3>
                     <div class="listLodging">
+                        <a href="/add_survey" class="btn btn-secondary">Ajouter un sondage</a>
                         <div class="lodging-item">
                             <p>Atelier 6 jours</p>
-                            <a href="survey">Lien temporaire vers survey</a>
+                            <a href="/survey">Lien temporaire vers survey</a>
                         </div>
                     </div>
                 </div>
