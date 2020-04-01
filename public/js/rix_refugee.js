@@ -12,7 +12,7 @@ $(document).ready(function () {
         // check if ENTER is pressed
         if(event.which === 13) {
             let val = this.value;
-            $('<li class="list-group-item equipment"></li>').text(val).append("<a href='#' class='float-right' onclick='removeEquipmentItem(this)'><i class='fas fa-trash-alt'></i></a>")
+            $('<li class="list-group-item equipment"></li>').text(val).append("<span class='float-right remove-btn' onclick='removeEquipmentItem(this)'><i class='fas fa-trash-alt'></i></span>")
                 .appendTo(inputTextAddEquipment.parent().parent("ul"));
 
             inputTextAddEquipment.val("");
@@ -69,6 +69,7 @@ $(document).ready(function () {
 function removeEquipmentItem(equipment) {
     $(equipment).parent().remove();
 
+    equipment.preventDefault();
     return false;
 }
 

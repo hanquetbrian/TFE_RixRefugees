@@ -15,34 +15,34 @@ h2 {
 }
 
 h3 {
-    font-size: 1.3em;
+    font-size: 1.4em;
     color: #343434;
     padding-top: 1em;
     margin-bottom: 1em;
 }
 
 .btn-primary {
-    background-color: #fb964d;
-    border-color: #eb8b43;
+    background-color: #65819f;
+    border-color: #6a85a7;
 }
 
 .btn-primary:hover {
-    background-color: #d9742b;
-    border-color: #bf5f21;
+    background-color: #5a718c;
+    border-color: #536782;
 }
 
 .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show > .btn-primary.dropdown-toggle {
-    background-color: #fb964d;
-    border-color: #eb8b43;
+    background-color: #5a718c;
+    border-color: #536782;
 }
 
 .btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-primary.dropdown-toggle:focus {
-    box-shadow: 0 0 .2rem .2rem #d9742b;
+    box-shadow: 0 0 .2rem .2rem #536782;
 }
 
 .btn-primary.focus, .btn-primary:focus {
-    background-color: #fb964d;
-    border-color: #eb8b43;
+    background-color: #5a718c;
+    border-color: #536782;
     box-shadow: 0 0 0;
 }
 
@@ -73,6 +73,10 @@ h3 {
 
 .nav-item.active {
     background-color: #d9d9d9;
+}
+
+.remove-btn {
+    cursor: pointer;
 }
 
 .listLodging {
@@ -162,7 +166,7 @@ img.thumbnail {
 
 .survey-from-group {
     margin: 2em;
-    padding: 1em 2em;
+    padding: 2em 3em;
     background-color: #fafafa;
     border-radius: 10px;
     border: 1px #bfbfbf solid;
@@ -180,6 +184,11 @@ img.thumbnail {
     background-color: inherit;
 }
 
+.survey-form-control:hover {
+    border-bottom-color: #8a8899;
+    border-bottom-width: 2px;
+}
+
 .survey-form-control:focus {
     border-bottom-color: #7e80af;
     border-bottom-width: 2px;
@@ -189,6 +198,14 @@ textarea.survey-form-control {
     overflow: hidden;
     padding: 0;
     width: 80%;
+}
+
+.survey-form-check-group {
+    width: 60%;
+}
+
+.survey-form-check {
+    margin-right: .5em;
 }
 
 .survey-form-title {

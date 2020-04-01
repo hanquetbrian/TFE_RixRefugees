@@ -21,18 +21,20 @@ include_once "../include/header.php";
                         </div>
 
                         <div>
-                            <textarea class="survey-form-control" placeholder="description"></textarea>
+                            <textarea class="survey-form-control" placeholder="description..."></textarea>
                         </div>
                     </div>
 
-
+                    <div class="survey-from-group">
+                        <div id="listOption">
+                        </div>
+                        <div>
+                            <input class="survey-form-check" type="checkbox" disabled>
+                            <input class="survey-form-control survey-form-check-text" type="text" placeholder="Ajouter une option">
+                        </div>
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Enregistrer">
                 </form>
-            </div>
-
-            <div class="survey-from-group">
-                <div>
-
-                </div>
             </div>
         </section>
     </main>
