@@ -39,7 +39,7 @@ $sql = "INSERT INTO Lodging_equipment (lodging_id, equipment_name) VALUES ($lodg
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
 foreach ($_POST['equipments'] as $equipment) {
-    $sth->execute(array(':equipment_name' => $equipment));
+    $sth->execute(array(':equipment_name' => htmlspecialchars($equipment)));
 }
 $sth->closeCursor();
 
