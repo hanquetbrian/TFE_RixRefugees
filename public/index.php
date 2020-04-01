@@ -1,8 +1,8 @@
 <?php
-$url = (isset($_GET["q"])?$_GET["q"]:"/");
+$url = (isset($_GET["q"]) ? $_GET["q"] : "/");
 session_start();
 
-if(isset($_GET['user']) && $_GET['user'] = 'guest') {
+if (isset($_GET['user']) && $_GET['user'] = 'guest') {
     $_SESSION['fb_access_token'] = "";
     $_SESSION['fb_name'] = "Prénom Nom";
     $_SESSION['fb_profile_pic'] = "";
@@ -35,6 +35,12 @@ switch ($url) {
         break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
+        break;
+    case "/policy":
+        include "../policy/privacy_policy.html";
+        break;
+    case "/terms":
+        include "../policy/terms_conditions.html";
         break;
     default:
         include "../error/404.html";

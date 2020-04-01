@@ -4,12 +4,13 @@ if (!isset($_GET['lodging_id'])) {
     exit;
 }
 
-
 $idLodging = $_GET['lodging_id'];
 //TODO add security for lodging_id
 
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
+
+// Get lodging info
 $sql = "
     SELECT Lodging.id, lodging_name, date_from, date_to, address, nb_place, Coordinator.name, Lodging_equipment.equipment_name
     FROM rix_refugee.Lodging
@@ -23,11 +24,19 @@ $sth->execute([$idLodging]);
 $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 $imgSrc = 'img/house.jpg';
-$nombrePlaceDispo = 25;
+
+// Get surveys info
+$sql = "
+    SELECT id, survey_name, description, content
+    FROM rix_refugee.Survey
+    WHERE lodging_id = ?;
+";
+
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute([$idLodging]);
+$surveys = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
-
-
 <?php
 include_once "../include/header.php";
 
@@ -89,8 +98,6 @@ include_once "../include/header.php";
 
             </div>
         </section>
-
-
     </main>
 
 <?php
