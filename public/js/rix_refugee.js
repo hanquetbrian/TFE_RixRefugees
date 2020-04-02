@@ -1,9 +1,7 @@
 $(document).ready(function () {
-
     // Preview of the image when adding a new lodging
-    $("#previewFile").hide();
     $("#upload-photo").change(function () {
-        previewImage(this, "#previewFile")
+        previewImage(this, "previewFile")
     });
 
     // Add the equipment in the list when the user press ENTER
@@ -78,11 +76,13 @@ function previewImage(inputFile, idPreviewElement) {
         let reader = new FileReader();
 
         reader.onload = function (e) {
-            let img = $(idPreviewElement);
-            img.attr('src', e.target.result);
-            img.show();
+            let img = $("#" + idPreviewElement);
+            if(!img.length) {
+                $('#addLodgingForm .btn-image-picker').prepend($('<img src="'+e.target.result+'" alt="preview_file" id="'+idPreviewElement+'" class="thumbnail">'));
+            } else {
+                img.attr('src', e.target.result);
+            }
         };
-
         reader.readAsDataURL(inputFile.files[0]);
     }
 }

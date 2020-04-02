@@ -149,21 +149,6 @@ img.thumbnail {
 }
 
 /* Survey */
-.form-survey div {
-    margin-bottom: 2em;
-}
-
-.form-number {
-    width: 50px;
-}
-
-.survey {
-    margin-top: 2.5em;
-    padding: 2em 2.5em;
-    border: #bfbfbf solid 1px;
-    border-radius: 20px;
-}
-
 .survey-from-group {
     margin: 2em;
     padding: 2em 3em;
@@ -210,4 +195,14 @@ textarea.survey-form-control {
 
 .survey-form-title {
     font-size: 2em;
+}
+
+.survey-form-option {
+    margin: 2em;
+}
+
+#survey .coordinator {
+    color: #aaaaaa;
+    margin-top: 0;
+    margin-bottom: 1.5em;
 }

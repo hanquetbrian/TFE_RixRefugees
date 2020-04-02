@@ -2,7 +2,7 @@
 $url = (isset($_GET["q"]) ? $_GET["q"] : "/");
 session_start();
 
-if (isset($_GET['user']) && $_GET['user'] = 'guest') {
+if (isset($_GET['user']) && $_GET['user'] == 'guest') {
     $_SESSION['fb_access_token'] = "";
     $_SESSION['fb_name'] = "Prénom Nom";
     $_SESSION['fb_profile_pic'] = "";
@@ -27,6 +27,7 @@ switch ($url) {
         include "../include/info_lodging.php";
         break;
     case "/survey":
+        $title = "RixRefugee Survey";
         include "../include/survey.php";
         break;
     case "/add_survey":

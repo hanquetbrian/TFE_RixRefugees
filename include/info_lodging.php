@@ -91,7 +91,7 @@ include_once "../include/header.php";
                         <a href="/add_survey" class="btn btn-secondary">Ajouter un sondage</a>
                         <div class="lodging-item">
                             <p>Atelier 6 jours</p>
-                            <a href="/survey">Lien temporaire vers survey</a>
+                            <a href="/survey?id_survey=1">Lien temporaire vers survey</a>
                         </div>
                     </div>
                 </div>

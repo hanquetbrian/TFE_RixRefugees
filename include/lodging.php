@@ -16,27 +16,18 @@ include_once "../include/header.php";
 ?>
 
     <main>
-        <div class="d-none d-sm-block" id="titlePage">
-            <div class="container">
-                <h1>Hébergement</h1>
-            </div>
-
-            <hr class="headerSep">
-        </div>
-
         <!-- Modal -->
         <div class="modal fade" id="addLodging" tabindex="-1" role="dialog" aria-labelledby="addLodgingTitle"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addLodgingTitle">Ajouter un hébergement</h5>
+                        <h4 class="modal-title" id="addLodgingTitle">Ajouter un hébergement</h4>
                     </div>
                     <div class="modal-body">
                         <form id="addLodgingForm">
                             <div class="form-group">
                                 <div class="btn-image-picker">
-                                    <img src="" alt="preview_file" id="previewFile" class="thumbnail">
                                     <label for="upload-photo"><i class="fas fa-images"></i></label>
                                     <input type="file" name="photo" id="upload-photo" class="d-none" accept="image/*">
                                 </div>
@@ -71,6 +62,13 @@ include_once "../include/header.php";
         </div>
 
         <section>
+            <div class="d-none d-sm-block" id="titlePage">
+                <div class="container">
+                    <h2>Hébergement</h2>
+                </div>
+                <hr class="headerSep">
+            </div>
+
             <div class="container">
                 <div class="listLodging">
                     <button class="btn btn-secondary d-block w-100" data-toggle="modal" data-target="#addLodging">

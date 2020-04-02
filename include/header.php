@@ -17,6 +17,9 @@
     <!-- Base CSS -->
     <link rel="stylesheet" href="css/base.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webshim/1.16.0/minified/polyfiller.js" ></script>
+
     <title><?= $title ?></title>
 </head>
 <body>
@@ -29,7 +32,7 @@
 
 </header>
 <nav class="navbar navbar-expand-sm navbar-light sub-navbar">
-    <h1 class="d-sm-none" href="#">Hébergement</h1>
+    <h1 class="d-sm-none">Hébergement</h1>
     <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#nav"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

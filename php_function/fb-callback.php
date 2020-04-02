@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 //TODO Only access this page from Facebook
 require_once "../php_function/fb-object.php";
