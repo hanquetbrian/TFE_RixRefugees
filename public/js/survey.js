@@ -20,17 +20,22 @@ $(document).ready(function () {
         $("#listOption input.survey-form-check-text").each(function () {
             options.push($(this).val());
         });
+        let lodging_id = $('#id_lodging').val();
+        let id_survey = $('#id_survey').val();
         let title = $("#survey-title").val();
         let description = $("#survey-description").val();
 
         $.post("/api/addSurvey.php", {
+            id_survey: id_survey,
+            lodging_id: lodging_id,
             title: title,
             description: description,
             options: options
         }).done(function (data) {
+            console.log(data);
             data = JSON.parse(data);
             if(data.success) {
-                window.location.href = "/info_lodging"
+                window.location.href = "/info_lodging?lodging_id=" + lodging_id;
             } else {
                 $("#survey.alert").remove();
                 $('#survey').prepend("<div class=\"alert alert-danger\" role=\"alert\">\n" +

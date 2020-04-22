@@ -88,7 +88,7 @@ include_once "../include/header.php";
                 <div class="event">
                     <h3>Sondage pour les bébévoles</h3>
                     <div class="listLodging">
-                        <a href="/add_survey" class="btn btn-secondary">Ajouter un sondage</a>
+                        <a href="/add_survey?id_lodging=<?=$idLodging?>&id_survey=-1" class="btn btn-secondary">Ajouter un sondage</a>
                         <div class="lodging-item">
                             <?php foreach ($surveys as $survey):?>
                             <p><a href="/survey?id_survey=<?=$survey['id']?>"><?=$survey['survey_name']?></a></p>

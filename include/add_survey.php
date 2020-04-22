@@ -1,8 +1,7 @@
 <?php
-if(isset($_GET['survey_id'])) {
-    $survey_id = $_GET['survey_id'];
+if(isset($_GET['id_survey']) && $_GET['id_survey'] > 0) {
+    $survey_id = $_GET['id_survey'];
     require_once '../php_function/db_connection.php';
-    require_once "../php_function/utils.php";
     // Get surveys info
     $sql = "
     SELECT id, survey_name, description, content
@@ -32,6 +31,16 @@ include_once "../include/header.php";
                 <a href=""><i class="fas fa-arrow-circle-left"></i></a>
                 <div id="survey">
                     <form action="/api/addSurvey.php" method="post">
+                        <?php
+                            if(isset($_GET['id_lodging'])) {
+                                echo '<input id="id_lodging" name="id_lodging" type="hidden" value="' . $_GET['id_lodging'] .'">';
+                            }
+
+                            if(isset($_GET['id_survey'])) {
+                                echo '<input id="id_survey" name="id_survey" type="hidden" value="' . $_GET['id_survey'] . '">';
+                            }
+                        ?>
+
                         <div class="survey-from-group survey-form-header">
                             <div>
                                 <input id="survey-title" class="survey-form-control survey-form-title" value="<?php echo (isset($survey) ? $survey['survey_name'] : 'Sans titre')?>" name ="survey_title" placeholder="Titre du sondage">

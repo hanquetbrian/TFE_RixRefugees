@@ -7,7 +7,7 @@ $idSurvey = $_GET["id_survey"];
 //TODO add security and redirection
 
 $sql = "
-    SELECT lodging_name, date_from, date_to, survey_name, Survey.description, Survey.content, Coordinator.name
+    SELECT lodging_id, lodging_name, date_from, date_to, survey_name, Survey.description, Survey.content, Coordinator.name
     FROM rix_refugee.Survey
     LEFT JOIN Lodging on lodging_id = Lodging.id
     LEFT JOIN Coordinator on Lodging.coordinator_id = Coordinator.id
@@ -33,7 +33,7 @@ $options = json_decode($survey["content"]);
         <div class="container">
 
             <?php if($_SESSION['fb_id']):?>
-                <a class="btn btn-secondary" href="/add_survey?survey_id=<?=$idSurvey?>">Modifier</a>
+                <a class="btn btn-secondary" href="/add_survey?id_lodging=<?=$survey['lodging_id']?>&id_survey=<?=$idSurvey?>">Modifier</a>
             <?php endif;?>
             <div id="survey">
                 <form>
