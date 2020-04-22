@@ -32,7 +32,6 @@
 
 </header>
 <nav class="navbar navbar-expand-sm navbar-light sub-navbar">
-    <h1 class="d-sm-none">Hébergement</h1>
     <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#nav"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -42,9 +41,6 @@
             <ul class="nav">
                 <li class="nav-item active">
                     <a class="nav-link" href="/"><i class="fas fa-home"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Logement</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Bénévole</a>

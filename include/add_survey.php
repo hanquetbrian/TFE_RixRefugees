@@ -1,6 +1,21 @@
 <?php
-include_once "../include/header.php";
+if(isset($_GET['survey_id'])) {
+    $survey_id = $_GET['survey_id'];
+    require_once '../php_function/db_connection.php';
+    require_once "../php_function/utils.php";
+    // Get surveys info
+    $sql = "
+    SELECT id, survey_name, description, content
+    FROM rix_refugee.Survey
+    WHERE id = ?;
+    ";
 
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sth->execute([$survey_id]);
+    $survey = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
+}
+
+include_once "../include/header.php";
 ?>
 
     <main>
@@ -14,20 +29,33 @@ include_once "../include/header.php";
 
         <section>
             <div class="container">
+                <a href=""><i class="fas fa-arrow-circle-left"></i></a>
                 <div id="survey">
                     <form action="/api/addSurvey.php" method="post">
                         <div class="survey-from-group survey-form-header">
                             <div>
-                                <input id="survey-title" class="survey-form-control survey-form-title" value="Sans titre" name ="survey_title" placeholder="Titre du sondage">
+                                <input id="survey-title" class="survey-form-control survey-form-title" value="<?php echo (isset($survey) ? $survey['survey_name'] : 'Sans titre')?>" name ="survey_title" placeholder="Titre du sondage">
                             </div>
 
                             <div>
-                                <textarea id="survey-description" class="survey-form-control" name="survey_description" placeholder="description..."></textarea>
+                                <textarea id="survey-description" class="survey-form-control" name="survey_description" placeholder="description..."><?php echo (isset($survey) ? $survey['description'] : '')?></textarea>
                             </div>
                         </div>
 
                         <div class="survey-from-group">
                             <div id="listOption">
+                                <?php if(isset($survey)) {
+                                    $options = json_decode($survey["content"]);
+                                    foreach ($options as $option) {
+                                        echo '<div class="survey-form-check-group">';
+                                        echo '<input class="survey-form-check" type="checkbox" disabled>';
+                                        echo '<input class="survey-form-control" type="text" name="survey_options" value="' . $option . '">';
+                                        echo '<span class="pl-3 remove-btn" onclick="removeEquipmentItem(this)"><i class=\'fas fa-times\'></i></span>';
+                                        echo '</div>';
+                                    }
+                                }
+                                ?>
+
                             </div>
                             <div>
                                 <input class="survey-form-check" type="checkbox" disabled>

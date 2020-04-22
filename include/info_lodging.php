@@ -90,8 +90,9 @@ include_once "../include/header.php";
                     <div class="listLodging">
                         <a href="/add_survey" class="btn btn-secondary">Ajouter un sondage</a>
                         <div class="lodging-item">
-                            <p>Atelier 6 jours</p>
-                            <a href="/survey?id_survey=1">Lien temporaire vers survey</a>
+                            <?php foreach ($surveys as $survey):?>
+                            <p><a href="/survey?id_survey=<?=$survey['id']?>"><?=$survey['survey_name']?></a></p>
+                            <?php endforeach;?>
                         </div>
                     </div>
                 </div>

@@ -64,7 +64,7 @@ include_once "../include/header.php";
         <section>
             <div class="d-none d-sm-block" id="titlePage">
                 <div class="container">
-                    <h2>Hébergement</h2>
+                    <h1>Hébergement</h1>
                 </div>
                 <hr class="headerSep">
             </div>

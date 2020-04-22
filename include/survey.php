@@ -32,6 +32,9 @@ $options = json_decode($survey["content"]);
     <section>
         <div class="container">
 
+            <?php if($_SESSION['fb_id']):?>
+                <a class="btn btn-secondary" href="/add_survey?survey_id=<?=$idSurvey?>">Modifier</a>
+            <?php endif;?>
             <div id="survey">
                 <form>
                     <div class="survey-from-group survey-form-header">
