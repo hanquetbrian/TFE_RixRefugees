@@ -39,8 +39,8 @@
     <div class="container">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/"><i class="fas fa-home"></i></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Hébergements</i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Bénévole</a>
@@ -49,16 +49,20 @@
                     <a class="nav-link" href="#">Niveau stock</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Coordinateur</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">A propos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/coordinator">Coordinateur</a>
                 </li>
             </ul>
         </div>
     </div>
 
 </nav>
+
+<script>
+    var url = window.location.href;
+    var li = document.querySelectorAll('.nav li a');
+    for (var i=0; i<li.length; i++) {
+        if(url === li[i].href) {
+            li[i].parentNode.className = 'nav-item active';
+        }
+    }
+</script>

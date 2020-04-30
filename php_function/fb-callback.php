@@ -34,14 +34,14 @@ if (! isset($accessToken)) {
 }
 
 // Logged in
-$response = $fb->get('/me/?fields=picture,name,id', $accessToken);
+$response = $fb->get('/me/?fields=picture,name,id,email', $accessToken);
 $user = $response->getGraphUser();
 
 // Check if the user is authorized to access the page
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT name, facebook_id
-    FROM rix_refugee.Coordinator
+    SELECT name, facebook_id, email, telephone
+    FROM rix_refugee.valid_coordinator
     WHERE facebook_id = :facebook_id
 ";
 
@@ -56,6 +56,14 @@ if(empty($login)) {
     $_SESSION['fb_name'] = $user['name'];
     $_SESSION['fb_profile_pic'] = $user['picture']['url'];
     $_SESSION['fb_id'] = $user['id'];
-}
 
+    $sql = "UPDATE rix_refugee.Coordinator SET name = :name, picture = :picture, email = :email WHERE facebook_id = :facebook_id";
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sth->execute([
+        ':name' => $user['name'],
+        ':picture' => $user['picture']['url'],
+        ':email' => $user['email'],
+        ':facebook_id' => $user['id']
+    ]);
+}
 header('Location: /#');

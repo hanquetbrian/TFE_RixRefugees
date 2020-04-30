@@ -34,6 +34,10 @@ switch ($url) {
         $title = "RixRefugee add survey";
         include "../include/add_survey.php";
         break;
+    case "/coordinator":
+        $title = "RixRefugee Coordinateur";
+        include "../include/coordinator.php";
+        break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
         break;

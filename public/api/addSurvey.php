@@ -9,6 +9,7 @@ require_once "../../php_function/utils.php";
 
 $result = [];
 
+$survey_id = htmlspecialchars($_POST['id_survey']);
 $lodging_id = htmlspecialchars($_POST['lodging_id']);
 $title = htmlspecialchars($_POST['title']);
 $description = htmlspecialchars($_POST['description']);
@@ -28,7 +29,7 @@ $data=[];
 if($_POST['id_survey'] > 0) {
     $sql = "UPDATE rix_refugee.Survey SET survey_name = :name, description = :desc, content = :content WHERE id = :id_survey; ";
     $data = [
-        ':id_survey' => $_POST['id_survey'],
+        ':id_survey' => $survey_id,
         ':name' => $title,
         ':desc' => $description,
         ':content' => json_encode($options)
@@ -46,13 +47,18 @@ if($_POST['id_survey'] > 0) {
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
 $sqlResult = $sth->execute($data);
+if(empty($survey_id) || $survey_id <= 0) {
+    $survey_id = $dbh->lastInsertId();
+}
 
 if($sqlResult) {
     $result['success'] = true;
+    $result['lastInsertId'] = $survey_id;
 } else {
     $result["error"]["type"] = "invalid request";
     $result["error"]["msg"] = "Could not create the survey";
 }
+
 $dbh->commit();
 
 echo json_encode($result);

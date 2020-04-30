@@ -35,7 +35,7 @@ $(document).ready(function () {
             console.log(data);
             data = JSON.parse(data);
             if(data.success) {
-                window.location.href = "/info_lodging?lodging_id=" + lodging_id;
+                window.location.href = "/survey?id_survey=" + data.lastInsertId;
             } else {
                 $("#survey.alert").remove();
                 $('#survey').prepend("<div class=\"alert alert-danger\" role=\"alert\">\n" +
