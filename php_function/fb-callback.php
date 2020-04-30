@@ -37,10 +37,13 @@ if (! isset($accessToken)) {
 $response = $fb->get('/me/?fields=picture,name,id,email', $accessToken);
 $user = $response->getGraphUser();
 
+$picture_url = $fb->get('/me/picture?redirect=0&type=normal', $accessToken)->getGraphNode()['url'];
+//$picture_url = "test";
+
 // Check if the user is authorized to access the page
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT name, facebook_id, email, telephone
+    SELECT name, facebook_id
     FROM rix_refugee.valid_coordinator
     WHERE facebook_id = :facebook_id
 ";
@@ -54,16 +57,19 @@ if(empty($login)) {
 } else {
     $_SESSION['fb_access_token'] = (string) $accessToken;
     $_SESSION['fb_name'] = $user['name'];
-    $_SESSION['fb_profile_pic'] = $user['picture']['url'];
+    $_SESSION['fb_small_profile_pic'] = $user['picture']['url'];
+    $_SESSION['fb_profile_pic'] = $picture_url;
     $_SESSION['fb_id'] = $user['id'];
 
-    $sql = "UPDATE rix_refugee.Coordinator SET name = :name, picture = :picture, email = :email WHERE facebook_id = :facebook_id";
+    $sql = "UPDATE rix_refugee.Coordinator SET name = :name, small_picture_url = :small_picture, picture_url = :picture, email = :email WHERE facebook_id = :facebook_id";
     $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sth->execute([
         ':name' => $user['name'],
-        ':picture' => $user['picture']['url'],
+        ':small_picture' => $user['picture']['url'],
+        ':picture' => $picture_url,
         ':email' => $user['email'],
         ':facebook_id' => $user['id']
     ]);
 }
+
 header('Location: /#');
