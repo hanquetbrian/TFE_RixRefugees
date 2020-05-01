@@ -12,6 +12,7 @@ class Auth
     private AccessToken $fb_access_token;
     private $fb_small_profile_pic;
     private $fb_profile_pic;
+    private $fb_email;
     private $fb_id;
     private bool $isConnected = false;
     private bool $isCoordinator = false;
@@ -34,6 +35,7 @@ class Auth
             isset($_SESSION['fb_name'])&&
             isset($_SESSION['fb_small_profile_pic'])&&
             isset($_SESSION['fb_profile_pic'])&&
+            isset($_SESSION['fb_email'])&&
             isset($_SESSION['fb_id'])&&
             isset($_SESSION['isCoordinator'])) {
 
@@ -41,6 +43,7 @@ class Auth
             $this->name = $_SESSION['fb_name'];
             $this->fb_small_profile_pic = $_SESSION['fb_small_profile_pic'];
             $this->fb_profile_pic = $_SESSION['fb_profile_pic'];
+            $this->fb_email = $_SESSION['fb_email'];
             $this->fb_id = $_SESSION['fb_id'];
             $this->isCoordinator = (bool)$_SESSION['isCoordinator'];
             $this->isConnected = true;
@@ -68,6 +71,7 @@ class Auth
         $this->name = $user['name'];
         $this->fb_small_profile_pic = $user['picture']['url'];
         $this->fb_profile_pic = $picture_url;
+        $this->fb_email = $user['email'];
         $this->fb_id = $user['id'];
         $this->isConnected = true;
 
@@ -76,6 +80,7 @@ class Auth
         $_SESSION['fb_name'] = $this->name;
         $_SESSION['fb_small_profile_pic'] = $this->fb_small_profile_pic;
         $_SESSION['fb_profile_pic'] = $this->fb_profile_pic;
+        $_SESSION['fb_email'] = $this->fb_email;
         $_SESSION['fb_id'] = $this->fb_id;
 
         // Check if the user is authorized to access the page
@@ -113,6 +118,7 @@ class Auth
         $_SESSION['fb_name'] = "";
         $_SESSION['fb_small_profile_pic'] = "";
         $_SESSION['fb_profile_pic'] = "";
+        $_SESSION['fb_email'] = "";
         $_SESSION['fb_id'] = "";
         $_SESSION['isCoordinator'] = "";
         session_unset();
@@ -121,6 +127,7 @@ class Auth
         unset($this->name);
         unset($this->fb_small_profile_pic);
         unset($this->fb_profile_pic);
+        unset($this->fb_email);
         unset($this->fb_id);
         unset($this->isCoordinator);
         $this->isConnected = false;
@@ -132,6 +139,14 @@ class Auth
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string email of the auth person
+     */
+    public function getEmail()
+    {
+        return $this->fb_email;
     }
 
     /**
@@ -193,7 +208,8 @@ class Auth
      */
     public function connectToFacebook() {
         $helper = $this->fb_object->getRedirectLoginHelper();
-        $loginUrl = $helper->getLoginUrl('https://rixrefugee.site/fb-callback');
+        $permissions = ['email'];
+        $loginUrl = $helper->getLoginUrl('https://rixrefugee.site/fb-callback', $permissions);
         header('Location: ' . $loginUrl);
     }
 
@@ -205,6 +221,7 @@ class Auth
         $this->name = "Utilisateur test";
         $this->fb_small_profile_pic = "";
         $this->fb_profile_pic = "";
+        $this->fb_email = "";
         $this->fb_id = "";
         $this->isCoordinator = true;
         $this->isConnected = true;
@@ -213,6 +230,7 @@ class Auth
         $_SESSION['fb_name'] = $this->name;
         $_SESSION['fb_small_profile_pic'] = $this->fb_small_profile_pic;
         $_SESSION['fb_profile_pic'] = $this->fb_profile_pic;
+        $_SESSION['fb_email'] = $this->fb_email;
         $_SESSION['fb_id'] = $this->fb_id;
         $_SESSION['isCoordinator'] = $this->isCoordinator;
     }

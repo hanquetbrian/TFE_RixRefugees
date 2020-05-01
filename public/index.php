@@ -1,4 +1,6 @@
 <?php
+phpinfo();
+die;
 session_start();
 
 require_once '../php_function/Auth.php';
@@ -20,7 +22,6 @@ switch ($url) {
                 include "../include/lodging.php";
             } else {
                 include "../error/access_denied.html";
-                $AUTH->disconnect();
             }
 
         } else {
@@ -51,6 +52,10 @@ switch ($url) {
         break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
+        break;
+
+    case "/ask_access":
+        include "../php_function/ask_access.php";
         break;
     case "/policy":
         include "../policy/privacy_policy.html";

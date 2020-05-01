@@ -35,7 +35,7 @@ require_once 'header.php';
                                 <span><a href="info_coordinator?coord_id=<?=$coordinator['id']?>"><?=$coordinator['name']?></a></span>
                             </div>
                           <div>
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#askAuthorize">Autoriser</button>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#askAuthorize" onclick="$('#coordName').text('<?=$coordinator['name']?>')">Autoriser</button>
                                 <button class="btn btn-secondary" onclick="removeCoord('<?=$coordinator['id']?>')">Supprimer</button>
 
                             </div>
@@ -59,7 +59,7 @@ require_once 'header.php';
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Etes-vous su de vouloir autoriser <span id="coordName"></span></p>
+                    <p>Etes-vous sûr de vouloir autoriser <span id="coordName"></span></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="authorize('<?=$coordinator['id']?>')">Oui</button>
