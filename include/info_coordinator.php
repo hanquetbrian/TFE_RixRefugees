@@ -7,8 +7,8 @@ if(!isset($_GET['coord_id'])) {
 
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, valid
-    FROM rix_refugee.Coordinator
+    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone
+    FROM rix_refugee.valid_coordinator
     where id = ?;
     ";
 
@@ -29,12 +29,15 @@ require_once 'header.php';
             </div>
             <hr class="headerSep">
         </div>
-        [
+
         <div class="container">
             <div class="listLodging">
+<!--                TODO allow the modifications of the coordinator info-->
                 <img src="<?=$coordinator['picture_url']?>" alt="picture_of_<?=$coordinator['name']?>" width="100">
                 <div class="lodging-item">
-
+                    <p>Nom: <?=$coordinator['name']?></p>
+                    <p>Email: <?=$coordinator['email']?></p>
+                    <p>Téléphone: <?=$coordinator['telephone']?></p>
                 </div>
             </div>
         </div>

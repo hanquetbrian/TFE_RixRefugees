@@ -41,6 +41,9 @@ switch ($url) {
     case "/info_coordinator":
         include "../include/info_coordinator.php";
         break;
+    case "/validating_coordinator":
+        include "../include/validating_coordinator.php";
+        break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
         break;

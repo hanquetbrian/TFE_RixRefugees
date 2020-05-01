@@ -21,8 +21,6 @@ foreach ($coordsList as &$coord) {
     }
 }
 
-require_once "../php_function/fb-object.php";
-
 require_once 'header.php';
 ?>
     <main>
@@ -38,7 +36,7 @@ require_once 'header.php';
                 <div class="listLodging">
                     <?php if(!empty($waitingCoords)): ?>
                     <div class="lodging-item">
-                        <a href="#">Demande de coordinateur</a>
+                        <a href="validating_coordinator">Demande de coordinateur</a>
                         <span class="badge badge-secondary"><?=count($waitingCoords) ?></span>
                     </div>
                     <?php endif;?>

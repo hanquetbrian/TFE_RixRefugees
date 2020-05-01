@@ -28,6 +28,7 @@
     <div class="container">
         <a class="navbar-brand mr-auto" href="/">RixRefugee</a>
         <span class="user-name"><?=$_SESSION['fb_name']?></span>
+<!--        TODO add a logout button-->
     </div>
 
 </header>
@@ -46,7 +47,7 @@
                     <a class="nav-link" href="#">Bénévole</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Niveau stock</a>
+                    <a class="nav-link" href="#"><strike>Niveau stock</strike></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/coordinator">Coordinateur</a>
