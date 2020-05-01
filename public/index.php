@@ -1,25 +1,30 @@
 <?php
-$url = (isset($_GET["q"]) ? $_GET["q"] : "/");
 session_start();
 
+require_once '../php_function/Auth.php';
+require_once '../config.php';
+
+$AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
+
+$url = (isset($_GET["q"]) ? $_GET["q"] : "/");
+
 if (isset($_GET['user']) && $_GET['user'] == 'guest') {
-    $_SESSION['fb_access_token'] = "";
-    $_SESSION['fb_name'] = "Prénom Nom";
-    $_SESSION['fb_profile_pic'] = "";
-    $_SESSION['fb_id'] = "0";
+    $AUTH->connectWithGuest();
 }
 
 switch ($url) {
     case "/":
-        if (isset($_SESSION['fb_access_token'])) {
+        if ($AUTH->isConnected()) {
+            if($AUTH->isCoordinator()) {
+                $title = "RixRefugee";
+                include "../include/lodging.php";
+            } else {
+                include "../error/access_denied.html";
+                $AUTH->disconnect();
+            }
 
-            $title = "RixRefugee";
-            include "../include/lodging.php";
-        } elseif (isset($_SESSION['ERROR']['FB'])) {
-            include "../error/access_denied.html";
-            session_unset();
         } else {
-            include "../php_function/loginFacebook.php";
+            $AUTH->connectToFacebook();
         }
         break;
     case "/info_lodging":
