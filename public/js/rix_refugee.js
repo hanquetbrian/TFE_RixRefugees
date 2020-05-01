@@ -87,3 +87,27 @@ function previewImage(inputFile, idPreviewElement) {
     }
 }
 
+
+function authorize(id) {
+    $.post("/api/validateCoordinator.php", {
+        id_coord: id
+    }).done(function (data) {
+        data = JSON.parse(data);
+        if(!data.success) {
+            alert(data["error"]["msg"]);
+        }
+        location.reload();
+    });
+}
+
+function removeCoord(id) {
+    $.post("/api/removeCoordinator.php", {
+        id_coord: id
+    }).done(function (data) {
+        data = JSON.parse(data);
+        if(!data.success) {
+            alert(data["error"]["msg"]);
+        }
+        location.reload();
+    });
+}

@@ -1,10 +1,10 @@
 <?php
 
 //TODO Only access this page from Facebook
-require_once "../php_function/fb-object.php";
+
+$fb = $AUTH->getFbObject();
 
 $helper = $fb->getRedirectLoginHelper();
-
 try {
     $accessToken = $helper->getAccessToken();
 } catch(Facebook\Exceptions\FacebookResponseException $e) {

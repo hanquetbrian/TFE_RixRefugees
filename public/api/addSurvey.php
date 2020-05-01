@@ -1,9 +1,4 @@
 <?php
-if(!isset($_POST['id_survey']) || !isset($_POST['lodging_id'])) {
-    echo 'fuck you';
-    exit();
-}
-
 require_once "../../php_function/db_connection.php";
 require_once "../../php_function/utils.php";
 

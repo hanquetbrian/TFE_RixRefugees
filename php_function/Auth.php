@@ -48,7 +48,7 @@ class Auth
     }
 
     /**
-     * Update the info on the connected user. An access token must been set before running this function
+     * Update the info on the connected user.
      * @param AccessToken $fb_access_token set the access token to get access to user info
      * @param $dbh PDO Is a database connection
      */
@@ -164,6 +164,14 @@ class Auth
     public function getFbId()
     {
         return $this->fb_id;
+    }
+
+    /**
+     * @return Facebook return a facebook object
+     */
+    public function getFbObject(): Facebook
+    {
+        return $this->fb_object;
     }
 
     /**

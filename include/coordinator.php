@@ -1,7 +1,7 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, valid
+    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, valid, added_day
     FROM rix_refugee.Coordinator;
     ";
 

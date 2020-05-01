@@ -32,7 +32,7 @@ $options = json_decode($survey["content"]);
     <section>
         <div class="container">
 
-            <?php if($_SESSION['fb_id']):?>
+            <?php if($AUTH->isCoordinator()):?>
                 <a class="btn btn-secondary" href="/add_survey?id_lodging=<?=$survey['lodging_id']?>&id_survey=<?=$idSurvey?>">Modifier</a>
             <?php endif;?>
             <div id="survey">

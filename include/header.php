@@ -27,7 +27,7 @@
 <header class="navbar navbar-expand-lg navbar-dark main-navbar">
     <div class="container">
         <a class="navbar-brand mr-auto" href="/">RixRefugee</a>
-        <span class="user-name"><?=$_SESSION['fb_name']?></span>
+        <span class="user-name"><?=$AUTH->getName()?></span>
 <!--        TODO add a logout button-->
     </div>
 
