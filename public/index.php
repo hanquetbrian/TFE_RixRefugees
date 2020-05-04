@@ -1,6 +1,4 @@
 <?php
-phpinfo();
-die;
 session_start();
 
 require_once '../php_function/Auth.php';
@@ -10,13 +8,10 @@ $AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
 
 $url = (isset($_GET["q"]) ? $_GET["q"] : "/");
 
-if (isset($_GET['user']) && $_GET['user'] == 'guest') {
-    $AUTH->connectWithGuest();
-}
-
 switch ($url) {
     case "/":
         if ($AUTH->isConnected()) {
+
             if($AUTH->isCoordinator()) {
                 $title = "RixRefugee";
                 include "../include/lodging.php";

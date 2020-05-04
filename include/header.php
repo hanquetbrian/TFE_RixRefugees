@@ -1,3 +1,16 @@
+<?php
+require_once '../php_function/db_connection.php';
+$sql = "
+    SELECT id, name
+    FROM rix_refugee.validating_coordinator;
+    ";
+
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute([]);
+$waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <!doctype html>
 <html lang="fr">
 <head>
@@ -50,7 +63,9 @@
                     <a class="nav-link" href="#"><strike>Niveau stock</strike></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/coordinator">Coordinateur</a>
+                    <a class="nav-link" href="/coordinator">
+                        <?php if(!empty($waitingCoords)): ?><span class="badge badge-secondary"><?=count($waitingCoords) ?></span><?php endif; ?>
+                        Coordinateur</a>
                 </li>
             </ul>
         </div>

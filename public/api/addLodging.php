@@ -1,6 +1,12 @@
 <?php
 require_once "../../php_function/db_connection.php";
 require_once "../../php_function/utils.php";
+session_start();
+
+require_once '../../php_function/Auth.php';
+require_once '../../config.php';
+
+$AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
 
 $result = [];
 
@@ -10,6 +16,7 @@ $dateTo = htmlspecialchars($_POST['date_to']);
 $name = htmlspecialchars($_POST['name']);
 $nbPlace = htmlspecialchars($_POST['nb_place']);
 $address = htmlspecialchars($_POST['address']);
+$coordinatorId = $AUTH->getCoordId();
 
 if(!checkStrDate($dateFrom) or !checkStrDate($dateTo)) {
     //TODO Check that the date_to is after the date_from
@@ -23,7 +30,7 @@ if(!checkStrDate($dateFrom) or !checkStrDate($dateTo)) {
 
 // insert data in the database
 $dbh->beginTransaction();
-$sql = "INSERT INTO rix_refugee.Lodging (lodging_name, date_from, date_to, address, nb_place) VALUES (:lodging_name, :date_from, :date_to, :address, :nb_place);";
+$sql = "INSERT INTO rix_refugee.Lodging (lodging_name, date_from, date_to, address, coordinator_id, nb_place) VALUES (:lodging_name, :date_from, :date_to, :address, :coordinator_id, :nb_place);";
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
 $sth->execute(array(
@@ -31,16 +38,20 @@ $sth->execute(array(
     ':date_from' => $dateFrom,
     ':date_to' => $dateTo,
     ':address' => $address,
+    ':coordinator_id' => $coordinatorId,
     ':nb_place' => $nbPlace));
 
-$lodgingId = $dbh->lastInsertId();
-$sth->closeCursor();
-$sql = "INSERT INTO Lodging_equipment (lodging_id, equipment_name) VALUES ($lodgingId, :equipment_name)";
-$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+if(isset($_POST['equipments'])) {
+    $lodgingId = $dbh->lastInsertId();
+    $sth->closeCursor();
+    $sql = "INSERT INTO Lodging_equipment (lodging_id, equipment_name) VALUES ($lodgingId, :equipment_name)";
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
-foreach ($_POST['equipments'] as $equipment) {
-    $sth->execute(array(':equipment_name' => htmlspecialchars($equipment)));
+    foreach ($_POST['equipments'] as $equipment) {
+        $sth->execute(array(':equipment_name' => htmlspecialchars($equipment)));
+    }
 }
+
 $sth->closeCursor();
 
 $dbh->commit();

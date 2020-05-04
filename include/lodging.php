@@ -2,7 +2,7 @@
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 $sql = "
-    SELECT Lodging.id, lodging_name, date_from, date_to, address, nb_place, Coordinator.name
+    SELECT Lodging.id, lodging_name, date_from, date_to, address, nb_place, Coordinator.id as coord_id, Coordinator.name as coord_name
     FROM rix_refugee.Lodging
     LEFT JOIN Coordinator on Lodging.coordinator_id = Coordinator.id
 ";
@@ -96,7 +96,7 @@ include_once "../include/header.php";
                                         </div>
                                         <div class="row justify-content-between lodgingOption-item ">
                                             <div class="col-8">Coordinateur</div>
-                                            <div class="col-4"><span class="lodgingOption-coordinator"><?=$lodging['name']?></span>
+                                            <div class="col-4"><span class="lodgingOption-coordinator"><a href="info_coordinator?coord_id=<?=$lodging['coord_id']?>"><?=$lodging['coord_name']?></a></span>
                                             </div>
                                         </div>
                                     </div>

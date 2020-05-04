@@ -31,7 +31,7 @@ require_once 'header.php';
                         <?php foreach ($coordinators as $coordinator):?>
                         <div class="lodgingOption-item row justify-content-between pr-5">
                             <div class="pl-3">
-                                <?php if(isset($coordinator['small_picture_url'])){echo '<img alt="pic_of_'.$coordinator['name'].'" src="'.$coordinator['small_picture_url'].'">';}?>
+                                <?php if(!empty($coordinator['small_picture_url'])){echo '<img alt="pic_of_'.$coordinator['name'].'" src="'.$coordinator['small_picture_url'].'">';}?>
                                 <span><a href="info_coordinator?coord_id=<?=$coordinator['id']?>"><?=$coordinator['name']?></a></span>
                             </div>
                           <div>

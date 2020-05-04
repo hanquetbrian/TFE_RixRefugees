@@ -14,6 +14,7 @@ class Auth
     private $fb_profile_pic;
     private $fb_email;
     private $fb_id;
+    private $coord_id;
     private bool $isConnected = false;
     private bool $isCoordinator = false;
 
@@ -37,6 +38,7 @@ class Auth
             isset($_SESSION['fb_profile_pic'])&&
             isset($_SESSION['fb_email'])&&
             isset($_SESSION['fb_id'])&&
+            isset($_SESSION['coord_id'])&&
             isset($_SESSION['isCoordinator'])) {
 
             $this->fb_access_token = new AccessToken($_SESSION['fb_access_token']);
@@ -45,6 +47,7 @@ class Auth
             $this->fb_profile_pic = $_SESSION['fb_profile_pic'];
             $this->fb_email = $_SESSION['fb_email'];
             $this->fb_id = $_SESSION['fb_id'];
+            $this->coord_id = $_SESSION['coord_id'];
             $this->isCoordinator = (bool)$_SESSION['isCoordinator'];
             $this->isConnected = true;
         }
@@ -85,7 +88,7 @@ class Auth
 
         // Check if the user is authorized to access the page
         $sql = "
-            SELECT name, facebook_id
+            SELECT id, name, facebook_id
             FROM rix_refugee.valid_coordinator
             WHERE facebook_id = :facebook_id
         ";
@@ -97,9 +100,12 @@ class Auth
         if(empty($login)) {
             $this->isCoordinator = false;
             $_SESSION['isCoordinator'] = $this->isCoordinator;
+            $_SESSION['coord_id']="";
         } else {
             $this->isCoordinator = true;
+            $this->coord_id = $login[0]['id'];
             $_SESSION['isCoordinator'] = $this->isCoordinator;
+            $_SESSION['coord_id'] = $this->coord_id;
 
             $sql = "UPDATE rix_refugee.Coordinator SET name = :name, small_picture_url = :small_picture, picture_url = :picture, email = :email WHERE facebook_id = :facebook_id";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -111,6 +117,7 @@ class Auth
                 ':facebook_id' => $user['id']
             ]);
         }
+
     }
 
     public function disconnect(){
@@ -120,6 +127,7 @@ class Auth
         $_SESSION['fb_profile_pic'] = "";
         $_SESSION['fb_email'] = "";
         $_SESSION['fb_id'] = "";
+        $_SESSION['coord_id'] = "";
         $_SESSION['isCoordinator'] = "";
         session_unset();
 
@@ -129,6 +137,7 @@ class Auth
         unset($this->fb_profile_pic);
         unset($this->fb_email);
         unset($this->fb_id);
+        unset($this->coord_id);
         unset($this->isCoordinator);
         $this->isConnected = false;
     }
@@ -182,6 +191,18 @@ class Auth
     }
 
     /**
+     * @return string id of the login coordinator
+     * @return bool return false if he isn't a coordinator
+     */
+    public function getCoordId()
+    {
+        if($this->isCoordinator()) {
+            return $this->coord_id;
+        }
+        return false;
+    }
+
+    /**
      * @return Facebook return a facebook object
      */
     public function getFbObject(): Facebook
@@ -211,27 +232,5 @@ class Auth
         $permissions = ['email'];
         $loginUrl = $helper->getLoginUrl('https://rixrefugee.site/fb-callback', $permissions);
         header('Location: ' . $loginUrl);
-    }
-
-
-    // TODO Remove the guest login
-    /* TEMP FUNCTION */
-
-    public function connectWithGuest() {
-        $this->name = "Utilisateur test";
-        $this->fb_small_profile_pic = "";
-        $this->fb_profile_pic = "";
-        $this->fb_email = "";
-        $this->fb_id = "";
-        $this->isCoordinator = true;
-        $this->isConnected = true;
-
-        $_SESSION['fb_access_token'] = "123";
-        $_SESSION['fb_name'] = $this->name;
-        $_SESSION['fb_small_profile_pic'] = $this->fb_small_profile_pic;
-        $_SESSION['fb_profile_pic'] = $this->fb_profile_pic;
-        $_SESSION['fb_email'] = $this->fb_email;
-        $_SESSION['fb_id'] = $this->fb_id;
-        $_SESSION['isCoordinator'] = $this->isCoordinator;
     }
 }
