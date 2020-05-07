@@ -15,6 +15,11 @@ $sql = "
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$_GET['facebook_id']]);
 $surveyResult = $sth->fetchAll(PDO::FETCH_ASSOC);
+$surveyNames = [];
+foreach ($surveyResult as $result) {
+    array_push($surveyNames, $result['survey_name']);
+}
+$surveyNames = array_unique($surveyNames);
 
 $fb_object = $AUTH->getFbObject();
 
@@ -29,8 +34,6 @@ try {
 }
 
 
-
-
 $title = "RixRefugee " . $volunteer['name'];
 require_once 'header.php';
 ?>
@@ -39,14 +42,27 @@ require_once 'header.php';
     <section>
         <div class="container mt-5">
             <div class="listLodging">
-                <!--                TODO allow the modifications of the coordinator info-->
                 <img src="<?=$picture_url?>" alt="picture_of_<?=$volunteer['name']?>" width="100">
                 <h2 style="width: 50%; display: inline-block; padding: 1em .3em; margin-left: 1em; border-left: #6a85a7 solid 3px">Nom: <?=$volunteer['name']?></h2>
                 <div class="lodging-item">
-                    <h3
-
+                    <?php
+                    foreach ($surveyNames as $survey) {
+                        echo '<h3>'.$survey.'</h3>';
+                        echo '<div class="ml-4">';
+                        foreach ($surveyResult as $result) {
+                            if($result['survey_name'] == $survey) {
+                                $contents = json_decode($result['result']);
+                                foreach ($contents as $content) {
+                                    echo '<p>'.$content.'</p>';
+                                }
+                            }
+                        }
+                        echo '</div>';
+                    }
+                    ?>
                 </div>
             </div>
         </div>
     </section>
 </main>
+

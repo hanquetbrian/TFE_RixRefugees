@@ -38,7 +38,7 @@ require_once 'header.php';
                     <h2>Liste des bénévoles</h2>
                     <div class="lodging-item">
                         <?php foreach ($volunteers as $volunteer):?>
-                            <div>
+                            <div class="mb-3">
                                 <img alt="pic_of_<?=$volunteer['name']?>" src="<?=$volunteer['picture']['url']?>">
                                 <span><a href="info_volunteer?facebook_id=<?=$volunteer['id']?>"><?=$volunteer['name']?></a></span>
                             </div>
