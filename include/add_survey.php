@@ -30,7 +30,7 @@ include_once "../include/header.php";
             <div class="container">
                 <a href=""><i class="fas fa-arrow-circle-left"></i></a>
                 <div id="survey">
-                    <form action="/api/addSurvey.php" method="post">
+                    <form>
                         <?php
                             if(isset($_GET['id_lodging'])) {
                                 echo '<input id="id_lodging" name="id_lodging" type="hidden" value="' . $_GET['id_lodging'] .'">';
@@ -71,7 +71,7 @@ include_once "../include/header.php";
                                 <input class="survey-form-control survey-form-check-text" type="text" placeholder="Ajouter une option">
                             </div>
                         </div>
-                        <input class="btn btn-primary" type="submit" value="Enregistrer">
+                        <input id="btn_add_survey" class="btn btn-primary" type="submit" value="Enregistrer">
                     </form>
                 </div>
             </div>

@@ -13,8 +13,8 @@ $(document).ready(function () {
         $('#listOption').find('input').select();
     });
 
-    // Action to do when the form is send
-    $('form').submit(function (e) {
+    // Action to do when a new form is created
+    $('#btn_add_survey').click(function (e) {
         e.preventDefault();
         let options = [];
         $("#listOption input.survey-form-check-text").each(function () {
@@ -32,7 +32,6 @@ $(document).ready(function () {
             description: description,
             options: options
         }).done(function (data) {
-            console.log(data);
             data = JSON.parse(data);
             if(data.success) {
                 window.location.href = "/survey?id_survey=" + data.lastInsertId;
@@ -42,9 +41,25 @@ $(document).ready(function () {
                     "Erreur lors de l'ajout du sondage" +
                     "</div>")
             }
-            console.log(data);
         });
         // end ajax
+    });
+
+    $('form[action$="saveSurveyResult.php"]').submit(function (e) {
+        e.preventDefault();
+
+        let optionChecked = $('.form-check-input:checked');
+
+        if(optionChecked.length === 0) {
+            $("#error_message").html("veillez à cocher au moins une case avant d'envoyer le formulaire");
+            $(".alert").show();
+        } else {
+            // let results = [];
+            // optionChecked.each(function () {
+            //     results.push($(this).next().text().trim());
+            // });
+            e.target.submit();
+        }
     });
 });
 

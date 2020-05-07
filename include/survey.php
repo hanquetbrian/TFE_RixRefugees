@@ -38,7 +38,7 @@ require_once "../include/header.php";
                 <a class="btn btn-secondary" href="/add_survey?id_lodging=<?=$survey['lodging_id']?>&id_survey=<?=$idSurvey?>">Modifier</a>
             <?php endif;?>
             <div id="survey">
-                <form>
+                <form action="/api/saveSurveyResult.php?id_survey=<?=$idSurvey?>" method="post">
                     <div class="survey-from-group survey-form-header">
                         <div>
                             <h2 class="survey-form-title"><?=$survey['lodging_name']?> du <?= formatStrDate($survey['date_from'])?> au <?=formatStrDate($survey['date_to'])?></h2>
@@ -52,17 +52,23 @@ require_once "../include/header.php";
                         </div>
                     </div>
 
+<!--                    ERROR MESSAGE-->
+                    <div class="alert alert-danger fade show" style="display: none" role="alert">
+                        <span id="error_message"></span>
+                    </div>
+
+
                     <div class="ml-5 survey-from-group form-group form-check">
                         <?php foreach ($options as $key => $option):?>
                             <div class="survey-form-option">
-                                <input class="form-check-input" type="checkbox" value="" id="survey-option<?=$key?>">
+                                <input class="form-check-input" type="checkbox" value="<?=$option?>" id="survey-option<?=$key?>" name="option<?=$key?>">
                                 <label class="form-check-label" for="survey-option<?=$key?>">
                                     <?=$option?>
                                 </label>
                             </div>
                         <?php endforeach;?>
 
-                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                        <button id="btn_save_survey_result" type="submit" class="btn btn-primary">Envoyer</button>
                     </div>
                 </form>
             </div>

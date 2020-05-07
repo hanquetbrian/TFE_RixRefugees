@@ -45,6 +45,13 @@ switch ($url) {
     case "/validating_coordinator":
         include "../include/validating_coordinator.php";
         break;
+    case "/volunteer":
+        $title = "RixRefugee Bénévoles";
+        include "../include/volunteer.php";
+        break;
+    case "/info_volunteer":
+        include "../include/info_volunteer.php";
+        break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
         break;
