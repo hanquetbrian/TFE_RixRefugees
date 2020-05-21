@@ -2,9 +2,17 @@
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 $sql = "
-    SELECT Lodging.id, lodging_name, date_from, date_to, address, nb_place, Coordinator.id as coord_id, Coordinator.name as coord_name
-    FROM rix_refugee.Lodging
-    LEFT JOIN Coordinator on Lodging.coordinator_id = Coordinator.id
+    SELECT Lodging_session.id, Lodging.lodging_name, Lodging_session.date_from, Lodging_session.date_to, Lodging.address, Lodging.nb_place, Coordinator.id AS coord_id, Coordinator.name AS coord_name
+    
+    FROM (SELECT Lodging_session.lodging_id, MAX(Lodging_session.date_from) AS recent_date_from
+            FROM Lodging_session
+            GROUP BY lodging_id) AS latest_session
+    INNER JOIN Lodging_session ON
+        Lodging_session.lodging_id = latest_session.lodging_id AND
+        Lodging_session.date_from = latest_session.recent_date_from
+    INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
+    LEFT JOIN Coordinator ON Lodging_session.coordinator_id = Coordinator.id
+    ORDER BY date_from DESC
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -106,7 +114,7 @@ include_once "../include/header.php";
 
                                 </div>
                                 <button class="btn btn-primary"
-                                        onclick="document.location.href = 'info_lodging?lodging_id=<?=$lodging['id']?>';">Plus d'info <i class="fas fa-caret-right"></i>
+                                        onclick="document.location.href = 'info_lodging?lodging_session_id=<?=$lodging['id']?>';">Plus d'info <i class="fas fa-caret-right"></i>
                                 </button>
                             </div>
                         </article>

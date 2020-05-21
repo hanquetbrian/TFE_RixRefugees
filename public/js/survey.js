@@ -1,13 +1,15 @@
 $(document).ready(function () {
     // Auto resize the textarea
-    $('textarea.survey-form-control').keydown(textAreaAutosize);
+    let textArea = $('textarea.survey-form-control');
+    textAreaAutosize(textArea.get(0));
+    textArea.keydown(textAreaAutosize(this));
 
     // Add option to the survey
     let optionList = $('.survey-form-check-text');
     optionList.focus(function () {
         $('<div class="survey-form-check-group">')
             .append('<input class="survey-form-check" type="checkbox" disabled>')
-            .append('<input class="survey-form-control survey-form-check-text" type="text" name="survey_options" value="Option">')
+            .append('<input class="survey-form-control" type="text" name="survey_options" value="Option">')
             .append('<span class="pl-3 remove-btn" onclick="removeEquipmentItem(this)"><i class=\'fas fa-times\'></i></span>')
             .appendTo('#listOption');
         $('#listOption').find('input').select();
@@ -63,8 +65,8 @@ $(document).ready(function () {
     });
 });
 
-function textAreaAutosize(){
-    let el = this;
+function textAreaAutosize(text){
+    let el = text;
     setTimeout(function(){
         el.style.cssText = 'height:auto; padding:0';
         el.style.cssText = 'height:' + el.scrollHeight + 'px';

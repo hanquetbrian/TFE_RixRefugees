@@ -1,10 +1,10 @@
 <?php
-if (!isset($_GET['lodging_id'])) {
+if (!isset($_GET['lodging_session_id'])) {
     header('Location: /');
     exit;
 }
 
-$idLodging = $_GET['lodging_id'];
+$idLodgingSession = $_GET['lodging_session_id'];
 //TODO add security for lodging_id
 
 require_once "../php_function/db_connection.php";
@@ -12,29 +12,22 @@ require_once "../php_function/utils.php";
 
 // Get lodging info
 $sql = "
-    SELECT Lodging.id, lodging_name, date_from, date_to, address, nb_place, Coordinator.name, Lodging_equipment.equipment_name
-    FROM rix_refugee.Lodging
-    LEFT JOIN Coordinator on Lodging.coordinator_id = Coordinator.id
+    SELECT lodging_name, date_from, date_to, address, nb_place, Coordinator.id AS coord_id, Coordinator.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments, Survey.id AS survey_id, Survey.description, Survey.content
+    FROM rix_refugee.Lodging_session
+    INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
+    LEFT JOIN Coordinator on Lodging_session.coordinator_id = Coordinator.id
     LEFT JOIN Lodging_equipment ON Lodging.id = Lodging_equipment.lodging_id
-    WHERE Lodging.id = ?;
+    LEFT JOIN Survey ON Survey.id = Lodging_session.survey_id
+    WHERE Lodging_session.id = ?;
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$idLodging]);
-$lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
+$sth->execute([$idLodgingSession]);
+$lodgings = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
+$equipments = json_decode($lodgings["equipments"]);
+$surveyContent = json_decode($lodgings["content"]);
 
 $imgSrc = 'img/house.jpg';
-
-// Get surveys info
-$sql = "
-    SELECT id, survey_name, description, content
-    FROM rix_refugee.Survey
-    WHERE lodging_id = ?;
-";
-
-$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$idLodging]);
-$surveys = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <?php
@@ -45,7 +38,7 @@ include_once "../include/header.php";
     <main>
         <div class="d-none d-sm-block" id="titlePage">
             <div class="container">
-                <h1><?=$lodgings[0]['lodging_name']?></h1>
+                <h1><?=$lodgings['lodging_name']?></h1>
             </div>
 
             <hr class="headerSep">
@@ -61,10 +54,10 @@ include_once "../include/header.php";
 
                     <div class="col-sm">
                         <ul class="info_lodging">
-                            <li>Date: <?= formatStrDate($lodgings[0]['date_from'])?> au <?=formatStrDate($lodgings[0]['date_to'])?></li>
-                            <li>Coordinateur: <?= $lodgings[0]['name'] ?></li>
-                            <li>Nombre de places disponibles: <?= $lodgings[0]['nb_place'] ?></li>
-                            <li class="address"><?= $lodgings[0]['address'] ?></li>
+                            <li>Date: <?= formatStrDate($lodgings['date_from'])?> au <?=formatStrDate($lodgings['date_to'])?></li>
+                            <li>Coordinateur: <a href="info_coordinator?coord_id=<?=$lodgings['coord_id']?>"><?=$lodgings['coord_name']?></a></li>
+                            <li>Nombre de places disponibles: <?= $lodgings['nb_place'] ?></li>
+                            <li class="address"><?= $lodgings['address'] ?></li>
                         </ul>
                     </div>
 
@@ -74,12 +67,12 @@ include_once "../include/header.php";
                         </button>
                     </div>
                 </div>
-                <?php if(isset($lodgings[0]['equipment_name'])):?>
+                <?php if(!empty($equipments)):?>
 
                 <h3>Equipements</h3>
                 <ul class="info_lodging">
-                    <?php foreach ($lodgings as $lodging):?>
-                    <li><?=$lodging['equipment_name']?></li>
+                    <?php foreach ($equipments as $equipment):?>
+                    <li><?=$equipment?></li>
                     <?php endforeach;?>
                 </ul>
                 <?php endif; ?>
@@ -88,12 +81,20 @@ include_once "../include/header.php";
                 <div class="event">
                     <h3>Sondage pour les bébévoles</h3>
                     <div class="listLodging">
-                        <a href="/add_survey?id_lodging=<?=$idLodging?>&id_survey=-1" class="btn btn-secondary">Ajouter un sondage</a>
+                    <?php if(empty($surveyContent)): ?>
+                        <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Ajouter un sondage</a>
+                    <?php else:?>
+                        <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Modifier le sondage</a>
+
+                        <h4 style="margin: 1em 0; text-decoration: underline">Description</h4>
+                        <p><?=$lodgings['description']?></p>
                         <div class="lodging-item">
-                            <?php foreach ($surveys as $survey):?>
-                            <p><a href="/survey?id_survey=<?=$survey['id']?>"><?=$survey['survey_name']?></a></p>
+<!--                            <a href="/survey?id_survey=--><?//=$survey['id']?><!--">--><?//=$survey['survey_name']?><!--</a>-->
+                            <?php foreach ($surveyContent as $survey):?>
+                            <p><?=$survey?></p>
                             <?php endforeach;?>
                         </div>
+                        <?php endif;?>
                     </div>
                 </div>
 
