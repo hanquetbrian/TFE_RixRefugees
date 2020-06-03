@@ -16,9 +16,6 @@ $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$_GET['coord_id']]);
 $coordinator = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
-$title = "RixRefugee " . $coordinator['name'];
-
-require_once 'header.php';
 ?>
 
 <main>

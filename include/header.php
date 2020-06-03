@@ -33,7 +33,13 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webshim/1.16.0/minified/polyfiller.js" ></script>
 
-    <title><?= $title ?></title>
+    <?php
+        foreach ($page->getScript() as $script) {
+            include $script;
+        }
+    ?>
+
+    <title><?= $page->getTitle() ?></title>
 </head>
 <body>
 

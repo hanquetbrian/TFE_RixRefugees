@@ -1,8 +1,9 @@
 <?php
 session_start();
 
-require_once '../php_function/Auth.php';
 require_once '../config.php';
+require_once '../php_function/Auth.php';
+require_once '../php_function/Page.php';
 
 $AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
 
@@ -13,8 +14,10 @@ switch ($url) {
         if ($AUTH->isConnected()) {
 
             if($AUTH->isCoordinator()) {
-                $title = "RixRefugee";
-                include "../include/lodging.php";
+                require_once '../php_function/db_connection.php';
+                $page = new Page('include/lodging.php', "RixRefugee");
+                $page->addParam("test", Page::PARAM_VALID_SESSION_ID, $dbh);
+                include "../include/template.php";
             } else {
                 include "../error/access_denied.html";
             }
@@ -24,33 +27,40 @@ switch ($url) {
         }
         break;
     case "/info_lodging":
-        $title = "RixRefugee info";
-        include "../include/info_lodging.php";
+        $page = new Page('include/info_lodging.php', "RixRefugee info");
+        include "../include/template.php";
         break;
     case "/survey":
+        $page = new Page('include/survey.php', "RixRefugee Survey");
         $title = "RixRefugee Survey";
-        include "../include/survey.php";
+        include "../include/template.php";
         break;
     case "/add_survey":
-        $title = "RixRefugee add survey";
-        include "../include/add_survey.php";
+        $page = new Page('include/add_survey.php', "RixRefugee add survey");
+        $title = "";
+        include "../include/template.php";
         break;
     case "/coordinator":
-        $title = "RixRefugee Coordinateur";
-        include "../include/coordinator.php";
+        $page = new Page('include/coordinator.php', "RixRefugee Coordinateur");
+        $title = "";
+        include "../include/template.php";
         break;
     case "/info_coordinator":
-        include "../include/info_coordinator.php";
+        $page = new Page('include/info_coordinator.php', "RixRefugee Coordinateur");
+        include "../include/template.php";
         break;
     case "/validating_coordinator":
-        include "../include/validating_coordinator.php";
+        $page = new Page('include/validating_coordinator.php', "RixRefugee Coordinateur en demande");
+        include "../include/template.php";
         break;
     case "/volunteer":
-        $title = "RixRefugee Bénévoles";
-        include "../include/volunteer.php";
+        $page = new Page('include/volunteer.php', "RixRefugee Bénévoles");
+        $title = "";
+        include "../include/template.php";
         break;
     case "/info_volunteer":
-        include "../include/info_volunteer.php";
+        $page = new Page('include/info_volunteer.php', "Bénévole");
+        include "../include/template.php";
         break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
@@ -65,6 +75,7 @@ switch ($url) {
     case "/terms":
         include "../policy/terms_conditions.html";
         break;
+    case "/404":
     default:
         include "../error/404.html";
 }
