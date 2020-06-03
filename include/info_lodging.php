@@ -89,7 +89,7 @@ include_once "../include/header.php";
                         <h4 style="margin: 1em 0; text-decoration: underline">Description</h4>
                         <p><?=$lodgings['description']?></p>
                         <div class="lodging-item">
-<!--                            <a href="/survey?id_survey=--><?//=$survey['id']?><!--">--><?//=$survey['survey_name']?><!--</a>-->
+                            <a href="/survey?lodging_session_id=<?=$idLodgingSession?>">Lien vers le sondage</a>
                             <?php foreach ($surveyContent as $survey):?>
                             <p><?=$survey?></p>
                             <?php endforeach;?>

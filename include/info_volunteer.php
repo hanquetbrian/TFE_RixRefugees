@@ -5,11 +5,15 @@ if(!isset($_GET['facebook_id'])) {
 }
 
 require_once "../php_function/db_connection.php";
+require_once "../php_function/utils.php";
+
 $sql = "
-    SELECT facebook_id, result, survey_id, survey_name
-        FROM rix_refugee.Survey_result
-        LEFT JOIN rix_refugee.Survey on survey_id = Survey.id
-        WHERE facebook_id = ?;
+    SELECT facebook_id, result, lodging_name, date_from, date_to, Survey_result.survey_id
+    FROM rix_refugee.Survey_result
+    INNER JOIN rix_refugee.Survey on survey_id = Survey.id
+    INNER JOIN Lodging_session ON Lodging_session.survey_id = Survey.id
+    INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
+    WHERE facebook_id = ?;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -17,7 +21,7 @@ $sth->execute([$_GET['facebook_id']]);
 $surveyResult = $sth->fetchAll(PDO::FETCH_ASSOC);
 $surveyNames = [];
 foreach ($surveyResult as $result) {
-    array_push($surveyNames, $result['survey_name']);
+    array_push($surveyNames, $result['lodging_name'] . ' du ' . formatStrDate($result['date_from']) . ' au ' . formatStrDate($result['date_to']));
 }
 $surveyNames = array_unique($surveyNames);
 
@@ -46,6 +50,11 @@ require_once 'header.php';
                 <h2 style="width: 50%; display: inline-block; padding: 1em .3em; margin-left: 1em; border-left: #6a85a7 solid 3px">Nom: <?=$volunteer['name']?></h2>
                 <div class="lodging-item">
                     <?php
+
+
+
+
+
                     foreach ($surveyNames as $survey) {
                         echo '<h3>'.$survey.'</h3>';
                         echo '<div class="ml-4">';

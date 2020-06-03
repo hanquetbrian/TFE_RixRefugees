@@ -72,7 +72,7 @@ include_once "../include/header.php";
                                     foreach ($options as $option) {
                                         echo '<div class="survey-form-check-group">';
                                         echo '<input class="survey-form-check" type="checkbox" disabled>';
-                                        echo '<input class="survey-form-control" type="text" name="survey_options" value="' . $option . '">';
+                                        echo '<input class="survey-form-control option" type="text" name="survey_options" value="' . $option . '">';
                                         echo '<span class="pl-3 remove-btn" onclick="removeEquipmentItem(this)"><i class=\'fas fa-times\'></i></span>';
                                         echo '</div>';
                                     }

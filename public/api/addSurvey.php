@@ -4,9 +4,7 @@ require_once "../../php_function/utils.php";
 
 $result = [];
 
-$survey_id = htmlspecialchars($_POST['id_survey']);
-$lodging_id = htmlspecialchars($_POST['lodging_id']);
-$title = htmlspecialchars($_POST['title']);
+$sessionId = htmlspecialchars($_POST['sessionId']);
 $description = htmlspecialchars($_POST['description']);
 $options = [];
 // TODO Send an error when there is no options
@@ -16,24 +14,37 @@ if(isset($_POST['options'])) {
     }
 }
 
+$sql = "
+SELECT id, survey_id 
+FROM rix_refugee.Lodging_session
+WHERE id = ?;
+";
+
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute([$sessionId]);
+$survey = $sth->fetchAll(PDO::FETCH_ASSOC);
+if(empty($survey)) {
+    header('Location: /');
+    exit(0);
+}
+
+$survey = $survey[0];
+$modify = isset($survey['survey_id']) ? true : false;
 
 // insert data in the database
 $dbh->beginTransaction();
 $sql="";
 $data=[];
-if($_POST['id_survey'] > 0) {
-    $sql = "UPDATE rix_refugee.Survey SET survey_name = :name, description = :desc, content = :content WHERE id = :id_survey; ";
+if($modify) {
+    $sql = "UPDATE rix_refugee.Survey SET description = :desc, content = :content WHERE id = :id_survey; ";
     $data = [
-        ':id_survey' => $survey_id,
-        ':name' => $title,
+        ':id_survey' => $survey['survey_id'],
         ':desc' => $description,
         ':content' => json_encode($options)
     ];
 } else {
-    $sql = "INSERT INTO rix_refugee.Survey (lodging_id, survey_name, description, content) VALUES (:lodging_id, :name, :desc, :content);";
+    $sql = "INSERT INTO rix_refugee.Survey (description, content) VALUES (:desc, :content);";
     $data = [
-        ':lodging_id' => $lodging_id,
-        ':name' => $title,
         ':desc' => $description,
         ':content' => json_encode($options)
     ];
@@ -42,13 +53,17 @@ if($_POST['id_survey'] > 0) {
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
 $sqlResult = $sth->execute($data);
-if(empty($survey_id) || $survey_id <= 0) {
-    $survey_id = $dbh->lastInsertId();
+
+//
+if(!$modify) {
+    $sql = "UPDATE rix_refugee.Lodging_session SET survey_id = ?;";
+
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sth->execute([$dbh->lastInsertId()]);
 }
 
 if($sqlResult) {
     $result['success'] = true;
-    $result['lastInsertId'] = $survey_id;
 } else {
     $result["error"]["type"] = "invalid request";
     $result["error"]["msg"] = "Could not create the survey";
