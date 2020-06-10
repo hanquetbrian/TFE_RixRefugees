@@ -51,6 +51,8 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
 </header>
+
+<?php if($AUTH->isCoordinator()): ?>
 <nav class="navbar navbar-expand-sm navbar-light sub-navbar">
     <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#nav"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +80,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
 </nav>
+<?php endif;?>
 
 <script>
     var url = window.location.href;

@@ -10,13 +10,12 @@ class Page
     private $auth;
     private $scripts = [];
     private $css = [];
-    private $access = [];
+    private $access;
     private $requiredParam = [];
     private $dbh;
 
     public const coordinator = 1;
     public const volunteer = 2;
-    public const other = 4;
 
     public const PARAM_NOTYPE = 0;
     public const PARAM_TEXT = 1;
@@ -49,7 +48,7 @@ class Page
      * @param null $dbh PDO should only be set for the type that required a database connection
      * @return false if you set an incorrect type
      */
-    public function addParam($name, $type, $dbh=null) {
+    public function addParam($name, $type=0, $dbh=null) {
         if ($type < 0 || $type > 7) {
             return false;
         }
@@ -99,37 +98,57 @@ class Page
 
     public function getFile() {
         if(!file_exists($this->file)) {
-            include '../error/404.html';
             return false;
+        }
+
+        // check if the user has access to the page
+        $hasAccess = false;
+        if(isset($this->auth)) {
+            if(!$this->auth->isConnected()) {
+                $this->auth->connectToFacebook();
+                exit();
+            }
+
+            // authorize volunteer
+            $access = $this->access;
+            $access -= Page::volunteer;
+            if($access >= 0) {
+                $this->access = $access;
+                $hasAccess = true;
+            }
+
+            // authorize coordinatoor
+            $access = $this->access;
+            $access -= Page::coordinator;
+            if($access >= 0) {
+                $this->access = $access;
+                $hasAccess = $this->auth->isCoordinator();
+            }
+
+            if (!$hasAccess) {
+                return false;
+            }
         }
 
         if(!empty($this->requiredParam)) {
             $error = false;
             foreach ($this->requiredParam as $param) {
                 if(!isset($_REQUEST[$param[0]])) {
-                    echo 'fuck';
                     $error = true;
-                    break;
+                    return false;
                 }
                 $_REQUEST[$param[0]] = htmlspecialchars($_REQUEST[$param[0]]);
                 switch ($param[1]) {
-//                public const PARAM_NOTYPE = 0;
-//                public const PARAM_TEXT = 1;
-//                public const PARAM_NUMBER = 2;
-//                public const PARAM_DATE = 3;
-//                public const PARAM_LIST = 4;
-//                public const PARAM_VALID_SESSION_ID = 5;
-//                public const PARAM_VALID_COORD_ID = 6;
-//                public const PARAM_VALID_VOLUNTEER_FACEBOOK_ID = 7;
-                    case 1:
-                    case 3:
-                    case 4:
+
+                    case Page::PARAM_TEXT:
+                    case Page::PARAM_DATE:
+                    case Page::PARAM_LIST:
                         $error = !is_string($param[0]);
                         break;
-                    case 2:
+                    case Page::PARAM_NUMBER:
                         $error = !is_numeric($param[0]);
                         break;
-                    case 5:
+                    case Page::PARAM_VALID_SESSION_ID:
                         $sql = "SELECT id FROM Lodging_session";
 
                         $sth = $this->dbh->query($sql);
@@ -146,7 +165,7 @@ class Page
                             }
                         }
                         break;
-                    case 6:
+                    case Page::PARAM_VALID_COORD_ID:
                         $sql = "SELECT id FROM Coordinator";
 
                         $sth = $this->dbh->query($sql);
@@ -163,7 +182,7 @@ class Page
                             }
                         }
                         break;
-                    case 7:
+                    case Page::PARAM_VALID_FACEBOOK_ID:
                         $sql = "SELECT facebook_id FROM Survey_result";
 
                         $sth = $this->dbh->query($sql);
@@ -182,10 +201,7 @@ class Page
                         break;
                 }
 
-                if($error) break;
-            }
-            if ($error) {
-                header('Location: /404');
+                if($error) return false;
             }
         }
 
@@ -203,6 +219,5 @@ class Page
     public function getScript() {
         return $this->scripts;
     }
-
 
 }

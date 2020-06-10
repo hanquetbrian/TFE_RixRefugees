@@ -5,6 +5,11 @@ if(!isset($page)) {
     return;
 }
 
+if(!$file = $page->getFile()) {
+    include "../error/404.html";
+    exit(0);
+}
+
 include 'header.php';
-include $page->getFile();
+include $file;
 include 'footer.php';
