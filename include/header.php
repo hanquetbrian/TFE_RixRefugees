@@ -13,6 +13,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 <!doctype html>
 <html lang="fr">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -42,7 +43,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
     <title><?= $page->getTitle() ?></title>
 </head>
 <body>
-
+<div class="main-content" style="min-height: 100vh; position: relative; padding-bottom: 5rem;">
 <header class="navbar navbar-expand-lg navbar-dark main-navbar">
     <div class="container">
         <a class="navbar-brand mr-auto" href="/">RixRefugee</a>
@@ -81,6 +82,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 </nav>
 <?php endif;?>
+
 
 <script>
     var url = window.location.href;

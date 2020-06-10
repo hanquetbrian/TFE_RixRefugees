@@ -3,6 +3,7 @@
         <div class="copyright">Copyright ©2020 All rights reserved | This is made by <a href="http://www.brianhanquet.be">Brian Hanquet</a></div>
     </div>
 </footer>
+</div>
 
 <script
         src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -17,6 +18,7 @@
 
 <script src="js/rix_refugee.js"></script>
 <script src="js/survey.js"></script>
+
 
 </body>
 </html>

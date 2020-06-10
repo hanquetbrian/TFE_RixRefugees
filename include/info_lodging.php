@@ -12,12 +12,13 @@ require_once "../php_function/utils.php";
 
 // Get lodging info
 $sql = "
-    SELECT lodging_name, date_from, date_to, address, nb_place, Coordinator.id AS coord_id, Coordinator.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments, Survey.id AS survey_id, Survey.description, Survey.content
+    SELECT lodging_name, date_from, date_to, address, nb_place, COUNT(DISTINCT H.id) AS nb_hosts, Coordinator.id AS coord_id, Coordinator.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments, Survey.id AS survey_id, Survey.description, Survey.content
     FROM rix_refugee.Lodging_session
     INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
     LEFT JOIN Coordinator on Lodging_session.coordinator_id = Coordinator.id
     LEFT JOIN Lodging_equipment ON Lodging.id = Lodging_equipment.lodging_id
     LEFT JOIN Survey ON Survey.id = Lodging_session.survey_id
+    LEFT JOIN Hosts H on Lodging_session.id = H.lodging_session_id
     WHERE Lodging_session.id = ?;
 ";
 
@@ -53,7 +54,7 @@ $imgSrc = 'img/house.jpg';
                         <ul class="info_lodging">
                             <li>Date: <?= formatStrDate($lodgings['date_from'])?> au <?=formatStrDate($lodgings['date_to'])?></li>
                             <li>Coordinateur: <a href="info_coordinator?coord_id=<?=$lodgings['coord_id']?>"><?=$lodgings['coord_name']?></a></li>
-                            <li>Nombre de places disponibles: <?= $lodgings['nb_place'] ?></li>
+                            <li>Nombre de places disponibles: <?= $lodgings['nb_hosts'] ?> / <?=$lodgings['nb_place']?></li>
                             <li class="address"><?= $lodgings['address'] ?></li>
                         </ul>
                     </div>

@@ -2,7 +2,7 @@
 require_once '../php_function/utils.php';
 
 $sql = "
-    SELECT Hosts.id, lodging_name, date_from, date_to, name, comment, lodging_session_id
+    SELECT Hosts.id, lodging_name, date_from, date_to, name, comment, Lodging_session.id AS lodging_session_id
     FROM rix_refugee.Lodging_session
     LEFT JOIN Hosts ON Lodging_session.id = Hosts.lodging_session_id
     LEFT JOIN Lodging on Lodging_session.lodging_id = Lodging.id
@@ -25,6 +25,7 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
             <div class="modal-body">
                 <form id="addHostForm">
                     <div class="form-group">
+                        <input id="lodging_session_id" name="lodging_session_id" type="hidden" value="<?=$hosts[0]['lodging_session_id']?>">
                         <label for="inputHostName">Nom de la personne hébergé:</label>
                         <input type="text" class="form-control" id="inputHostName" required>
                         <label for="inputComment">Comment:</label>
@@ -43,29 +44,28 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
 <main>
     <section>
         <div class="container mt-5">
-            <h2><?=$hosts[0]['lodging_name']?> du <?= formatStrDate($hosts[0]['date_from'])?> au <?=formatStrDate($hosts[0]['date_to'])?></h2>
+            <h2><a style="color: #5a718c" href="/info_lodging?lodging_session_id=<?=$hosts[0]['lodging_session_id']?>"><?=$hosts[0]['lodging_name']?> du <?= formatStrDate($hosts[0]['date_from'])?> au <?=formatStrDate($hosts[0]['date_to'])?></a></h2>
             <hr>
             <div class="listLodging">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addHost">Ajouter un hébergeur</button>
                 <h3>Liste des hébergeurs</h3>
                 <?php if(sizeof($hosts) > 1) :?>
                 <div class="lodging-item">
-                    <?php
+                    <div class="row" style="background-color: rgba(173,173,173,0.85); padding: 0.5em 0; margin-bottom: 0.5em;border-radius: 3px">
+                        <div class="col">Nom</div>
+                        <div class="col">Commentaire</div>
+                    </div>
+                    <?php foreach ($hosts as $host) :?>
+                        <div class="mb-3 row">
 
-                    foreach ($surveyNames as $survey) {
-                        echo '<h3>'.$survey.'</h3>';
-                        echo '<div class="ml-4">';
-                        foreach ($surveyResult as $result) {
-                            if($result['survey_name'] == $survey) {
-                                $contents = json_decode($result['result']);
-                                foreach ($contents as $content) {
-                                    echo '<p>'.$content.'</p>';
-                                }
-                            }
-                        }
-                        echo '</div>';
-                    }
-                    ?>
+                            <div class="col">
+                                <span><?=$host['name']?></span>
+                            </div>
+                            <div class="col">
+                                <span><?=$host['comment']?></span>
+                            </div>
+                        </div>
+                    <?php endforeach;?>
                 </div>
                 <?php else:?>
                     <p>Aucun hébergeur n'a été enregistré pour le moment. Veuillez les ajouter en cliquant sur le bouton adéquat.</p>

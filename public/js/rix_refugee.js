@@ -19,7 +19,8 @@ $(document).ready(function () {
 
     // Action to perform when the add lodging button is pressed.
     $("#addLodgingButton").click(function () {
-        if(!checkAllInput($("#addLodgingForm"))) {
+        let addLodgingForm = $("#addLodgingForm");
+        if(!checkAllInput(addLodgingForm)) {
             let equipments = [];
             $("#listEquipments ul li.equipment").each(function () {
                 equipments.push($(this).text());
@@ -55,12 +56,14 @@ $(document).ready(function () {
 
     // Action to perform when the add host button is pressed.
     $("#addHostgButton").click(function () {
-        if(!checkAllInput($("#addHostForm"))) {
+        let addHostForm = $("#addHostForm");
+        if(!checkAllInput(addHostForm)) {
             let data = {
                 name: $('#inputHostName').val(),
-                comment: $('#inputComment').val()
+                comment: $('#inputComment').val(),
+                id_session: $('#lodging_session_id').val()
             };
-            $.ajax( "/api/addLodging.php", {
+            $.ajax( "/api/addHost.php", {
                 type: "POST",
                 data: data
             }).done(function (returned_data) {
@@ -71,10 +74,10 @@ $(document).ready(function () {
                     alert('error: ' + result.error.msg);
                 }
                 if(result.success){
-                    addLodgingForm.find("input").each(function () {
+                    //TODO refresh the list when an host is added
+                    addHostForm.find("input,textarea").each(function () {
                         this.value = "";
                     });
-                    $('#addLodging').modal('hide');
                 }
             });
         }
