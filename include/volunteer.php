@@ -22,7 +22,6 @@ try {
     die(0);
 }
 
-require_once 'header.php';
 ?>
     <main>
         <section>
@@ -48,7 +47,3 @@ require_once 'header.php';
             </div>
         </section>
     </main>
-
-<?php
-require_once 'footer.php';
-?>

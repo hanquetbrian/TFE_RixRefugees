@@ -30,6 +30,11 @@ switch ($url) {
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);
         include "../include/template.php";
         break;
+    case "/hosts":
+        $page = new Page('include/hosts.php', "RixRefugee hébergeur", $AUTH, Page::coordinator);
+        $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);
+        include "../include/template.php";
+        break;
     case "/survey":
         $page = new Page('include/survey.php', "RixRefugee Survey", $AUTH, Page::volunteer);
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);

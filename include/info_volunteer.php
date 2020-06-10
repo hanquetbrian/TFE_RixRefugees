@@ -39,7 +39,7 @@ try {
 
 
 $title = "RixRefugee " . $volunteer['name'];
-require_once 'header.php';
+
 ?>
 
 <main>

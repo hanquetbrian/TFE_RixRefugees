@@ -19,8 +19,6 @@ $sth->execute([$sessionId]);
 $survey = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 $options = json_decode($survey["content"]);
 
-
-require_once "../include/header.php";
 ?>
 
 <main>
@@ -72,7 +70,3 @@ require_once "../include/header.php";
         </div>
     </section>
 </main>
-
-<?php
-include_once "../include/footer.php"
-?>

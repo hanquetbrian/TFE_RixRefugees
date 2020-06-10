@@ -1,3 +1,9 @@
+<footer>
+    <div class="container text-center">
+        <div class="copyright">Copyright ©2020 All rights reserved | This is made by <a href="http://www.brianhanquet.be">Brian Hanquet</a></div>
+    </div>
+</footer>
+
 <script
         src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="

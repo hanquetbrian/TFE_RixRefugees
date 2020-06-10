@@ -11,7 +11,6 @@ $sth->execute([]);
 $coordinators = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 $title = "RixRefugee demande coordinateur";
-require_once 'header.php';
 
 ?>
 <main>
@@ -68,6 +67,3 @@ require_once 'header.php';
             </div>
         </div>
     </div>
-<?php
-require_once 'footer.php';
-?>

@@ -32,7 +32,6 @@ if(!empty($survey['content'])) {
     $modify = true;
 }
 
-include_once "../include/header.php";
 ?>
 
     <main>
@@ -91,7 +90,3 @@ include_once "../include/header.php";
             </div>
         </section>
     </main>
-
-<?php
-include_once "../include/footer.php"
-?>

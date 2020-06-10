@@ -19,8 +19,6 @@ $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute();
 $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-include_once "../include/header.php";
-
 ?>
 
     <main>
@@ -125,7 +123,3 @@ include_once "../include/header.php";
 
 
     </main>
-
-<?php
-include_once "../include/footer.php"
-?>

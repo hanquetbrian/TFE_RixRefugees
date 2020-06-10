@@ -30,10 +30,7 @@ $surveyContent = json_decode($lodgings["content"]);
 $imgSrc = 'img/house.jpg';
 
 ?>
-<?php
-include_once "../include/header.php";
 
-?>
 
     <main>
         <div class="d-none d-sm-block" id="titlePage">
@@ -65,6 +62,9 @@ include_once "../include/header.php";
                         <button class="btn btn-primary">
                             Renouveler l'hébergement
                         </button>
+                        <a href="/hosts?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-primary mt-5">
+                            Listes des hébergeurs
+                        </a>
                     </div>
                 </div>
                 <?php if(!empty($equipments)):?>
@@ -101,7 +101,3 @@ include_once "../include/header.php";
             </div>
         </section>
     </main>
-
-<?php
-include_once "../include/footer.php"
-?>
