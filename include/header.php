@@ -2,7 +2,7 @@
 require_once '../php_function/db_connection.php';
 $sql = "
     SELECT id, name
-    FROM rix_refugee.validating_coordinator;
+    FROM rix_refugee.Coordinator;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

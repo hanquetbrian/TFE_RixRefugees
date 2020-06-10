@@ -71,12 +71,12 @@ switch ($url) {
         $page->addParam("facebook_id", Page::PARAM_VALID_FACEBOOK_ID, $dbh);
         include "../include/template.php";
         break;
+    case "/ask_access":
+        $page = new Page('include/ask_access.php', "Demande d'accès");
+        include "../include/template.php";
+        break;
     case "/fb-callback":
         include "../php_function/fb-callback.php";
-        break;
-
-    case "/ask_access":
-        include "../php_function/ask_access.php";
         break;
     case "/policy":
         include "../policy/privacy_policy.html";
