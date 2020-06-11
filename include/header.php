@@ -1,8 +1,8 @@
 <?php
 require_once '../php_function/db_connection.php';
 $sql = "
-    SELECT id, name
-    FROM rix_refugee.Coordinator;
+    SELECT id
+    FROM rix_refugee.Coordinator_request;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

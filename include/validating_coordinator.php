@@ -1,9 +1,9 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, added_day
-    FROM rix_refugee.validating_coordinator
-    order by added_day DESC;
+    SELECT id, facebook_id, request, name, small_picture_url, picture_url, email, telephone, request_date
+    FROM rix_refugee.Coordinator_request
+    order by request_date DESC;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -28,10 +28,11 @@ $title = "RixRefugee demande coordinateur";
                     <h2>Liste des personnes qui ont demandés à être coordinateur</h2>
                     <div class="lodging-item">
                         <?php foreach ($coordinators as $coordinator):?>
-                        <div class="lodgingOption-item row justify-content-between pr-5">
+                        <div class="lodgingOption-item row justify-content-between" style="background-color: #f2f2f2; padding: 1em">
                             <div class="pl-3">
                                 <?php if(!empty($coordinator['small_picture_url'])){echo '<img alt="pic_of_'.$coordinator['name'].'" src="'.$coordinator['small_picture_url'].'">';}?>
-                                <span><a href="info_coordinator?coord_id=<?=$coordinator['id']?>"><?=$coordinator['name']?></a></span>
+                                <span><?=$coordinator['name']?></span>
+                                <p><?=$coordinator['request']?></p>
                             </div>
                           <div>
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#askAuthorize" onclick="$('#coordName').text('<?=$coordinator['name']?>')">Autoriser</button>

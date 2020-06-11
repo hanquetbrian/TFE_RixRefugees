@@ -89,7 +89,7 @@ class Auth
         // Check if the user is authorized to access the page
         $sql = "
             SELECT id, name, facebook_id
-            FROM rix_refugee.valid_coordinator
+            FROM rix_refugee.Coordinator
             WHERE facebook_id = :facebook_id
         ";
 

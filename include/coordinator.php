@@ -1,7 +1,7 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, valid, added_day
+    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, added_day
     FROM rix_refugee.Coordinator;
     ";
 
@@ -10,16 +10,14 @@ $sth->execute([]);
 $coordsList = $sth->fetchAll(PDO::FETCH_ASSOC);
 array_shift($coordsList);
 
-$waitingCoords = [];
-$validCoords = [];
-// Separate the valid and not valid coordinator
-foreach ($coordsList as &$coord) {
-    if(isset($coord) && $coord['valid'] == 0) {
-        array_push($waitingCoords, $coord);
-    } elseif (isset($coord)) {
-        array_push($validCoords, $coord);
-    }
-}
+$sql = "
+    SELECT facebook_id, request, name, small_picture_url, picture_url, email, telephone, request_date
+    FROM rix_refugee.Coordinator_request;
+    ";
+
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute([]);
+$waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
     <main>
@@ -42,7 +40,7 @@ foreach ($coordsList as &$coord) {
 
                     <h2>Liste des coordinateurs</h2>
                     <div class="lodging-item">
-                        <?php foreach ($validCoords as $validCoord):?>
+                        <?php foreach ($coordsList as $validCoord):?>
                         <div>
                             <img alt="pic_of_<?=$validCoord['name']?>" src="<?=$validCoord['small_picture_url']?>">
                             <span><a href="info_coordinator?coord_id=<?=$validCoord['id']?>"><?=$validCoord['name']?></a></span>

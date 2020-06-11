@@ -1,13 +1,17 @@
 <?php
 if(isset($_POST['submit'])) {
     $sql = "
-            INSERT INTO rix_refugee.Coordinator_request (facebook_id, request, request_date)
-            VALUES (:facebook_id, :request, :request_date)
+            INSERT INTO rix_refugee.Coordinator_request (facebook_id, request, name, small_picture_url, picture_url, email, request_date)
+            VALUES (:facebook_id, :request, :name, :small_picture_url, :picture_url, :email, :request_date)
         ";
     $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sth->execute([
         ':facebook_id' => $AUTH->getFbId(),
         ':request' => $_POST['coord_req'],
+        ':name' => $AUTH->getName(),
+        ':small_picture_url' => $AUTH->getFbSmallProfilePic(),
+        ':picture_url' => $AUTH->getFbProfilePic(),
+        ':email' => $AUTH->getEmail(),
         ':request_date' => date('Y-m-d H:i:s')
     ]);
 }
