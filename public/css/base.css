@@ -178,6 +178,7 @@ img.thumbnail {
     border-bottom: 1px #bfbfbf solid;
     margin-bottom: 1em;
     background-color: inherit;
+    width: 80%;
 }
 
 .survey-form-control:hover {
@@ -193,11 +194,11 @@ img.thumbnail {
 textarea.survey-form-control {
     overflow: hidden;
     padding: 0;
-    width: 80%;
+    width: 100%;
 }
 
 .survey-form-check-group {
-    width: 60%;
+    width: 80%;
 }
 
 .survey-form-check {

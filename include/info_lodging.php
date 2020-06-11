@@ -12,21 +12,33 @@ require_once "../php_function/utils.php";
 
 // Get lodging info
 $sql = "
-    SELECT lodging_name, date_from, date_to, address, nb_place, COUNT(DISTINCT H.id) AS nb_hosts, Coordinator.id AS coord_id, Coordinator.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments, Survey.id AS survey_id, Survey.description, Survey.content
-    FROM rix_refugee.Lodging_session
-    INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
-    LEFT JOIN Coordinator on Lodging_session.coordinator_id = Coordinator.id
-    LEFT JOIN Lodging_equipment ON Lodging.id = Lodging_equipment.lodging_id
-    LEFT JOIN Survey ON Survey.id = Lodging_session.survey_id
-    LEFT JOIN Hosts H on Lodging_session.id = H.lodging_session_id
-    WHERE Lodging_session.id = ?;
+SELECT lodging_name, date_from, date_to, address, nb_place, COUNT(DISTINCT Hosts.id) AS nb_hosts, Coordinator.id AS coord_id, Coordinator.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments
+FROM Lodging_session
+INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
+LEFT JOIN Coordinator on Lodging_session.coordinator_id = Coordinator.id
+LEFT JOIN Lodging_equipment ON Lodging.id = Lodging_equipment.lodging_id
+LEFT JOIN Hosts on Lodging_session.id = lodging_session_id
+WHERE Lodging_session.id = ?;
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$idLodgingSession]);
 $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 $equipments = json_decode($lodgings["equipments"]);
-$surveyContent = json_decode($lodgings["content"]);
+
+
+// Get survey info
+$sql = "
+SELECT description, option_name
+FROM Lodging_session
+INNER JOIN Survey ON survey_id = Survey.id
+LEFT JOIN Survey_options ON Survey_options.survey_id = Survey.id
+WHERE Lodging_session.id = ?
+";
+
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute([$idLodgingSession]);
+$surveyOptions = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 $imgSrc = 'img/house.jpg';
 
@@ -82,17 +94,17 @@ $imgSrc = 'img/house.jpg';
                 <div class="event">
                     <h3>Sondage pour les bébévoles</h3>
                     <div class="listLodging">
-                    <?php if(empty($surveyContent)): ?>
+                    <?php if(empty($surveyOptions)): ?>
                         <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Ajouter un sondage</a>
                     <?php else:?>
                         <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Modifier le sondage</a>
 
                         <h4 style="margin: 1em 0; text-decoration: underline">Description</h4>
-                        <p><?=$lodgings['description']?></p>
+                        <p><?=$surveyOptions[0]['description']?></p>
                         <div class="lodging-item">
                             <a href="/survey?lodging_session_id=<?=$idLodgingSession?>">Lien vers le sondage</a>
-                            <?php foreach ($surveyContent as $survey):?>
-                            <p><?=$survey?></p>
+                            <?php foreach ($surveyOptions as $option):?>
+                            <p><?=$option['option_name']?></p>
                             <?php endforeach;?>
                         </div>
                         <?php endif;?>
