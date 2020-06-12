@@ -21,8 +21,17 @@ $(document).ready(function () {
     $('#btn_add_survey').click(function (e) {
         e.preventDefault();
         let options = [];
+
         $("#listOption input.option").each(function () {
-            options.push($(this).val());
+            let id = -1;
+            if(typeof $(this).data('option_id') != 'undefined') {
+                id = $(this).data('option_id');
+            }
+
+            options.push({
+                id: id,
+                name: $(this).val()
+            });
         });
         let sessionId = $('#lodging_session_id').val();
         let description = $("#survey-description").val();
@@ -38,11 +47,11 @@ $(document).ready(function () {
             } else {
                 $("#survey.alert").remove();
                 $('#survey').prepend("<div class=\"alert alert-danger\" role=\"alert\">\n" +
-                    "Erreur lors de l'ajout du sondage" +
+                    "Erreur lors de l'ajout du sondage: " + data.error['msg'] +
                     "</div>")
             }
         });
-        // end ajax
+        //end ajax
     });
 
     $('form[action*="saveSurveyResult.php"]').submit(function (e) {

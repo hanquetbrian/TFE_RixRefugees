@@ -26,6 +26,7 @@ SELECT comment, survey_option_id
 FROM Volunteer_request
 LEFT JOIN Result_list ON Result_list.volunteer_request_id = Volunteer_request.id
 WHERE facebook_id = :facebook_id AND survey_id = :survey_id
+ORDER BY survey_option_id 
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -46,9 +47,13 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         <hr class="headerSep">
     </div>
 
+
     <section>
         <div class="container">
             <div id="survey">
+                <?php if($AUTH->isCoordinator()): ?>
+                <a href="/add_survey?lodging_session_id=<?=$sessionId?>" class="btn btn-secondary">Modifier le sondage</a>
+                <?php endif;?>
                 <form action="/api/saveSurveyResult.php?id_survey=<?=$survey[0]['survey_id']?>" method="post">
                     <div class="survey-from-group survey-form-header">
                         <div>
@@ -91,9 +96,7 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
                         <?php endforeach;?>
 
                         <label class="form-check-label" for="survey-comment">Commentaire: </label><br>
-                        <textarea class="form-control m-3" id="survey-comment" rows="5" name="comment">
-
-                        </textarea>
+                        <textarea class="form-control m-3" id="survey-comment" rows="5" name="comment"><?=isset($result[0]['comment'])?$result[0]['comment']:''?></textarea>
                         <button id="btn_save_survey_result" type="submit" class="btn btn-primary">Envoyer</button>
                     </div>
                 </form>

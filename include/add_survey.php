@@ -59,7 +59,7 @@ if(isset($survey[0]['survey_id'])) {
                                     foreach ($survey as $option) {
                                         echo '<div class="survey-form-check-group">';
                                         echo '<input class="survey-form-check" type="checkbox" disabled>';
-                                        echo '<input class="survey-form-control option" type="text" name="survey_options" value="' . $option['option_name'] . '">';
+                                        echo '<input class="survey-form-control option" type="text" name="survey_options" value="' . $option['option_name'] . '" data-option_id="' . $option['option_id'] . '">';
                                         echo '<span class="pl-3 remove-btn" onclick="removeEquipmentItem(this)"><i class=\'fas fa-times\'></i></span>';
                                         echo '</div>';
                                     }
