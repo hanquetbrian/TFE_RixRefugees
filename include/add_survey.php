@@ -27,9 +27,9 @@ if(isset($survey[0]['survey_id'])) {
         <div class="d-none d-sm-block" id="titlePage">
             <div class="container">
                 <?php if($modify): ?>
-                <h1>Modification du sondage</h1>
+                <h1>Modification des demandes</h1>
                 <?php else: ?>
-                <h1>Création d'un sondage</h1>
+                <h1>Demandes de bénévoles</h1>
                 <?php endif;?>
             </div>
 

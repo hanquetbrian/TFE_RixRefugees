@@ -69,7 +69,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
                     <a class="nav-link" href="volunteer">Bénévoles</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><strike>Niveau stock</strike></a>
+                    <a class="nav-link" href="#">Inventaires</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/coordinator">

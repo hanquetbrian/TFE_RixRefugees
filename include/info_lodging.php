@@ -29,7 +29,7 @@ $equipments = json_decode($lodgings["equipments"]);
 
 // Get survey info
 $sql = "
-SELECT description, option_name
+SELECT Survey.id, description, Survey_options.id AS option_id, option_name
 FROM Lodging_session
 INNER JOIN Survey ON survey_id = Survey.id
 LEFT JOIN Survey_options ON Survey_options.survey_id = Survey.id
@@ -39,6 +39,35 @@ WHERE Lodging_session.id = ?
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$idLodgingSession]);
 $surveyOptions = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+// Get comments
+$sql = "
+SELECT facebook_id, comment
+FROM Volunteer_request
+WHERE survey_id = ?
+";
+
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute([$surveyOptions[0]['id']]);
+$surveyVolunteer = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+// Get list of votes
+$sql = "
+SELECT Survey_options.id, option_name, COUNT(Result_list.id) AS nb_vote, GROUP_CONCAT(facebook_id) AS facebook_id_list
+FROM Survey_options
+LEFT JOIN Result_list ON Result_list.survey_option_id = Survey_options.id
+LEFT JOIN Volunteer_request ON Volunteer_request.id = Result_list.volunteer_request_id
+WHERE Survey_options.survey_id = ?
+GROUP BY Survey_options.id, option_name
+";
+
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute([$surveyOptions[0]['id']]);
+
+$votes =  [];
+while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+    $votes[$row['id']] = $row;
+}
 
 $imgSrc = 'img/house.jpg';
 
@@ -89,28 +118,98 @@ $imgSrc = 'img/house.jpg';
                     <?php endforeach;?>
                 </ul>
                 <?php endif; ?>
-<!--                <button class="btn btn-primary">Voir le stock</button>-->
+
+                <?php foreach ($votes as $vote):?>
+                <!-- Modal -->
+                <div class="modal fade" id="option<?=$vote['id']?>" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <?php
+                                    $volunteers_id = explode(',', $vote['facebook_id_list']);
+                                    $fb_object = $AUTH->getFbObject();
+                                    foreach ($volunteers_id as $volunteer_id) {
+                                        try {
+                                            $response = $fb_object->get($volunteer_id . '/?fields=picture,name,id', $AUTH->getFbAccessToken());
+                                            $volunteer = $response->getGraphUser();
+
+                                            $picture_url = $fb_object->get($volunteer_id.'/picture?redirect=0&type=normal', $AUTH->getFbAccessToken())->getGraphNode()['url'];
+                                        } catch (Facebook\Exceptions\FacebookSDKException $e) {
+                                            break;
+                                        }
+                                        ?>
+                                        <div class="mb-3">
+                                            <img alt="pic_of_<?=$volunteer['name']?>" src="<?=$volunteer['picture']['url']?>">
+                                            <span><?=$volunteer['name']?></span>
+                                        </div>
+                                <?php
+                                    }
+                                ?>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach;?>
 
                 <div class="event">
-                    <h3>Sondage pour les bébévoles</h3>
+                    <h3>Demande de bénévoles</h3>
                     <div class="listLodging">
                     <?php if(empty($surveyOptions)): ?>
-                        <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Ajouter un sondage</a>
+                        <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Ajouter des demandes</a>
                     <?php else:?>
-                        <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Modifier le sondage</a>
+                        <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Modifier les demandes</a>
 
                         <h4 style="margin: 1em 0; text-decoration: underline">Description</h4>
                         <p><?=$surveyOptions[0]['description']?></p>
                         <div class="lodging-item">
-                            <a href="/survey?lodging_session_id=<?=$idLodgingSession?>">Lien vers le sondage</a>
+                            <div>
+                                <a href="/survey?lodging_session_id=<?=$idLodgingSession?>">Lien vers le sondage</a>
+                            </div>
                             <?php foreach ($surveyOptions as $option):?>
+                                <span style="font-size: 0.9em"><a href="" data-toggle="modal" <?php if($votes[$option['option_id']]['nb_vote'] > 0) {echo 'data-target="#option'.$option['option_id'].'"';} ?>><?=$votes[$option['option_id']]['nb_vote']?> bénévole(s)</a></span>
                             <p><?=$option['option_name']?></p>
+
                             <?php endforeach;?>
                         </div>
                         <?php endif;?>
                     </div>
                 </div>
 
+                <?php if(!empty($surveyVolunteer)):?>
+                <div>
+                    <h3>Commentaires</h3>
+                    <div class="listLodging">
+                        <?php
+                        $fb_object = $AUTH->getFbObject();
+
+                        foreach ($surveyVolunteer as $comment) {
+                            if(!empty($comment['comment'])) {
+                                try {
+                                    $response = $fb_object->get($comment['facebook_id'].'/?fields=name', $AUTH->getFbAccessToken());
+                                    $name = $response->getGraphUser()['name'];
+
+                                } catch (Facebook\Exceptions\FacebookSDKException $e) {
+                                    break;
+                                }
+                                ?>
+                                <div>
+                                    <p style="font-size: 1.2em; text-decoration: underline"><?=$name?></p>
+                                    <div class="lodging-item" style="margin: 0 2em; padding: 0.8em 0 0.1em 1.2em;">
+                                        <p><?=$comment['comment']?></p>
+                                    </div>
+
+                                </div>
+                        <?php
+                            }
+                        }?>
+
+
+                    </div>
+                </div>
+                <?php endif;?>
             </div>
         </section>
     </main>

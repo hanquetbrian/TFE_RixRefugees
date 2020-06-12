@@ -52,7 +52,7 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
         <div class="container">
             <div id="survey">
                 <?php if($AUTH->isCoordinator()): ?>
-                <a href="/add_survey?lodging_session_id=<?=$sessionId?>" class="btn btn-secondary">Modifier le sondage</a>
+                <a href="/add_survey?lodging_session_id=<?=$sessionId?>" class="btn btn-secondary">Modification des demandes</a>
                 <?php endif;?>
                 <form action="/api/saveSurveyResult.php?id_survey=<?=$survey[0]['survey_id']?>" method="post">
                     <div class="survey-from-group survey-form-header">
