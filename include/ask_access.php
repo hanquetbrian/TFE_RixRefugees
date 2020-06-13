@@ -1,17 +1,13 @@
 <?php
 if(isset($_POST['submit'])) {
     $sql = "
-            INSERT INTO rix_refugee.Coordinator_request (facebook_id, request, name, small_picture_url, picture_url, email, request_date)
-            VALUES (:facebook_id, :request, :name, :small_picture_url, :picture_url, :email, :request_date)
+            INSERT INTO rix_refugee.Coordinator_request (user_id, request, request_date)
+            VALUES (:user_id, :request, :request_date)
         ";
     $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sth->execute([
-        ':facebook_id' => $AUTH->getFbId(),
+        ':user_id' => $AUTH->getUserId(),
         ':request' => $_POST['coord_req'],
-        ':name' => $AUTH->getName(),
-        ':small_picture_url' => $AUTH->getFbSmallProfilePic(),
-        ':picture_url' => $AUTH->getFbProfilePic(),
-        ':email' => $AUTH->getEmail(),
         ':request_date' => date('Y-m-d H:i:s')
     ]);
 }
@@ -19,6 +15,7 @@ if(isset($_POST['submit'])) {
 $sql = "
             SELECT facebook_id, request, request_date
             FROM rix_refugee.Coordinator_request
+            INNER JOIN User on Coordinator_request.user_id = User.id
             WHERE facebook_id = :facebook_id
         ";
 
@@ -51,7 +48,5 @@ $login = $sth->fetchAll(PDO::FETCH_ASSOC);
 <!--            TODO modify the request to be coordinator-->
         <?php endif;?>
     </div>
-
-
 </section>
 </main>

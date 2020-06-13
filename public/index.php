@@ -7,7 +7,6 @@ require_once '../php_function/Auth.php';
 require_once '../php_function/Page.php';
 
 $AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
-
 $url = (isset($_GET["q"]) ? $_GET["q"] : "/");
 
 switch ($url) {

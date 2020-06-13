@@ -24,7 +24,9 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
     }
 
     $dbh->beginTransaction();
-    $sql = "SELECT * FROM Volunteer_request WHERE facebook_id = :facebook_id AND survey_id = :survey_id";
+    $sql = "SELECT * FROM Volunteer_request
+            INNER JOIN User on Volunteer_request.user_id = User.id
+            WHERE facebook_id = :facebook_id AND survey_id = :survey_id";
 
     $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sth->execute([
@@ -34,11 +36,11 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
     $current_request = $sth->fetchAll(PDO::FETCH_ASSOC);
 
     if(empty($current_request)) {
-        $sql = "INSERT INTO rix_refugee.Volunteer_request (facebook_id, survey_id, comment) VALUES (:facebook_id, :id_survey, :comment)";
+        $sql = "INSERT INTO rix_refugee.Volunteer_request (user_id, survey_id, comment) VALUES (:user_id, :id_survey, :comment)";
 
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sqlResult = $sth->execute([
-            ':facebook_id' => $AUTH->getFbId(),
+            ':user_id' => $AUTH->getUserId(),
             ':id_survey' => intval($_GET['id_survey']),
             ':comment' => $_POST['comment']
         ]);
@@ -60,12 +62,12 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
     $sql = "
         SELECT survey_option_id, volunteer_request_id FROM Volunteer_request
         LEFT JOIN Result_list ON Result_list.volunteer_request_id = Volunteer_request.id
-        WHERE facebook_id = :facebook_id AND survey_id = :survey_id";
+        WHERE user_id = :user_id AND survey_id = :survey_id";
 
     $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sth->execute([
         ':survey_id' => intval($_GET['id_survey']),
-        ':facebook_id' => $AUTH->getFbId()
+        ':user_id' => $AUTH->getUserId()
     ]);
     $listOfCurrentOptions = $sth->fetchAll(PDO::FETCH_ASSOC);
     $volunteer_request_id = $listOfCurrentOptions[0]['volunteer_request_id'];

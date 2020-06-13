@@ -1,8 +1,9 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, added_day
-    FROM rix_refugee.Coordinator;
+    SELECT Coordinator.id, name, small_picture_url, picture_url, facebook_id, email, telephone, added_day
+    FROM rix_refugee.Coordinator
+    INNER JOIN User on Coordinator.user_id = User.id;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -12,7 +13,8 @@ array_shift($coordsList);
 
 $sql = "
     SELECT facebook_id, request, name, small_picture_url, picture_url, email, telephone, request_date
-    FROM rix_refugee.Coordinator_request;
+    FROM rix_refugee.Coordinator_request
+    INNER JOIN User on Coordinator_request.user_id = User.id;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

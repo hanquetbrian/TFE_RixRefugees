@@ -7,9 +7,10 @@ if(!isset($_GET['coord_id'])) {
 
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, name, small_picture_url, picture_url, facebook_id, email, telephone, added_day
+    SELECT name, small_picture_url, picture_url, facebook_id, email, telephone, added_day
     FROM rix_refugee.Coordinator
-    where id = ?;
+    INNER JOIN User on Coordinator.user_id = User.id
+    where Coordinator.id = ?;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

@@ -14,7 +14,7 @@ class Auth
     private $fb_profile_pic;
     private $fb_email;
     private $fb_id;
-    private $coord_id;
+    private $user_id;
     private bool $isConnected = false;
     private bool $isCoordinator = false;
 
@@ -38,7 +38,7 @@ class Auth
             isset($_SESSION['fb_profile_pic'])&&
             isset($_SESSION['fb_email'])&&
             isset($_SESSION['fb_id'])&&
-            isset($_SESSION['coord_id'])&&
+            isset($_SESSION['user_id'])&&
             isset($_SESSION['isCoordinator'])) {
 
             $this->fb_access_token = new AccessToken($_SESSION['fb_access_token']);
@@ -47,7 +47,7 @@ class Auth
             $this->fb_profile_pic = $_SESSION['fb_profile_pic'];
             $this->fb_email = $_SESSION['fb_email'];
             $this->fb_id = $_SESSION['fb_id'];
-            $this->coord_id = $_SESSION['coord_id'];
+            $this->user_id = $_SESSION['user_id'];
             $this->isCoordinator = (bool)$_SESSION['isCoordinator'];
             $this->isConnected = true;
         }
@@ -59,8 +59,8 @@ class Auth
      * @param $dbh PDO Is a database connection
      */
     public function updatePrivateInfo($fb_access_token, $dbh) {
-
         $this->fb_access_token = $fb_access_token;
+
         try {
             $response = $this->fb_object->get('/me/?fields=picture,name,id,email', $this->fb_access_token);
             $user = $response->getGraphUser();
@@ -71,11 +71,23 @@ class Auth
             return;
         }
 
+        $sql = "
+            SELECT User.id, name, facebook_id, Coordinator.id as coord_id
+            FROM User
+            LEFT JOIN Coordinator on User.id = Coordinator.user_id
+            WHERE facebook_id = :facebook_id;
+        ";
+
+        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute([':facebook_id' => $user['id']]);
+        $login = $sth->fetchAll(PDO::FETCH_ASSOC);
+
         $this->name = $user['name'];
         $this->fb_small_profile_pic = $user['picture']['url'];
         $this->fb_profile_pic = $picture_url;
         $this->fb_email = $user['email'];
         $this->fb_id = $user['id'];
+        $this->user_id = $login[0]['id'];
         $this->isConnected = true;
 
         // Store the info in SESSION
@@ -85,29 +97,22 @@ class Auth
         $_SESSION['fb_profile_pic'] = $this->fb_profile_pic;
         $_SESSION['fb_email'] = $this->fb_email;
         $_SESSION['fb_id'] = $this->fb_id;
+        $_SESSION['user_id']=$this->user_id;
 
-        // Check if the user is authorized to access the page
-        $sql = "
-            SELECT id, name, facebook_id
-            FROM rix_refugee.Coordinator
-            WHERE facebook_id = :facebook_id
-        ";
 
-        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $sth->execute([':facebook_id' => $user['id']]);
-        $login = $sth->fetchAll(PDO::FETCH_ASSOC);
 
         if(empty($login)) {
-            $this->isCoordinator = false;
-            $_SESSION['isCoordinator'] = $this->isCoordinator;
-            $_SESSION['coord_id']="";
+            $sql = "INSERT INTO rix_refugee.User(name, small_picture_url, picture_url, email, facebook_id) VALUES (:name, :small_picture_url, :picture_url, :email, :facebook_id)";
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $sth->execute([
+                ':name' => $user['name'],
+                ':small_picture' => $user['picture']['url'],
+                ':picture' => $picture_url,
+                ':email' => $user['email'],
+                ':facebook_id' => $user['id']
+            ]);
         } else {
-            $this->isCoordinator = true;
-            $this->coord_id = $login[0]['id'];
-            $_SESSION['isCoordinator'] = $this->isCoordinator;
-            $_SESSION['coord_id'] = $this->coord_id;
-
-            $sql = "UPDATE rix_refugee.Coordinator SET name = :name, small_picture_url = :small_picture, picture_url = :picture, email = :email WHERE facebook_id = :facebook_id";
+            $sql = "UPDATE rix_refugee.User SET name = :name, small_picture_url = :small_picture, picture_url = :picture, email = :email WHERE facebook_id = :facebook_id";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $sth->execute([
                 ':name' => $user['name'],
@@ -117,7 +122,10 @@ class Auth
                 ':facebook_id' => $user['id']
             ]);
         }
+        // Check if the user is authorized to access the page
 
+        $this->isCoordinator = isset($login[0]['id']);
+        $_SESSION['isCoordinator'] = $this->isCoordinator;
     }
 
     public function disconnect(){
@@ -127,7 +135,7 @@ class Auth
         $_SESSION['fb_profile_pic'] = "";
         $_SESSION['fb_email'] = "";
         $_SESSION['fb_id'] = "";
-        $_SESSION['coord_id'] = "";
+        $_SESSION['user_id'] = "";
         $_SESSION['isCoordinator'] = "";
         session_unset();
 
@@ -137,7 +145,7 @@ class Auth
         unset($this->fb_profile_pic);
         unset($this->fb_email);
         unset($this->fb_id);
-        unset($this->coord_id);
+        unset($this->user_id);
         unset($this->isCoordinator);
         $this->isConnected = false;
     }
@@ -194,10 +202,10 @@ class Auth
      * @return string id of the login coordinator
      * @return bool return false if he isn't a coordinator
      */
-    public function getCoordId()
+    public function getUserId()
     {
         if($this->isCoordinator()) {
-            return $this->coord_id;
+            return $this->user_id;
         }
         return false;
     }
@@ -229,13 +237,23 @@ class Auth
      */
     public function connectToFacebook() {
         if(isset($_GET['auth']) && $_GET['auth'] == 'NqH6g7gLYr93WOO9gK0vF2sEy') {
-            $_SESSION['fb_access_token'] = "EAAIkDaLz82ABAFPIZB8SDqz3MheDNWHnk85VnzYoqA2DwyiZAymYvVIXyR9Jm6UDMwZBH8PlvVAex6xH7CIMGoVhiGdLYLWNR2naAkarzIEtcVQcgVBTXZAejJrmqgJSazWSoVxP3YlDBRPp4Ar7g9rlIt9OCU0iuxwxH2mYcZCE9VDZCWEVcu7XHl6u3ZBv3elfCn99qu8UiS5F2wGiz1NZCSALg6tOmR0Igk7hzWhVfQZDZD";
+//            try {
+//                $response = $this->fb_object->get("oauth/access_token?client_id=602590940492640&client_secret=0e764b471588d644fc75ad786007e3be&grant_type=client_credentials");
+//                $user = $response->getGraphUser();
+//
+//                $picture_url = $this->fb_object->get('/me/picture?redirect=0&type=normal', $this->fb_access_token)->getGraphNode()['url'];
+//            } catch (FacebookSDKException $e) {
+//                $this->isConnected = false;
+//                return;
+//            }
+
+            $_SESSION['fb_access_token'] = "602590940492640|BLtUyb8ecY4yvJEeeMljFe3vQOY";
             $_SESSION['fb_name'] = "Invité";
             $_SESSION['fb_small_profile_pic'] = "";
             $_SESSION['fb_profile_pic'] = "";
             $_SESSION['fb_email'] = "";
             $_SESSION['fb_id'] = "";
-            $_SESSION['coord_id'] = "";
+            $_SESSION['user_id'] = "";
             $_SESSION['isCoordinator'] = true;
             header('Location: /');
             exit();

@@ -1,8 +1,9 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, facebook_id, request, name, small_picture_url, picture_url, email, telephone, request_date
+    SELECT Coordinator_request.id, facebook_id, request, name, small_picture_url, picture_url, email, telephone, request_date
     FROM rix_refugee.Coordinator_request
+    INNER JOIN User on Coordinator_request.user_id = User.id
     order by request_date DESC;
     ";
 

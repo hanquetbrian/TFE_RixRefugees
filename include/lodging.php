@@ -2,7 +2,7 @@
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 $sql = "
-    SELECT Lodging_session.id, Lodging.lodging_name, Lodging_session.date_from, Lodging_session.date_to, Lodging.address, Lodging.nb_place, Coordinator.id AS coord_id, Coordinator.name AS coord_name, COUNT(Hosts.id) AS nb_hosts
+    SELECT Lodging_session.id, Lodging.lodging_name, Lodging_session.date_from, Lodging_session.date_to, Lodging.address, Lodging.nb_place, Coordinator.id AS coord_id, User.name AS coord_name, COUNT(Hosts.id) AS nb_hosts
     FROM (SELECT Lodging_session.lodging_id, MAX(Lodging_session.date_from) AS recent_date_from
             FROM Lodging_session
             GROUP BY lodging_id) AS latest_session
@@ -11,6 +11,7 @@ $sql = "
         Lodging_session.date_from = latest_session.recent_date_from
     INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
     LEFT JOIN Coordinator ON Lodging_session.coordinator_id = Coordinator.id
+    LEFT JOIN User on Coordinator.user_id = User.id
     LEFT JOIN Hosts on Lodging_session.id = Hosts.lodging_session_id
     GROUP BY id, lodging_name, date_from, date_to, address, nb_place, coord_id, coord_name
     ORDER BY date_from DESC

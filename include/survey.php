@@ -25,13 +25,13 @@ $sql = "
 SELECT comment, survey_option_id
 FROM Volunteer_request
 LEFT JOIN Result_list ON Result_list.volunteer_request_id = Volunteer_request.id
-WHERE facebook_id = :facebook_id AND survey_id = :survey_id
+WHERE user_id = :user_id AND survey_id = :survey_id
 ORDER BY survey_option_id 
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([
-    ':facebook_id' => $AUTH->getFbId(),
+    ':user_id' => $AUTH->getUserId(),
     ':survey_id' => $survey[0]['survey_id']
 ]);
 $result = $sth->fetchAll(PDO::FETCH_ASSOC);

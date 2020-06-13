@@ -12,10 +12,11 @@ require_once "../php_function/utils.php";
 
 // Get lodging info
 $sql = "
-SELECT lodging_name, date_from, date_to, address, nb_place, COUNT(DISTINCT Hosts.id) AS nb_hosts, Coordinator.id AS coord_id, Coordinator.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments
+SELECT lodging_name, date_from, date_to, address, nb_place, COUNT(DISTINCT Hosts.id) AS nb_hosts, Coordinator.id AS coord_id, User.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments
 FROM Lodging_session
 INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
 LEFT JOIN Coordinator on Lodging_session.coordinator_id = Coordinator.id
+LEFT JOIN User on Coordinator.user_id = User.id
 LEFT JOIN Lodging_equipment ON Lodging.id = Lodging_equipment.lodging_id
 LEFT JOIN Hosts on Lodging_session.id = lodging_session_id
 WHERE Lodging_session.id = ?;
@@ -42,8 +43,9 @@ $surveyOptions = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 // Get comments
 $sql = "
-SELECT facebook_id, comment
+SELECT name, comment
 FROM Volunteer_request
+INNER JOIN User on Volunteer_request.user_id = User.id
 WHERE survey_id = ?
 ";
 
@@ -53,7 +55,7 @@ $surveyVolunteer = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 // Get list of votes
 $sql = "
-SELECT Survey_options.id, option_name, COUNT(Result_list.id) AS nb_vote, GROUP_CONCAT(facebook_id) AS facebook_id_list
+SELECT Survey_options.id, option_name, COUNT(Result_list.id) AS nb_vote, GROUP_CONCAT(user_id) AS facebook_id_list
 FROM Survey_options
 LEFT JOIN Result_list ON Result_list.survey_option_id = Survey_options.id
 LEFT JOIN Volunteer_request ON Volunteer_request.id = Result_list.volunteer_request_id
@@ -127,23 +129,24 @@ $imgSrc = 'img/house.jpg';
                             <div class="modal-body">
                                 <?php
                                     $volunteers_id = explode(',', $vote['facebook_id_list']);
-                                    $fb_object = $AUTH->getFbObject();
-                                    foreach ($volunteers_id as $volunteer_id) {
-                                        try {
-                                            $response = $fb_object->get($volunteer_id . '/?fields=picture,name,id', $AUTH->getFbAccessToken());
-                                            $volunteer = $response->getGraphUser();
+                                // Get comments
+                                $sql = "
+                                    SELECT name, small_picture_url
+                                    FROM User
+                                    WHERE id = ?
+                                ";
+                                $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                                foreach ($volunteers_id as $volunteer_id) {
+                                    $sth->execute([$volunteer_id]);
+                                    $volunteer = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
-                                            $picture_url = $fb_object->get($volunteer_id.'/picture?redirect=0&type=normal', $AUTH->getFbAccessToken())->getGraphNode()['url'];
-                                        } catch (Facebook\Exceptions\FacebookSDKException $e) {
-                                            break;
-                                        }
-                                        ?>
-                                        <div class="mb-3">
-                                            <img alt="pic_of_<?=$volunteer['name']?>" src="<?=$volunteer['picture']['url']?>">
-                                            <span><?=$volunteer['name']?></span>
-                                        </div>
+                                    ?>
+                                    <div class="mb-3">
+                                        <img alt="pic_of_<?=$volunteer['name']?>" src="<?=$volunteer['small_picture_url']?>">
+                                        <span><?=$volunteer['name']?></span>
+                                    </div>
                                 <?php
-                                    }
+                                }
                                 ?>
                             </div>
                             <div class="modal-footer">
@@ -187,16 +190,9 @@ $imgSrc = 'img/house.jpg';
 
                         foreach ($surveyVolunteer as $comment) {
                             if(!empty($comment['comment'])) {
-                                try {
-                                    $response = $fb_object->get($comment['facebook_id'].'/?fields=name', $AUTH->getFbAccessToken());
-                                    $name = $response->getGraphUser()['name'];
-
-                                } catch (Facebook\Exceptions\FacebookSDKException $e) {
-                                    break;
-                                }
                                 ?>
                                 <div>
-                                    <p style="font-size: 1.2em; text-decoration: underline"><?=$name?></p>
+                                    <p style="font-size: 1.2em; text-decoration: underline"><?=$comment['name']?></p>
                                     <div class="lodging-item" style="margin: 0 2em; padding: 0.8em 0 0.1em 1.2em;">
                                         <p><?=$comment['comment']?></p>
                                     </div>

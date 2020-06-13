@@ -16,7 +16,7 @@ $dateTo = htmlspecialchars($_POST['date_to']);
 $name = htmlspecialchars($_POST['name']);
 $nbPlace = htmlspecialchars($_POST['nb_place']);
 $address = htmlspecialchars($_POST['address']);
-$coordinatorId = $AUTH->getCoordId();
+$coordinatorId = $AUTH->getUserId();
 
 if(!checkStrDate($dateFrom) or !checkStrDate($dateTo)) {
     //TODO Check that the date_to is after the date_from
