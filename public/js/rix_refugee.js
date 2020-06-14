@@ -55,7 +55,7 @@ $(document).ready(function () {
     });
 
     // Action to perform when the add host button is pressed.
-    $("#addHostgButton").click(function () {
+    $("#addHostButton").click(function () {
         let addHostForm = $("#addHostForm");
         if(!checkAllInput(addHostForm)) {
             let data = {
@@ -67,7 +67,6 @@ $(document).ready(function () {
                 type: "POST",
                 data: data
             }).done(function (returned_data) {
-                console.log(returned_data);
                 let result = JSON.parse(returned_data);
                 if(result.error) {
                     //TODO Change this to a message on top of the page

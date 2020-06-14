@@ -37,12 +37,14 @@ switch ($url) {
     case "/survey":
         $page = new Page('include/survey.php', "RixRefugee Survey", $AUTH, Page::volunteer);
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);
+        $page->addScript('js/survey.js');
         $title = "RixRefugee Survey";
         include "../include/template.php";
         break;
     case "/add_survey":
         $page = new Page('include/add_survey.php', "RixRefugee add survey", $AUTH, Page::coordinator);
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);
+        $page->addScript('js/survey.js');
         $title = "";
         include "../include/template.php";
         break;
@@ -72,6 +74,11 @@ switch ($url) {
         break;
     case "/ask_access":
         $page = new Page('include/ask_access.php', "Demande d'accès");
+        include "../include/template.php";
+        break;
+    case "/inventory_management":
+        $page = new Page('include/inventory_management.php', "RixRefugee Gestion des stocks", $AUTH, Page::coordinator);
+        $page->addScript('js/inventory.js');
         include "../include/template.php";
         break;
     case "/fb-callback":

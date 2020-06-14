@@ -20,7 +20,7 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="addHostTitle">Ajouter un hébergement</h4>
+                <h4 class="modal-title" id="addHostTitle">Ajouter un hébergeur</h4>
             </div>
             <div class="modal-body">
                 <form id="addHostForm">
@@ -28,15 +28,15 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
                         <input id="lodging_session_id" name="lodging_session_id" type="hidden" value="<?=$hosts[0]['lodging_session_id']?>">
                         <label for="inputHostName">Nom de la personne hébergé:</label>
                         <input type="text" class="form-control" id="inputHostName" required>
-                        <label for="inputComment">Comment:</label>
+                        <label for="inputComment">Commentaire:</label>
                         <textarea class="form-control" id="inputComment"></textarea>
 
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="addHostgButton">Save changes</button>
+                <button type="button" class="btn btn-primary" id="addHostButton">Ajouter</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
             </div>
         </div>
     </div>

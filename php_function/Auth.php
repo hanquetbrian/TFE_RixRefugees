@@ -50,6 +50,7 @@ class Auth
             $this->user_id = $_SESSION['user_id'];
             $this->isCoordinator = (bool)$_SESSION['isCoordinator'];
             $this->isConnected = true;
+
         }
     }
 
@@ -124,7 +125,7 @@ class Auth
         }
         // Check if the user is authorized to access the page
 
-        $this->isCoordinator = isset($login[0]['id']);
+        $this->isCoordinator = isset($login[0]['coord_id']);
         $_SESSION['isCoordinator'] = $this->isCoordinator;
     }
 
@@ -204,10 +205,7 @@ class Auth
      */
     public function getUserId()
     {
-        if($this->isCoordinator()) {
-            return $this->user_id;
-        }
-        return false;
+        return $this->user_id;
     }
 
     /**

@@ -45,7 +45,7 @@ $(document).ready(function () {
             if(data.success) {
                 window.location.href = "/survey?lodging_session_id=" + sessionId;
             } else {
-                $("#survey.alert").remove();
+                $("#survey .alert").remove();
                 $('#survey').prepend("<div class=\"alert alert-danger\" role=\"alert\">\n" +
                     "Erreur lors de l'ajout du sondage: " + data.error['msg'] +
                     "</div>")

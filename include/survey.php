@@ -6,11 +6,12 @@ $sessionId = $_GET["lodging_session_id"];
 //TODO add security and redirection
 
 $sql = "
-    SELECT Lodging_session.id, Lodging.lodging_name, date_from, date_to, Lodging_session.survey_id, Survey_options.id AS option_id, description, option_name, Coordinator.id as coord_id, Coordinator.name as coord_name
+    SELECT Lodging_session.id, Lodging.lodging_name, date_from, date_to, Lodging_session.survey_id, Survey_options.id AS option_id, description, option_name, Coordinator.id as coord_id, User.name as coord_name
     FROM rix_refugee.Lodging_session
     LEFT JOIN Survey ON Survey.id = Lodging_session.survey_id
     INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
     LEFT JOIN Coordinator ON Coordinator.id = Lodging_session.coordinator_id
+    INNER JOIN User on Coordinator.user_id = User.id
     LEFT JOIN Survey_options ON Survey.id = Survey_options.survey_id
     WHERE Lodging_session.id = ?;
 ";
