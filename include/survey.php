@@ -3,7 +3,6 @@ require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 
 $sessionId = $_GET["lodging_session_id"];
-//TODO add security and redirection
 
 $sql = "
     SELECT Lodging_session.id, Lodging.lodging_name, date_from, date_to, Lodging_session.survey_id, Survey_options.id AS option_id, description, option_name, Coordinator.id as coord_id, User.name as coord_name

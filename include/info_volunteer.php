@@ -1,44 +1,20 @@
 <?php
-if(!isset($_GET['facebook_id'])) {
-    header('Location: volunteer');
-    exit(0);
-}
-
-require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 
 $sql = "
-    SELECT facebook_id, result, lodging_name, date_from, date_to, Survey_result.survey_id
-    FROM rix_refugee.Survey_result
+    SELECT User.name, User.picture_url, lodging_name, date_from, date_to, Survey.id as survey_id, Survey.description, comment
+    FROM rix_refugee.Volunteer_request
+    INNER JOIN User on Volunteer_request.user_id = User.id
     INNER JOIN rix_refugee.Survey on survey_id = Survey.id
     INNER JOIN Lodging_session ON Lodging_session.survey_id = Survey.id
     INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
-    WHERE facebook_id = ?;
+    WHERE user_id = ?
+    ORDER BY date_to DESC ;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$_GET['facebook_id']]);
-$surveyResult = $sth->fetchAll(PDO::FETCH_ASSOC);
-$surveyNames = [];
-foreach ($surveyResult as $result) {
-    array_push($surveyNames, $result['lodging_name'] . ' du ' . formatStrDate($result['date_from']) . ' au ' . formatStrDate($result['date_to']));
-}
-$surveyNames = array_unique($surveyNames);
-
-$fb_object = $AUTH->getFbObject();
-
-try {
-    $response = $fb_object->get($surveyResult[0]['facebook_id'].'/?fields=picture,name,id,email', $AUTH->getFbAccessToken());
-    $volunteer = $response->getGraphUser();
-
-    $picture_url = $fb_object->get($surveyResult[0]['facebook_id'].'/picture?redirect=0&type=normal', $AUTH->getFbAccessToken())->getGraphNode()['url'];
-} catch (Facebook\Exceptions\FacebookSDKException $e) {
-    include '../error/50x.html';
-    die(0);
-}
-
-
-$title = "RixRefugee " . $volunteer['name'];
+$sth->execute([$_GET['volunteer_id']]);
+$surveyList = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -46,29 +22,42 @@ $title = "RixRefugee " . $volunteer['name'];
     <section>
         <div class="container mt-5">
             <div class="listLodging">
-                <img src="<?=$picture_url?>" alt="picture_of_<?=$volunteer['name']?>" width="100">
-                <h2 style="width: 50%; display: inline-block; padding: 1em .3em; margin-left: 1em; border-left: #6a85a7 solid 3px">Nom: <?=$volunteer['name']?></h2>
+                <img src="<?=$surveyList[0]['picture_url']?>" alt="picture_of_<?=$surveyList[0]['name']?>" width="100">
+                <h2 style="width: 50%; display: inline-block; padding: 1em .3em; margin-left: 1em; border-left: #6a85a7 solid 3px">Nom: <?=$surveyList[0]['name']?></h2>
                 <div class="lodging-item">
+                    <?php foreach ($surveyList as $survey):?>
+                    <h3><?=$survey['lodging_name']?> du <?= formatStrDate($survey['date_from'])?> au <?=formatStrDate($survey['date_to'])?></h3>
+
+                    <p><?=$survey['description']?></p>
+
                     <?php
+                        $sql = "
+                        SELECT option_name
+                        FROM rix_refugee.Volunteer_request
+                        INNER JOIN Result_list on Volunteer_request.id = Result_list.volunteer_request_id
+                        INNER JOIN Survey_options on Result_list.survey_option_id = Survey_options.id
+                        WHERE Volunteer_request.survey_id = ? and user_id = ?
+                        ";
 
+                        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                        $sth->execute([$survey['survey_id'], $_GET['volunteer_id']]);
+                        $surveyOptions = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
-                    foreach ($surveyNames as $survey) {
-                        echo '<h3>'.$survey.'</h3>';
                         echo '<div class="ml-4">';
-                        foreach ($surveyResult as $result) {
-                            if($result['survey_name'] == $survey) {
-                                $contents = json_decode($result['result']);
-                                foreach ($contents as $content) {
-                                    echo '<p>'.$content.'</p>';
-                                }
-                            }
+                        foreach ($surveyOptions as $surveyOption) {
+                            echo '<p> - '.$surveyOption['option_name'].'</p>';
                         }
                         echo '</div>';
-                    }
                     ?>
+                    <?php if(isset($survey['comment'])):?>
+                    <div style="background-color: #eeecea; padding: 1em; margin-bottom: 3em">
+                        <h4 style="font-size: 1.5em">Commentaires: </h4>
+                        <p><?=$survey['comment']?></p>
+                    </div>
+                    <?php endif;?>
+                    <hr>
+                    <?php endforeach;?>
+
                 </div>
             </div>
         </div>

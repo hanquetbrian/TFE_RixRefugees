@@ -15,6 +15,7 @@ switch ($url) {
 
             if($AUTH->isCoordinator()) {
                 $page = new Page('include/lodging.php', "RixRefugee", $AUTH, Page::coordinator);
+                $page->addScript('js/lodging.js');
                 include "../include/template.php";
             } else {
                 include "../error/access_denied.html";
@@ -32,6 +33,7 @@ switch ($url) {
     case "/hosts":
         $page = new Page('include/hosts.php', "RixRefugee hébergeur", $AUTH, Page::coordinator);
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);
+        $page->addScript('js/hosts.js');
         include "../include/template.php";
         break;
     case "/survey":
@@ -69,7 +71,7 @@ switch ($url) {
         break;
     case "/info_volunteer":
         $page = new Page('include/info_volunteer.php', "Bénévole", $AUTH, Page::coordinator);
-        $page->addParam("facebook_id", Page::PARAM_VALID_FACEBOOK_ID, $dbh);
+        $page->addParam("volunteer_id", Page::PARAM_VALID_VOLUNTER_USER_ID, $dbh);
         include "../include/template.php";
         break;
     case "/ask_access":
@@ -89,6 +91,9 @@ switch ($url) {
         break;
     case "/terms":
         include "../policy/terms_conditions.html";
+        break;
+    case "/501":
+        include "../error/50x.html";
         break;
     case "/404":
     default:

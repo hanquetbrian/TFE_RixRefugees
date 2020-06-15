@@ -24,7 +24,7 @@ class Page
     public const PARAM_LIST = 4;
     public const PARAM_VALID_SESSION_ID = 5;
     public const PARAM_VALID_COORD_ID = 6;
-    public const PARAM_VALID_FACEBOOK_ID = 7;
+    public const PARAM_VALID_VOLUNTER_USER_ID = 7;
 
     public const OPTION_SHOW_HEADER = 1;
 
@@ -182,21 +182,19 @@ class Page
                             }
                         }
                         break;
-                    case Page::PARAM_VALID_FACEBOOK_ID:
-                        $sql = "SELECT facebook_id FROM Survey_result";
+                    case Page::PARAM_VALID_VOLUNTER_USER_ID:
+                        $sql = "
+                        SELECT user_id
+                        FROM rix_refugee.Volunteer_request
+                        WHERE user_id = ?;
+                        ";
 
-                        $sth = $this->dbh->query($sql);
-                        $valid_session_id = $sth->fetchAll(PDO::FETCH_ASSOC);
+                        $sth = $this->dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                        $sth->execute([$_REQUEST[$param[0]]]);
+                        $result = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-                        $error = true;
-                        foreach ($valid_session_id as $id) {
-                            $id = $id['facebook_id'];
-                            $paramValue = $_REQUEST[$param[0]];
-
-                            if($id == $paramValue) {
-                                $error = false;
-                                break;
-                            }
+                        if(empty($result)) {
+                            return false;
                         }
                         break;
                 }

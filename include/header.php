@@ -59,7 +59,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
     <div class="container">
         <a class="navbar-brand mr-auto" href="/">RixRefugee</a>
         <span class="user-name"><?=$AUTH->getName()?></span>
-<!--        TODO add a logout button-->
+        <span style="margin-left: 10px"><a href="api/logout.php"><i class="fas fa-sign-out-alt" style="color:#d0cecc;"></i></a></span>
     </div>
 
 </header>
@@ -85,7 +85,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link" href="/coordinator">
                         <?php if(!empty($waitingCoords)): ?><span class="badge badge-secondary"><?=count($waitingCoords) ?></span><?php endif; ?>
-                        Coordinateur</a>
+                        Coordinateurs</a>
                 </li>
             </ul>
         </div>

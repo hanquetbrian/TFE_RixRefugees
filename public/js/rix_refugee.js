@@ -1,84 +1,25 @@
 $(document).ready(function () {
-    // Preview of the image when adding a new lodging
-    $("#upload-photo").change(function () {
-        previewImage(this, "previewFile")
+    let surveyUrl = $("#inputSurveyUrl");
+    surveyUrl.click(function () {
+        /* Select the text field */
+        this.select();
+        this.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        /* Alert the copied text */
+        $('#clipboard_return').text('Lien copié');
     });
 
-    // Add the equipment in the list when the user press ENTER
-    let inputTextAddEquipment = $('#inputListEquipments');
-    inputTextAddEquipment.keypress(function (event) {
-        // check if ENTER is pressed
-        if(event.which === 13) {
-            let val = this.value;
-            $('<li class="list-group-item equipment"></li>').text(val).append("<span class='float-right remove-btn' onclick='removeEquipmentItem(this)'><i class='fas fa-trash-alt'></i></span>")
-                .appendTo(inputTextAddEquipment.parent().parent("ul"));
-
-            inputTextAddEquipment.val("");
-        }
+    surveyUrl.focusout(function () {
+        $('#clipboard_return').text('');
     });
 
-    // Action to perform when the add lodging button is pressed.
-    $("#addLodgingButton").click(function () {
-        let addLodgingForm = $("#addLodgingForm");
-        if(!checkAllInput(addLodgingForm)) {
-            let equipments = [];
-            $("#listEquipments ul li.equipment").each(function () {
-                equipments.push($(this).text());
-            });
-
-            let data = {
-                name: $('#inputLodgingName').val(),
-                date_from: $('#inputLodgingDateFrom').val(),
-                date_to: $('#inputLodgingDateTo').val(),
-                nb_place: $('#inputMaxPlaces').val(),
-                address: $('#inputAddress').val(),
-                equipments: equipments
-            };
-            $.ajax( "/api/addLodging.php", {
-                type: "POST",
-                data: data
-            }).done(function (returned_data) {
-                console.log(returned_data);
-                let result = JSON.parse(returned_data);
-                if(result.error) {
-                    //TODO Change this to a message on top of the page
-                    alert('error: ' + result.error.msg);
-                }
-                if(result.success){
-                    addLodgingForm.find("input").each(function () {
-                        this.value = "";
-                    });
-                    $('#addLodging').modal('hide');
-                }
-            });
-        }
-    });
-
-    // Action to perform when the add host button is pressed.
-    $("#addHostButton").click(function () {
-        let addHostForm = $("#addHostForm");
-        if(!checkAllInput(addHostForm)) {
-            let data = {
-                name: $('#inputHostName').val(),
-                comment: $('#inputComment').val(),
-                id_session: $('#lodging_session_id').val()
-            };
-            $.ajax( "/api/addHost.php", {
-                type: "POST",
-                data: data
-            }).done(function (returned_data) {
-                let result = JSON.parse(returned_data);
-                if(result.error) {
-                    //TODO Change this to a message on top of the page
-                    alert('error: ' + result.error.msg);
-                }
-                if(result.success){
-                    //TODO refresh the list when an host is added
-                    addHostForm.find("input,textarea").each(function () {
-                        this.value = "";
-                    });
-                }
-            });
+    $("#createNewSession").click(function (e) {
+        let form = $("#newSessionForm");
+        if(checkAllInput(form)) {
+            e.preventDefault();
         }
     });
 

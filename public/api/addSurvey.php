@@ -16,13 +16,15 @@ WHERE id = ?;
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$sessionId]);
 $survey = $sth->fetchAll(PDO::FETCH_ASSOC);
+
 if(empty($survey)) {
     header('Location: /');
     exit(0);
 }
 
 $survey = $survey[0];
-$modify = isset($survey['survey_id']) ? true : false;
+
+$modify = isset($survey['survey_id']);
 
 // insert data in the database
 $dbh->beginTransaction();
@@ -34,16 +36,26 @@ if($modify) {
         ':id_survey' => $survey['survey_id'],
         ':desc' => $description
     ];
+
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sqlResult = $sth->execute($data);
 } else {
     $sql = "INSERT INTO rix_refugee.Survey (description) VALUES (:desc);";
     $data = [
         ':desc' => $description
     ];
+
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sqlResult = $sth->execute($data);
+
+    $survey['survey_id'] = $dbh->lastInsertId();
+    // assign the survey to the session
+    $sql = "UPDATE rix_refugee.Lodging_session SET survey_id = ? WHERE id = ?;";
+
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sth->execute([$survey['survey_id'], $sessionId]);
+
 }
-
-$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-
-$sqlResult = $sth->execute($data);
 
 // Add the option of the survey
 if(isset($_POST['options'])) {
@@ -98,15 +110,6 @@ if(isset($_POST['options'])) {
         $current_options = $sth->fetchAll(PDO::FETCH_ASSOC);
     }
 
-}
-
-
-// assign the survey to the session
-if(!$modify) {
-    $sql = "UPDATE rix_refugee.Lodging_session SET survey_id = ?;";
-
-    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $sth->execute([$dbh->lastInsertId()]);
 }
 
 if($sqlResult) {

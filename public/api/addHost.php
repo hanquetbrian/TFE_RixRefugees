@@ -13,7 +13,6 @@ if(!$AUTH->isCoordinator()) {
 
 $result = [];
 
-//TODO add more check
 $name = htmlspecialchars($_POST['name']);
 $comment = htmlspecialchars($_POST['comment']);
 $id_session = htmlspecialchars($_POST['id_session']);
@@ -35,4 +34,6 @@ $sth->closeCursor();
 $dbh->commit();
 
 $result["success"] = true;
+$result['name'] = $name;
+$result['comment'] = $comment;
 echo json_encode($result);

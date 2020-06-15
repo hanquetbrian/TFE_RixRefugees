@@ -63,7 +63,7 @@ function validateEdit(e) {
             $("#inventoryContainer .alert").remove();
             $('#inventoryContainer').prepend("<div class=\"alert alert-danger\" role=\"alert\">\n" +
                 "Erreur lors de la modification de l'objet: " + data.error['msg'] +
-                "</div>")
+                "</div>");
         }
     });
     //end ajax

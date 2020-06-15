@@ -1,14 +1,10 @@
 <?php
-
-//TODO Only access this page from Facebook
-
 $fb = $AUTH->getFbObject();
 
 $helper = $fb->getRedirectLoginHelper();
 try {
     $accessToken = $helper->getAccessToken();
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
-    //TODO increase security here (don't show error message)
 
     // When Graph returns an error
     echo 'Graph returned an error: ' . $e->getMessage();
@@ -30,6 +26,7 @@ if (! isset($accessToken)) {
         header('HTTP/1.0 400 Bad Request');
         echo 'Bad request';
     }
+    header('Location: /501');
     exit;
 }
 

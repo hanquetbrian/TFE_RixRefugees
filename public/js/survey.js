@@ -43,7 +43,7 @@ $(document).ready(function () {
         }).done(function (data) {
             data = JSON.parse(data);
             if(data.success) {
-                window.location.href = "/survey?lodging_session_id=" + sessionId;
+                window.location.href = "/info_lodging?lodging_session_id=" + sessionId + '#volunteer_request';
             } else {
                 $("#survey .alert").remove();
                 $('#survey').prepend("<div class=\"alert alert-danger\" role=\"alert\">\n" +

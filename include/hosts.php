@@ -46,26 +46,28 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
         <div class="container mt-5">
             <h2><a style="color: #5a718c" href="/info_lodging?lodging_session_id=<?=$hosts[0]['lodging_session_id']?>"><?=$hosts[0]['lodging_name']?> du <?= formatStrDate($hosts[0]['date_from'])?> au <?=formatStrDate($hosts[0]['date_to'])?></a></h2>
             <hr>
-            <div class="listLodging">
+            <div id="hosts_list" class="listLodging">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addHost">Ajouter un hébergeur</button>
                 <h3>Liste des hébergeurs</h3>
-                <?php if(sizeof($hosts) > 1) :?>
+                <?php if(isset($hosts[0]['id'])) :?>
                 <div class="lodging-item">
                     <div class="row" style="background-color: rgba(173,173,173,0.85); padding: 0.5em 0; margin-bottom: 0.5em;border-radius: 3px">
                         <div class="col">Nom</div>
                         <div class="col">Commentaire</div>
                     </div>
+                    <div id="hostContent">
                     <?php foreach ($hosts as $host) :?>
                         <div class="mb-3 row">
 
                             <div class="col">
-                                <span><?=$host['name']?></span>
+                                <span class="host_name"><?=$host['name']?></span>
                             </div>
                             <div class="col">
-                                <span><?=$host['comment']?></span>
+                                <span class="comment"><?=$host['comment']?></span>
                             </div>
                         </div>
                     <?php endforeach;?>
+                    </div>
                 </div>
                 <?php else:?>
                     <p>Aucun hébergeur n'a été enregistré pour le moment. Veuillez les ajouter en cliquant sur le bouton adéquat.</p>

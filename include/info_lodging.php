@@ -5,14 +5,13 @@ if (!isset($_GET['lodging_session_id'])) {
 }
 
 $idLodgingSession = $_GET['lodging_session_id'];
-//TODO add security for lodging_id
 
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 
 // Get lodging info
 $sql = "
-SELECT lodging_name, date_from, date_to, address, nb_place, COUNT(DISTINCT Hosts.id) AS nb_hosts, Coordinator.id AS coord_id, User.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments
+SELECT Lodging_session.lodging_id, lodging_name, date_from, date_to, address, nb_place, pic_url, COUNT(DISTINCT Hosts.id) AS nb_hosts, Coordinator.id AS coord_id, User.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments
 FROM Lodging_session
 INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
 LEFT JOIN Coordinator on Lodging_session.coordinator_id = Coordinator.id
@@ -24,8 +23,8 @@ WHERE Lodging_session.id = ?;
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$idLodgingSession]);
-$lodgings = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
-$equipments = json_decode($lodgings["equipments"]);
+$lodgingInfo = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
+$equipments = json_decode($lodgingInfo["equipments"]);
 
 
 // Get survey info
@@ -39,22 +38,23 @@ WHERE Lodging_session.id = ?
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$idLodgingSession]);
-$surveyOptions = $sth->fetchAll(PDO::FETCH_ASSOC);
+$survey = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-// Get comments
-$sql = "
+if(!empty($survey)) {
+    // Get comments
+    $sql = "
 SELECT name, comment
 FROM Volunteer_request
 INNER JOIN User on Volunteer_request.user_id = User.id
 WHERE survey_id = ?
 ";
 
-$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$surveyOptions[0]['id']]);
-$surveyVolunteer = $sth->fetchAll(PDO::FETCH_ASSOC);
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sth->execute([$survey[0]['id']]);
+    $listOfComments = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 // Get list of votes
-$sql = "
+    $sql = "
 SELECT Survey_options.id, option_name, COUNT(Result_list.id) AS nb_vote, GROUP_CONCAT(user_id) AS facebook_id_list
 FROM Survey_options
 LEFT JOIN Result_list ON Result_list.survey_option_id = Survey_options.id
@@ -63,23 +63,46 @@ WHERE Survey_options.survey_id = ?
 GROUP BY Survey_options.id, option_name
 ";
 
-$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$surveyOptions[0]['id']]);
+    $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sth->execute([$survey[0]['id']]);
 
-$votes =  [];
-while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-    $votes[$row['id']] = $row;
+    $votes =  [];
+    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+        $votes[$row['id']] = $row;
+    }
 }
 
-$imgSrc = 'img/house.jpg';
-
 ?>
-
+<!-- Modal -->
+<div class="modal fade" id="newSession" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Nouvelle session</h4>
+            </div>
+            <form id="newSessionForm" action="api/newSession.php" method="post">
+            <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" value="<?=$lodgingInfo['lodging_id']?>" name="lodging_id">
+                        <label for="inputSessionDateFrom">Date Début de l'hébergement:</label>
+                        <input type="date" class="form-control" id="inputSessionDateFrom" required name="date_from">
+                        <label for="inputSessionDateTo">Date fin de l'hébergement:</label>
+                        <input type="date" class="form-control" id="inputSessionDateTo" required name="date_to">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <input type="submit" class="btn btn-primary" id="createNewSession" value="Créer">
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <main>
         <div class="d-none d-sm-block" id="titlePage">
             <div class="container">
-                <h1><?=$lodgings['lodging_name']?></h1>
+                <h1><?=$lodgingInfo['lodging_name']?></h1>
             </div>
 
             <hr class="headerSep">
@@ -90,24 +113,24 @@ $imgSrc = 'img/house.jpg';
                 <h3>Informations</h3>
                 <div class="row">
                     <div class="col-sm">
-                        <img class="img-fluid thumbnail" src="<?=$imgSrc?>" alt="Construction house">
+                        <img class="img-fluid thumbnail" src="<?=!empty($lodgingInfo['pic_url']) && file_exists('./'.$lodgingInfo['pic_url'])?$lodgingInfo['pic_url']:'img/house.jpg'?>" alt="Construction house">
                     </div>
 
                     <div class="col-sm">
                         <ul class="info_lodging">
-                            <li>Date: <?= formatStrDate($lodgings['date_from'])?> au <?=formatStrDate($lodgings['date_to'])?></li>
-                            <li>Coordinateur: <a href="info_coordinator?coord_id=<?=$lodgings['coord_id']?>"><?=$lodgings['coord_name']?></a></li>
-                            <li>Nombre de places disponibles: <?= $lodgings['nb_hosts'] ?> / <?=$lodgings['nb_place']?></li>
-                            <li class="address"><?= $lodgings['address'] ?></li>
+                            <li>Date: <?= formatStrDate($lodgingInfo['date_from'])?> au <?=formatStrDate($lodgingInfo['date_to'])?></li>
+                            <li>Coordinateur: <a href="info_coordinator?coord_id=<?=$lodgingInfo['coord_id']?>"><?=$lodgingInfo['coord_name']?></a></li>
+                            <li>Nombre de places disponibles: <?= $lodgingInfo['nb_hosts'] ?> / <?=$lodgingInfo['nb_place']?></li>
+                            <li>Adresse: <span class="address"><?= $lodgingInfo['address'] ?></span></li>
                         </ul>
                     </div>
 
                     <div class="col-sm d-flex flex-column align-items-end">
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#newSession">
                             Renouveler l'hébergement
                         </button>
                         <a href="/hosts?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-primary mt-5">
-                            Listes des hébergeurs
+                            Liste des hébergeurs
                         </a>
                     </div>
                 </div>
@@ -121,6 +144,7 @@ $imgSrc = 'img/house.jpg';
                 </ul>
                 <?php endif; ?>
 
+                <?php if(isset($votes)): ?>
                 <?php foreach ($votes as $vote):?>
                 <!-- Modal -->
                 <div class="modal fade" id="option<?=$vote['id']?>" tabindex="-1" role="dialog" aria-hidden="true">
@@ -131,7 +155,7 @@ $imgSrc = 'img/house.jpg';
                                     $volunteers_id = explode(',', $vote['facebook_id_list']);
                                 // Get comments
                                 $sql = "
-                                    SELECT name, small_picture_url
+                                    SELECT id, name, small_picture_url
                                     FROM User
                                     WHERE id = ?
                                 ";
@@ -143,35 +167,43 @@ $imgSrc = 'img/house.jpg';
                                     ?>
                                     <div class="mb-3">
                                         <img alt="pic_of_<?=$volunteer['name']?>" src="<?=$volunteer['small_picture_url']?>">
-                                        <span><?=$volunteer['name']?></span>
+                                        <span><a href="info_volunteer?volunteer_id=<?=$volunteer['id']?>"><?=$volunteer['name']?></a></span>
                                     </div>
                                 <?php
                                 }
                                 ?>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <?php endforeach;?>
+                <?php endif;?>
 
                 <div class="event">
-                    <h3>Demande de bénévoles</h3>
+                    <h3 id="volunteer_request">Demande de bénévoles</h3>
                     <div class="listLodging">
-                    <?php if(empty($surveyOptions)): ?>
+                    <?php if(empty($survey)): ?>
                         <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Ajouter des demandes</a>
                     <?php else:?>
                         <a href="/add_survey?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-secondary">Modifier les demandes</a>
 
                         <h4 style="margin: 1em 0; text-decoration: underline">Description</h4>
-                        <p><?=$surveyOptions[0]['description']?></p>
+                        <p><?=$survey[0]['description']?></p>
                         <div class="lodging-item">
-                            <div>
-                                <a href="/survey?lodging_session_id=<?=$idLodgingSession?>">Lien vers le sondage</a>
+                            <div style="font-size: 1.2em; margin-bottom: 2em">
+                                <?php
+                                    $survey_url = $_SERVER["REQUEST_SCHEME"] . '://' . $_SERVER['SERVER_NAME'] . '/survey?lodging_session_id=' . $idLodgingSession
+                                ?>
+                                Partager ce lien aux bénévoles: <input id="inputSurveyUrl" type="text" class="form-control input-monospace input-sm" data-autoselect="" value="<?=$survey_url?>" readonly="">
+                                <div style="position: absolute">
+                                    <span id="clipboard_return" style="font-size: 0.6em; position: relative"></span>
+                                </div>
+
                             </div>
-                            <?php foreach ($surveyOptions as $option):?>
+                            <?php foreach ($survey as $option):?>
                                 <span style="font-size: 0.9em"><a href="" data-toggle="modal" <?php if($votes[$option['option_id']]['nb_vote'] > 0) {echo 'data-target="#option'.$option['option_id'].'"';} ?>><?=$votes[$option['option_id']]['nb_vote']?> bénévole(s)</a></span>
                             <p><?=$option['option_name']?></p>
 
@@ -181,14 +213,14 @@ $imgSrc = 'img/house.jpg';
                     </div>
                 </div>
 
-                <?php if(!empty($surveyVolunteer)):?>
+                <?php if(!empty($listOfComments)):?>
                 <div>
                     <h3>Commentaires</h3>
                     <div class="listLodging">
                         <?php
                         $fb_object = $AUTH->getFbObject();
 
-                        foreach ($surveyVolunteer as $comment) {
+                        foreach ($listOfComments as $comment) {
                             if(!empty($comment['comment'])) {
                                 ?>
                                 <div>

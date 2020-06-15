@@ -2,7 +2,7 @@
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 $sql = "
-    SELECT Lodging_session.id, Lodging.lodging_name, Lodging_session.date_from, Lodging_session.date_to, Lodging.address, Lodging.nb_place, Coordinator.id AS coord_id, User.name AS coord_name, COUNT(Hosts.id) AS nb_hosts
+    SELECT Lodging_session.id, Lodging.lodging_name, Lodging_session.date_from, Lodging_session.date_to, Lodging.address, Lodging.nb_place, Lodging.pic_url, Coordinator.id AS coord_id, User.name AS coord_name, COUNT(Hosts.id) AS nb_hosts
     FROM (SELECT Lodging_session.lodging_id, MAX(Lodging_session.date_from) AS recent_date_from
             FROM Lodging_session
             GROUP BY lodging_id) AS latest_session
@@ -33,7 +33,7 @@ $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
                         <h4 class="modal-title" id="addLodgingTitle">Ajouter un hébergement</h4>
                     </div>
                     <div class="modal-body">
-                        <form id="addLodgingForm">
+                        <form id="addLodgingForm" enctype="multipart/form-data">
                             <div class="form-group">
                                 <div class="btn-image-picker">
                                     <label for="upload-photo"><i class="fas fa-images"></i></label>
@@ -42,12 +42,12 @@ $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
 
                                 <label for="inputLodgingName">Nom de l'hébergement:</label>
                                 <input type="text" class="form-control" id="inputLodgingName" required>
+                                <label for="inputMaxPlaces">Nombre maximun de places: </label>
+                                <input type="number" class="form-control" id="inputMaxPlaces" required>
                                 <label for="inputLodgingDateFrom">Date Début de l'hébergement:</label>
                                 <input type="date" class="form-control" id="inputLodgingDateFrom" required>
                                 <label for="inputLodgingDateTo">Date fin de l'hébergement:</label>
                                 <input type="date" class="form-control" id="inputLodgingDateTo" required>
-                                <label for="inputMaxPlaces">Nombre maximun de places: </label>
-                                <input type="number" class="form-control" id="inputMaxPlaces" required>
                                 <label for="inputAddress">Adresse:</label>
                                 <input type="text" class="form-control" id="inputAddress">
 
@@ -62,8 +62,8 @@ $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="addLodgingButton">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary" id="addLodgingButton">Ajouter</button>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@ $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="container">
-                <div class="listLodging">
+                <div id="lodgings" class="listLodging">
                     <button class="btn btn-secondary d-block w-100" data-toggle="modal" data-target="#addLodging">
                         Ajouter un hébergement
                     </button>
@@ -108,7 +108,7 @@ $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
-                                        <img class="img-fluid thumbnail" src="img/house.jpg" alt="Construction house">
+                                        <img class="img-fluid thumbnail" src="<?=!empty($lodging['pic_url']) && file_exists('./'.$lodging['pic_url'])?$lodging['pic_url']:'img/house.jpg'?>" alt="Construction house">
                                     </div>
 
                                 </div>
