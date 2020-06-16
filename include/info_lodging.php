@@ -120,7 +120,7 @@ GROUP BY Survey_options.id, option_name
                         <ul class="info_lodging">
                             <li>Date: <?= formatStrDate($lodgingInfo['date_from'])?> au <?=formatStrDate($lodgingInfo['date_to'])?></li>
                             <li>Coordinateur: <a href="info_coordinator?coord_id=<?=$lodgingInfo['coord_id']?>"><?=$lodgingInfo['coord_name']?></a></li>
-                            <li>Nombre de places disponibles: <?= $lodgingInfo['nb_hosts'] ?> / <?=$lodgingInfo['nb_place']?></li>
+                            <li>Places occupées: <?= $lodgingInfo['nb_hosts'] ?> / <?=$lodgingInfo['nb_place']?></li>
                             <li>Adresse: <span class="address"><?= $lodgingInfo['address'] ?></span></li>
                         </ul>
                     </div>
@@ -130,7 +130,7 @@ GROUP BY Survey_options.id, option_name
                             Renouveler l'hébergement
                         </button>
                         <a href="/hosts?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-primary mt-5">
-                            Liste des hébergeurs
+                            Liste des hébergés
                         </a>
                     </div>
                 </div>

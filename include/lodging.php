@@ -42,17 +42,17 @@ $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
 
                                 <label for="inputLodgingName">Nom de l'hébergement:</label>
                                 <input type="text" class="form-control" id="inputLodgingName" required>
-                                <label for="inputMaxPlaces">Nombre maximun de places: </label>
+                                <label for="inputMaxPlaces">Nombre maximum de places: </label>
                                 <input type="number" class="form-control" id="inputMaxPlaces" required>
-                                <label for="inputLodgingDateFrom">Date Début de l'hébergement:</label>
+                                <label for="inputLodgingDateFrom">Date du début de la session:</label>
                                 <input type="date" class="form-control" id="inputLodgingDateFrom" required>
-                                <label for="inputLodgingDateTo">Date fin de l'hébergement:</label>
+                                <label for="inputLodgingDateTo">Date de la fin de la session:</label>
                                 <input type="date" class="form-control" id="inputLodgingDateTo" required>
                                 <label for="inputAddress">Adresse:</label>
                                 <input type="text" class="form-control" id="inputAddress">
 
                                 <div id="listEquipments">
-                                    <label for="inputListEquipments">Liste des équipements:</label>
+                                    <label for="inputListEquipments">Liste d'équipement:</label>
                                     <ul class="list-group">
                                         <li class="list-group-item"><input type="text" id="inputListEquipments" placeholder="Equipement"></li>
                                     </ul>
@@ -89,11 +89,11 @@ $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="lodging-item-content row justify-content-between mb-4">
                                     <div class="lodgingOptions col-sm-7">
                                         <div class="row justify-content-between lodgingOption-item ">
-                                            <div class="col-8">Nombre de place disponibles</div>
+                                            <div class="col-8">Nombre de places disponibles</div>
                                             <div class="col-4"><span class="lodgingOption-nbDispo"><?=$lodging['nb_place'] - $lodging['nb_hosts']?></span></div>
                                         </div>
                                         <div class="row justify-content-between lodgingOption-item ">
-                                            <div class="col-8"><span class="lodgingOption-nbMax">Nombre maximun de places</span></div>
+                                            <div class="col-8"><span class="lodgingOption-nbMax">Nombre maximum de places</span></div>
                                             <div class="col-4"><?=$lodging['nb_place']?></div>
                                         </div>
                                         <div class="row justify-content-between lodgingOption-item ">

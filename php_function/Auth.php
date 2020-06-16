@@ -91,28 +91,21 @@ class Auth
         $this->fb_profile_pic = $picture_url;
         $this->fb_email = $user['email'];
         $this->fb_id = $user['id'];
-        $this->user_id = $login[0]['id'];
         $this->isConnected = true;
-
-        // Store the info in SESSION
-        $_SESSION['fb_access_token'] = (string) $this->fb_access_token;
-        $_SESSION['fb_name'] = $this->name;
-        $_SESSION['fb_small_profile_pic'] = $this->fb_small_profile_pic;
-        $_SESSION['fb_profile_pic'] = $this->fb_profile_pic;
-        $_SESSION['fb_email'] = $this->fb_email;
-        $_SESSION['fb_id'] = $this->fb_id;
-        $_SESSION['user_id']=$this->user_id;
+        $this->isCoordinator = false;
+        $this->coord_id = false;
 
         if(empty($login)) {
             $sql = "INSERT INTO rix_refugee.User(name, small_picture_url, picture_url, email, facebook_id) VALUES (:name, :small_picture_url, :picture_url, :email, :facebook_id)";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $sth->execute([
                 ':name' => $user['name'],
-                ':small_picture' => $user['picture']['url'],
-                ':picture' => $picture_url,
+                ':small_picture_url' => $user['picture']['url'],
+                ':picture_url' => $picture_url,
                 ':email' => $user['email'],
                 ':facebook_id' => $user['id']
             ]);
+            $this->user_id = $dbh->lastInsertId();
         } else {
             $sql = "UPDATE rix_refugee.User SET name = :name, small_picture_url = :small_picture, picture_url = :picture, email = :email WHERE facebook_id = :facebook_id";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -124,16 +117,23 @@ class Auth
                 ':facebook_id' => $user['id']
             ]);
 
+            $this->user_id = $login[0]['id'];
             if(isset($login[0]['coord_id'])) {
                 $this->isCoordinator = true;
                 $this->coord_id = $login[0]['coord_id'];
-            } else {
-                $this->isCoordinator = false;
-                $this->coord_id = false;
             }
-            $_SESSION['isCoordinator'] = $this->isCoordinator;
-            $_SESSION['coord_id'] = $this->coord_id;
         }
+
+        // Store the info in SESSION
+        $_SESSION['fb_access_token'] = (string) $this->fb_access_token;
+        $_SESSION['fb_name'] = $this->name;
+        $_SESSION['fb_small_profile_pic'] = $this->fb_small_profile_pic;
+        $_SESSION['fb_profile_pic'] = $this->fb_profile_pic;
+        $_SESSION['fb_email'] = $this->fb_email;
+        $_SESSION['fb_id'] = $this->fb_id;
+        $_SESSION['user_id']=$this->user_id;
+        $_SESSION['isCoordinator'] = $this->isCoordinator;
+        $_SESSION['coord_id'] = $this->coord_id;
     }
 
     public function disconnect(){

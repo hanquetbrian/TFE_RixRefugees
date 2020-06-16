@@ -13,6 +13,7 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
 } else {
     $comment = "";
     $options = [];
+    $volunteer_request_id = 0;
 
     foreach ($_POST as $key => $value) {
         $value = htmlspecialchars($value);
@@ -24,7 +25,7 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
     }
 
     $dbh->beginTransaction();
-    $sql = "SELECT * FROM Volunteer_request
+    $sql = "SELECT Volunteer_request.id, survey_id FROM Volunteer_request
             INNER JOIN User on Volunteer_request.user_id = User.id
             WHERE facebook_id = :facebook_id AND survey_id = :survey_id";
 
@@ -44,7 +45,7 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
             ':id_survey' => intval($_GET['id_survey']),
             ':comment' => $_POST['comment']
         ]);
-
+        $volunteer_request_id = $dbh->lastInsertId();
         if(!$sqlResult) {$error = true;}
     } else {
         $sql = "UPDATE rix_refugee.Volunteer_request SET comment = :comment WHERE id = :id";
@@ -54,7 +55,7 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
             ':id' => $current_request[0]['id'],
             ':comment' => $_POST['comment']
         ]);
-
+        $volunteer_request_id = $current_request[0]['id'];
         if(!$sqlResult) {$error = true;}
     }
 
@@ -70,7 +71,6 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
         ':user_id' => $AUTH->getUserId()
     ]);
     $listOfCurrentOptions = $sth->fetchAll(PDO::FETCH_ASSOC);
-    $volunteer_request_id = $listOfCurrentOptions[0]['volunteer_request_id'];
 
     // insert data in the database
     foreach ($options as $option) {
@@ -139,5 +139,16 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
         <p>Désolé, il y a eu une erreur lors de l'envoi de votre demande. Essayez de renvoyer une demande.</p>
     <?php endif;?>
 </div>
+
+<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        setInterval(function(){ window.location.href = "<?=$_POST['http_referer']?>"; }, 5000);
+    });
+</script>
+
 </body>
 </html>

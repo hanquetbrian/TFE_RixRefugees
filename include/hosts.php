@@ -20,7 +20,7 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="addHostTitle">Ajouter un hébergeur</h4>
+                <h4 class="modal-title" id="addHostTitle">Ajouter un hébergé</h4>
             </div>
             <div class="modal-body">
                 <form id="addHostForm">
@@ -47,8 +47,8 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
             <h2><a style="color: #5a718c" href="/info_lodging?lodging_session_id=<?=$hosts[0]['lodging_session_id']?>"><?=$hosts[0]['lodging_name']?> du <?= formatStrDate($hosts[0]['date_from'])?> au <?=formatStrDate($hosts[0]['date_to'])?></a></h2>
             <hr>
             <div id="hosts_list" class="listLodging">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addHost">Ajouter un hébergeur</button>
-                <h3>Liste des hébergeurs</h3>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addHost">Ajouter un hébergé</button>
+                <h3>Liste des hébergés</h3>
                 <?php if(isset($hosts[0]['id'])) :?>
                 <div class="lodging-item">
                     <div class="row" style="background-color: rgba(173,173,173,0.85); padding: 0.5em 0; margin-bottom: 0.5em;border-radius: 3px">
@@ -70,7 +70,7 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <?php else:?>
-                    <p>Aucun hébergeur n'a été enregistré pour le moment. Veuillez les ajouter en cliquant sur le bouton adéquat.</p>
+                    <p>Aucun hébergé n'a été enregistré pour le moment. Veuillez les ajouter en cliquant sur le bouton adéquat.</p>
                 <?php endif;?>
             </div>
         </div>

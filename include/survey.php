@@ -55,6 +55,7 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
                 <a href="/add_survey?lodging_session_id=<?=$sessionId?>" class="btn btn-secondary">Modification des demandes</a>
                 <?php endif;?>
                 <form action="/api/saveSurveyResult.php?id_survey=<?=$survey[0]['survey_id']?>" method="post">
+                    <input type="hidden" value="<?=$_SERVER['HTTP_REFERER']?>" name="http_referer">
                     <div class="survey-from-group survey-form-header">
                         <div>
                             <h2 class="survey-form-title"><?=$survey[0]['lodging_name']?> du <?= formatStrDate($survey[0]['date_from'])?> au <?=formatStrDate($survey[0]['date_to'])?></h2>

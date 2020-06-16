@@ -26,7 +26,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
         <section>
             <div class="d-none d-sm-block" id="titlePage">
                 <div class="container">
-                    <h1>Coordinateur</h1>
+                    <h1>Coordinateurs</h1>
                 </div>
                 <hr class="headerSep">
             </div>
