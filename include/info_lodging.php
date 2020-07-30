@@ -125,12 +125,15 @@ GROUP BY Survey_options.id, option_name
                         </ul>
                     </div>
 
-                    <div class="col-sm d-flex flex-column align-items-end">
+                    <div class="col-sm d-flex flex-column">
                         <button class="btn btn-primary" data-toggle="modal" data-target="#newSession">
                             Renouveler l'hébergement
                         </button>
                         <a href="/hosts?lodging_session_id=<?=$idLodgingSession?>" class="btn btn-primary mt-5">
                             Liste des hébergés
+                        </a>
+                        <a href="/list_sessions?lodging_id=<?=$lodgingInfo['lodging_id']?>" class="btn btn-primary mt-5">
+                            Historique des anciennes sessions
                         </a>
                     </div>
                 </div>

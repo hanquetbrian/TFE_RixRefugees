@@ -37,7 +37,7 @@ $login = $sth->fetchAll(PDO::FETCH_ASSOC);
             <input class="btn-secondary form-control mt-3" type="submit" name="submit">
         </form>
         <?php else: ?>
-            <p>Votre demande à bien été enregistré au nom de <?=$AUTH->getName()?>. Vous pouvez demander à un coordinateur d'accepter votre demande.</p>
+            <p>Votre demande a bien été enregistré au nom de <?=$AUTH->getName()?>. Vous pouvez demander à un coordinateur d'accepter votre demande.</p>
             <div class="lodging-item" style="margin-bottom: 2em">
                 <h3 style="font-size: 1.2em; text-decoration: underline; margin: 0">Votre demande </h3>
                 <span style="font-size: 0.7em; color: rgba(145,145,145,0.85)">Modifié le <?=$login[0]['request_date']?></span>

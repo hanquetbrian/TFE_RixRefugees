@@ -36,6 +36,11 @@ switch ($url) {
         $page->addScript('js/hosts.js');
         include "../include/template.php";
         break;
+    case "/list_sessions":
+        $page = new Page('include/list_sessions.php', "RixRefugee historique", $AUTH, Page::coordinator);
+        $page->addParam("lodging_id", Page::PARAM_VALID_LODGING_ID, $dbh);
+        include "../include/template.php";
+        break;
     case "/survey":
         $page = new Page('include/survey.php', "RixRefugee Survey", $AUTH, Page::volunteer);
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);

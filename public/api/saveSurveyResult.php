@@ -133,7 +133,7 @@ if(empty($_POST) or empty($_GET['id_survey'])) {
 <div class="contain">
     <?php if(!$error):?>
         <h1>Formualaire Envoyé</h1>
-        <p>Merci de votre aide, votre demande à bien été envoyé.</p>
+        <p>Merci de votre aide, votre demande a bien été envoyé.</p>
     <?php else:?>
         <h1>Erreur d'envoi</h1>
         <p>Désolé, il y a eu une erreur lors de l'envoi de votre demande. Essayez de renvoyer une demande.</p>

@@ -25,6 +25,7 @@ class Page
     public const PARAM_VALID_SESSION_ID = 5;
     public const PARAM_VALID_COORD_ID = 6;
     public const PARAM_VALID_VOLUNTER_USER_ID = 7;
+    public const PARAM_VALID_LODGING_ID = 8;
 
     public const OPTION_SHOW_HEADER = 1;
 
@@ -187,6 +188,21 @@ class Page
                         SELECT user_id
                         FROM rix_refugee.Volunteer_request
                         WHERE user_id = ?;
+                        ";
+
+                        $sth = $this->dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                        $sth->execute([$_REQUEST[$param[0]]]);
+                        $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+                        if(empty($result)) {
+                            return false;
+                        }
+                        break;
+                    case Page::PARAM_VALID_LODGING_ID:
+                        $sql = "
+                        SELECT id
+                        FROM rix_refugee.Lodging
+                        WHERE id = ?;
                         ";
 
                         $sth = $this->dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
