@@ -11,8 +11,6 @@ $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([]);
 $coordinators = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-$title = "RixRefugee demande coordinateur";
-
 ?>
 <main>
         <section>
@@ -36,7 +34,12 @@ $title = "RixRefugee demande coordinateur";
                                 <p><?=$coordinator['request']?></p>
                             </div>
                           <div>
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#askAuthorize" onclick="$('#coordName').text('<?=$coordinator['name']?>')">Autoriser</button>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#askAuthorize" onclick="
+                                        $('#coordName').text('<?=$coordinator['name']?>');
+                                        $('#accept_btn').click(function() {
+                                            authorize('<?=$coordinator['id']?>')
+                                        });
+                                        ">Autoriser</button>
                                 <button class="btn btn-secondary" onclick="removeCoord('<?=$coordinator['id']?>')">Supprimer</button>
 
                             </div>
@@ -63,7 +66,7 @@ $title = "RixRefugee demande coordinateur";
                     <p>Etes-vous sûr de vouloir autoriser <span id="coordName"></span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="authorize('<?=$coordinator['id']?>')">Oui</button>
+                    <button type="button" class="btn btn-primary" id="accept_btn">Oui</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
                 </div>
             </div>
