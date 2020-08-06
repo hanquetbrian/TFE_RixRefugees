@@ -32,7 +32,7 @@ $lodgingSessions = $sth->fetchAll(PDO::FETCH_ASSOC);
                 <p>Aucune session n'a été trouvé pour cette hébergement</p>
             <?php else:?>
                 <?php foreach ($lodgingSessions as $session):?>
-                
+
                 <?php endforeach;?>
 
 
