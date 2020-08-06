@@ -1,6 +1,8 @@
 <?php
+require_once "../php_function/utils.php";
+
 $sql = "
-SELECT lodging_id, lodging_name, date_from, date_to, coordinator_id, User.name
+SELECT Lodging_session.id, lodging_id, lodging_name, pic_url, date_from, date_to, coordinator_id, User.name AS coord_name
 FROM Lodging_session
 INNER JOIN Lodging ON Lodging_session.lodging_id = Lodging.id
 LEFT JOIN Coordinator ON Coordinator.id = coordinator_id
@@ -17,12 +19,16 @@ $lodgingSessions = $sth->fetchAll(PDO::FETCH_ASSOC);
     <section>
         <div class="d-none d-sm-block" id="titlePage">
             <div class="container">
-                <h1>Historique des sessions</h1>
+                <h1>Liste des sessions précédentes</h1>
             </div>
             <hr class="headerSep">
             <?php if (!empty($lodgingSessions)): ?>
                 <div class="container">
                     <h2><?=$lodgingSessions[0]['lodging_name']?></h2>
+                    <div style="margin: 2em">
+                        <img class="img-thumbnail" alt="lodging_picture" src="<?=$lodgingSessions[0]['pic_url']?>"
+                    </div>
+
                 </div>
             <?php endif;?>
         </div>
@@ -31,11 +37,19 @@ $lodgingSessions = $sth->fetchAll(PDO::FETCH_ASSOC);
             <?php if (empty($lodgingSessions)): ?>
                 <p>Aucune session n'a été trouvé pour cette hébergement</p>
             <?php else:?>
+            <div id="lodgings" class="listLodging">
+
                 <?php foreach ($lodgingSessions as $session):?>
-
+                    <article>
+                        <div class="lodging-item">
+                            <p style="margin-bottom: 0"><a href="/info_lodging?lodging_session_id=<?=$session['id']?>"><?= formatStrDate($session['date_from'])?> au <?=formatStrDate($session['date_to'])?></a></p>
+                            <div style="margin-left: 2em">
+                                Coordinateur: <?=$session['coord_name']?>
+                            </div>
+                        </div>
+                    </article>
                 <?php endforeach;?>
-
-
+            </div>
             <?php endif;?>
         </div>
     </section>

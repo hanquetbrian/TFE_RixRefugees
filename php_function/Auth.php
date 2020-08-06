@@ -70,6 +70,7 @@ class Auth
             $user = $response->getGraphUser();
 
             $picture_url = $this->fb_object->get('/me/picture?redirect=0&type=normal', $this->fb_access_token)->getGraphNode()['url'];
+
         } catch (FacebookSDKException $e) {
             $this->isConnected = false;
             return;
@@ -94,35 +95,44 @@ class Auth
         $this->isConnected = true;
         $this->isCoordinator = false;
         $this->coord_id = false;
+        $dbh->beginTransaction();
 
         if(empty($login)) {
-            $sql = "INSERT INTO rix_refugee.User(name, small_picture_url, picture_url, email, facebook_id) VALUES (:name, :small_picture_url, :picture_url, :email, :facebook_id)";
+            $sql = "INSERT INTO rix_refugee.User(name, email, facebook_id) VALUES (:name, :email, :facebook_id)";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $sth->execute([
                 ':name' => $user['name'],
-                ':small_picture_url' => $user['picture']['url'],
-                ':picture_url' => $picture_url,
                 ':email' => $user['email'],
                 ':facebook_id' => $user['id']
             ]);
             $this->user_id = $dbh->lastInsertId();
         } else {
-            $sql = "UPDATE rix_refugee.User SET name = :name, small_picture_url = :small_picture, picture_url = :picture, email = :email WHERE facebook_id = :facebook_id";
+            $sql = "UPDATE rix_refugee.User SET name = :name, email = :email WHERE facebook_id = :facebook_id";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $sth->execute([
                 ':name' => $user['name'],
-                ':small_picture' => $user['picture']['url'],
-                ':picture' => $picture_url,
                 ':email' => $user['email'],
                 ':facebook_id' => $user['id']
             ]);
-
             $this->user_id = $login[0]['id'];
+
             if(isset($login[0]['coord_id'])) {
                 $this->isCoordinator = true;
                 $this->coord_id = $login[0]['coord_id'];
             }
         }
+
+        file_put_contents('../p_images/user_picture/small/' . $this->user_id . '.jpg', file_get_contents($user['picture']['url']));
+        file_put_contents('../p_images/user_picture/normal/' . $this->user_id . '.jpg', file_get_contents($picture_url));
+        $sql = "UPDATE rix_refugee.User SET small_picture_url = :small_picture, picture_url = :picture WHERE id = :user_id";
+        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute([
+            ':user_id' => $this->user_id,
+            ':small_picture' => '/api/get_picture.php?src=user_picture/small/' . $this->user_id . '.jpg',
+            ':picture' => '/api/get_picture.php?src=user_picture/normal/' . $this->user_id . '.jpg'
+        ]);
+
+        $dbh->commit();
 
         // Store the info in SESSION
         $_SESSION['fb_access_token'] = (string) $this->fb_access_token;
