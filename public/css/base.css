@@ -74,12 +74,23 @@ footer {
     border-bottom: solid #bfbfbf 1px;
 }
 
-.user-name {
+.header_btn {
+    padding: 0.2em 0.3em;
+    border-radius: 5px;
+    border: transparent solid 2px;
+}
+
+.header_btn a{
     color: #dfd7d0;
 }
 
+.header_btn:hover {
+    background-color: #7e9292;
+    border-color: #647878;
+}
+
 .nav-item a {
-    color: #6f6964;
+    color: #728686;
 }
 
 .nav-item.active {

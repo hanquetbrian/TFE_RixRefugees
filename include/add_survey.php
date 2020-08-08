@@ -38,7 +38,7 @@ if(isset($survey[0]['survey_id'])) {
 
         <section>
             <div class="container">
-                <a href=""><i class="fas fa-arrow-circle-left"></i></a>
+                <a href="/info_lodging?lodging_session_id=<?=$sessionId?>"><i class="fas fa-arrow-circle-left"></i></a>
                 <div id="survey">
                     <form>
                         <input id="lodging_session_id" name="lodging_session_id" type="hidden" value="<?=$sessionId?>">

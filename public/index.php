@@ -12,12 +12,12 @@ $url = (isset($_GET["q"]) ? $_GET["q"] : "/");
 switch ($url) {
     case "/":
         if ($AUTH->isConnected()) {
-
             if($AUTH->isCoordinator()) {
                 $page = new Page('include/lodging.php', "RixRefugee", $AUTH, Page::coordinator);
                 $page->addScript('js/lodging.js');
                 include "../include/template.php";
             } else {
+                $AUTH->updatePrivateInfo($AUTH->getFbAccessToken(), $dbh);
                 include "../error/access_denied.html";
             }
 
@@ -67,6 +67,10 @@ switch ($url) {
         break;
     case "/validating_coordinator":
         $page = new Page('include/validating_coordinator.php', "RixRefugee Coordinateur en demande", $AUTH, Page::coordinator);
+        include "../include/template.php";
+        break;
+    case "/edit_user":
+        $page = new Page('include/edit_user.php', "RixRefugee Modification du profile", $AUTH, Page::coordinator);
         include "../include/template.php";
         break;
     case "/volunteer":

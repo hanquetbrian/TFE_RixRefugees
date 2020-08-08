@@ -84,9 +84,9 @@ GROUP BY Survey_options.id, option_name
             <div class="modal-body">
                     <div class="form-group">
                         <input type="hidden" value="<?=$lodgingInfo['lodging_id']?>" name="lodging_id">
-                        <label for="inputSessionDateFrom">Date Début de l'hébergement:</label>
+                        <label for="inputSessionDateFrom">Début de la session:</label>
                         <input type="date" class="form-control" id="inputSessionDateFrom" required name="date_from">
-                        <label for="inputSessionDateTo">Date fin de l'hébergement:</label>
+                        <label for="inputSessionDateTo">Fin de la session:</label>
                         <input type="date" class="form-control" id="inputSessionDateTo" required name="date_to">
                     </div>
             </div>

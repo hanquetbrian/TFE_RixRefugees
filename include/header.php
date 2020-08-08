@@ -58,8 +58,8 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
 <header class="navbar navbar-expand-lg navbar-dark main-navbar">
     <div class="container">
         <a class="navbar-brand mr-auto" href="/">RixRefugee</a>
-        <span class="user-name"><?=$AUTH->getName()?></span>
-        <span style="margin-left: 10px"><a href="api/logout.php"><i class="fas fa-sign-out-alt" style="color:#d0cecc;"></i></a></span>
+        <span class="header_btn"><a href="/edit_user"><?=$AUTH->getName()?></a></span>
+        <span style="margin-left: 10px" class="header_btn"><a href="api/logout.php"><i class="fas fa-sign-out-alt" style="color:#d0cecc;"></i></a></span>
     </div>
 
 </header>
