@@ -30,7 +30,6 @@ $coordinator = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
         <div class="container">
             <div class="listLodging">
-<!--                TODO allow the modifications of the coordinator info-->
                 <img src="<?=$coordinator['picture_url']?>" alt="picture_of_<?=$coordinator['name']?>" width="100">
                 <div class="lodging-item">
                     <p>Nom: <?=$coordinator['name']?></p>
