@@ -10,7 +10,7 @@ $sql = "
     LEFT JOIN Survey ON Survey.id = Lodging_session.survey_id
     INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
     LEFT JOIN Coordinator ON Coordinator.id = Lodging_session.coordinator_id
-    INNER JOIN User on Coordinator.user_id = User.id
+    LEFT JOIN User on Coordinator.user_id = User.id
     LEFT JOIN Survey_options ON Survey.id = Survey_options.survey_id
     WHERE Lodging_session.id = ?;
 ";

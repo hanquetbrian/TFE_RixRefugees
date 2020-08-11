@@ -58,7 +58,33 @@ $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
                     </div>
 
                 </form>
+                <div style="margin-top: 2em" id="danger-zone">
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#delUser">Supprimer le compte</button>
+                </div>
             </div>
         </div>
     </section>
 </main>
+
+<!-- Modal -->
+<div id="delUser" class="modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border: #cb332e 2px solid">
+            <div class="modal-header">
+                <h5 class="modal-title">Êtes-vous sûr?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir <b>supprimer</b> votre compte ?</p>
+                <p><b>Vous n'aurez plus accès à votre compte</b> et une nouvelle demande sera nécessaire.</p>
+                <p>Toutes les données vous concernant seront <b>supprimées du système</b>.</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-primary" href="/api/delUserAccount.php">Oui</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+            </div>
+        </div>
+    </div>
+</div>

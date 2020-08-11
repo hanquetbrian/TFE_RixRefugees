@@ -6,7 +6,7 @@ SELECT Lodging_session.id, lodging_id, lodging_name, pic_url, date_from, date_to
 FROM Lodging_session
 INNER JOIN Lodging ON Lodging_session.lodging_id = Lodging.id
 LEFT JOIN Coordinator ON Coordinator.id = coordinator_id
-INNER JOIN User ON User.id = Coordinator.user_id
+LEFT JOIN User ON User.id = Coordinator.user_id
 WHERE lodging_id = ?
 ORDER BY date_from DESC; 
 ";

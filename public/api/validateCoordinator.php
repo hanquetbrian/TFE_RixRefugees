@@ -18,12 +18,11 @@ $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute([$coordinator_id]);
 $validating_coord = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
-$sql = "INSERT INTO rix_refugee.Coordinator (user_id, telephone) VALUES (:user_id, :telephone)";
+$sql = "INSERT INTO rix_refugee.Coordinator (user_id) VALUES (:user_id)";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sqlResult = $sth->execute([
-    ':user_id' => $validating_coord['user_id'],
-    ':telephone' => $validating_coord['telephone']
+    ':user_id' => $validating_coord['user_id']
 ]);
 
 $sql = "DELETE FROM rix_refugee.Coordinator_request WHERE id = ?";

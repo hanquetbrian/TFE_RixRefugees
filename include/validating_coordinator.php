@@ -63,7 +63,7 @@ $coordinators = $sth->fetchAll(PDO::FETCH_ASSOC);
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Etes-vous sûr de vouloir autoriser <span id="coordName"></span></p>
+                    <p>Êtes-vous sûr de vouloir autoriser <span id="coordName"></span></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="accept_btn">Oui</button>
