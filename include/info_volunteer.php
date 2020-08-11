@@ -1,6 +1,20 @@
 <?php
 require_once "../php_function/utils.php";
 
+if($_GET['volunteer_id'] == 0) {
+    ?>
+    <main>
+        <section>
+            <div class="container mt-5">
+                <div class="listLodging">
+                    <p>Désolé mais cet utilisateur n'existe pas ou il a été supprimé.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <?php
+} else {
+
 $sql = "
     SELECT User.name, User.picture_url, lodging_name, date_from, date_to, Survey.id as survey_id, Survey.description, comment
     FROM rix_refugee.Volunteer_request
@@ -64,3 +78,4 @@ $surveyList = $sth->fetchAll(PDO::FETCH_ASSOC);
     </section>
 </main>
 
+<?php }?>

@@ -4,6 +4,7 @@ $sql = "
     SELECT DISTINCT user_id, name, small_picture_url
     FROM rix_refugee.Volunteer_request
     INNER JOIN User on Volunteer_request.user_id = User.id
+    WHERE user_id <> 0;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

@@ -28,6 +28,8 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
           integrity="sha256-/sdxenK1NDowSNuphgwjv8wSosSNZB0t5koXqd7XqOI=" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css"
           integrity="sha256-8DcgqUGhWHHsTLj1qcGr0OuPbKkN1RwDjIbZ6DKh/RA=" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/brands.min.css"
+          integrity="sha512-AMDXrE+qaoUHsd0DXQJr5dL4m5xmpkGLxXZQik2TvR2VCVKT/XRPQ4e/LTnwl84mCv+eFm92UG6ErWDtGM/Q5Q==" crossorigin="anonymous" />
     <!-- Base CSS -->
     <link rel="stylesheet" href="css/base.css">
 
@@ -49,6 +51,9 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
         foreach ($page->getScript() as $script) {
             echo $script;
         }
+    foreach ($page->getCSS() as $css) {
+        echo $css;
+    }
     ?>
 
     <title><?= $page->getTitle() ?></title>

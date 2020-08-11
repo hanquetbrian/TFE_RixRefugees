@@ -22,8 +22,16 @@ switch ($url) {
             }
 
         } else {
-            $AUTH->connectToFacebook();
+            header('Location: /login');
         }
+        break;
+    case "/login":
+        $page = new Page('include/login.php', "RixRefugee info");
+        $page->addCSS('css/login.css');
+        include "../include/template.php";
+        break;
+    case "/connect_facebook":
+        $AUTH->connectToFacebook();
         break;
     case "/info_lodging":
         $page = new Page('include/info_lodging.php', "RixRefugee info", $AUTH, Page::coordinator);
