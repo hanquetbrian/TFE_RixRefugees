@@ -26,12 +26,20 @@ switch ($url) {
         }
         break;
     case "/login":
+        if($AUTH->isConnected()) {
+            header('Location: /');
+            exit();
+        }
         $page = new Page('include/login.php', "RixRefugee info");
         $page->addCSS('css/login.css');
         include "../include/template.php";
         break;
     case "/connect_facebook":
         $AUTH->connectToFacebook();
+        break;
+    case "/change_password":
+        $page = new Page('include/change_password.php', "RixRefugee Modifier le mot de passe", $AUTH, Page::coordinator);
+        include "../include/template.php";
         break;
     case "/info_lodging":
         $page = new Page('include/info_lodging.php', "RixRefugee info", $AUTH, Page::coordinator);
@@ -53,19 +61,16 @@ switch ($url) {
         $page = new Page('include/survey.php', "RixRefugee Survey", $AUTH, Page::volunteer);
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);
         $page->addScript('js/survey.js');
-        $title = "RixRefugee Survey";
         include "../include/template.php";
         break;
     case "/add_survey":
         $page = new Page('include/add_survey.php', "RixRefugee add survey", $AUTH, Page::coordinator);
         $page->addParam("lodging_session_id", Page::PARAM_VALID_SESSION_ID, $dbh);
         $page->addScript('js/survey.js');
-        $title = "";
         include "../include/template.php";
         break;
     case "/coordinator":
         $page = new Page('include/coordinator.php', "RixRefugee Coordinateur", $AUTH, Page::volunteer);
-        $title = "";
         include "../include/template.php";
         break;
     case "/info_coordinator":
@@ -83,7 +88,6 @@ switch ($url) {
         break;
     case "/volunteer":
         $page = new Page('include/volunteer.php', "RixRefugee Bénévoles", $AUTH, Page::coordinator);
-        $title = "";
         include "../include/template.php";
         break;
     case "/info_volunteer":
@@ -92,7 +96,7 @@ switch ($url) {
         include "../include/template.php";
         break;
     case "/ask_access":
-        $page = new Page('include/ask_access.php', "Demande d'accès");
+        $page = new Page('include/ask_access.php', "Demande d'accès", $AUTH, Page::volunteer);
         include "../include/template.php";
         break;
     case "/inventory_management":

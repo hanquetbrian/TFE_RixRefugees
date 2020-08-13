@@ -106,7 +106,7 @@ class Page
         $hasAccess = false;
         if(isset($this->auth)) {
             if(!$this->auth->isConnected()) {
-                $this->auth->connectToFacebook();
+                header('location: /login');
                 exit();
             }
 

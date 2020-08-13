@@ -1,12 +1,6 @@
-<?php
-require_once '../php_function/Auth.php';
-require_once '../config.php';
-$AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
-?>
-
 <script>
     $().ready(function () {
-        let formContent = $('#standard_login')
+        let formContent = $('#standard_login');
         formContent.hide();
         $('#more_logging_option').click(function (e) {
             formContent.slideToggle();

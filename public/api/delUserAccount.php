@@ -7,13 +7,13 @@ require_once '../../config.php';
 
 $AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
 if(!$AUTH->isCoordinator()) {
-    header('Location: edit_user');
+    header('Location: /edit_user');
     die(0);
 }
 
 $id = $AUTH->getUserId();
 
-// Aonymize the user
+// Anonymize the user
 $dbh->beginTransaction();
 
 $sql = "DELETE FROM rix_refugee.Coordinator WHERE user_id = :id;";

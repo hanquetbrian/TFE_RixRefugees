@@ -1,7 +1,7 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, facebook_id, name, small_picture_url, picture_url, email, visible_email, telephone, visible_telephone
+    SELECT id, facebook_id, name, password, small_picture_url, picture_url, email, visible_email, telephone, visible_telephone
     FROM rix_refugee.User
     where id = ?;
     ";
@@ -58,7 +58,19 @@ $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
                     </div>
 
                 </form>
+                <div style="margin-top: 2em">
+                    <a class="btn btn-primary" style="color: white" href="/change_password">
+                        <?php
+                        if(isset($user['password'])) {
+                            echo 'Modifier le mot de passe';
+                        } else {
+                            echo 'Créer un nouveau mot de passe';
+                        }
+                        ?>
+                    </a>
+                </div>
                 <div style="margin-top: 2em" id="danger-zone">
+
                     <button class="btn btn-danger" data-toggle="modal" data-target="#delUser">Supprimer le compte</button>
                 </div>
             </div>

@@ -4,10 +4,6 @@ if(!isset($_GET['coord_id'])) {
     exit(0);
 }
 
-require_once '../php_function/Auth.php';
-require_once '../config.php';
-$AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
-
 require_once "../php_function/db_connection.php";
 $sql = "
     SELECT name, small_picture_url, picture_url, facebook_id, email, visible_email, telephone, visible_telephone, added_day

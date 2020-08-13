@@ -230,5 +230,15 @@ textarea.survey-form-control {
     margin-bottom: 1.5em;
 }
 
+.form-error {
+    border: #9e1a1b solid 1px;
+    box-shadow: #9e1a1b 0 0 2px;
+}
+
+.form-error:focus {
+    border: #fe1a1b solid 1px;
+    box-shadow: #fe1a1b 0 0 8px;
+}
+
 
 /* Coordinator */
