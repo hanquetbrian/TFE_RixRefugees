@@ -90,12 +90,12 @@ if(isset($_POST['submit'])) {
                     <div class="form-group">
                         <?php
                         if ($editOldPassword) {
-                            echo '<label for="oldPassword">Mot de passe actuel: </label> <input class="form-control" id="oldPassword" type="password" name="oldPassword">';
+                            echo '<label for="oldPassword">Mot de passe actuel: </label> <input class="form-control" id="oldPassword" type="password" name="oldPassword" placeholder="Mot de passe actuel">';
                         }
                         ?>
 
-                        <label for="newPassword">Nouveau mot de passe: </label> <input class="form-control" id="newPassword" type="password" name="newPassword">
-                        <label for="confirmNewPassword">Confirmer le nouveau mot de passe: </label> <input class="form-control" id="confirmNewPassword" type="password">
+                        <label for="newPassword">Nouveau mot de passe: </label> <input class="form-control" id="newPassword" type="password" name="newPassword" placeholder="Nouveau mot de passe">
+                        <label for="confirmNewPassword">Confirmer le nouveau mot de passe: </label> <input class="form-control" id="confirmNewPassword" type="password" placeholder="Confirmer le nouveau mot de passe">
                     </div>
                     <input class="btn btn-primary" type="submit" value="Confirmer" name="submit">
                 </form>

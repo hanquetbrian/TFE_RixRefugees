@@ -1,3 +1,18 @@
+<?php
+if(isset($_POST['submit'])) {
+    if(!empty($_POST['email']) && !empty($_POST['password'])) {
+        if(!$AUTH->connectWithPassword($_POST['email'], $_POST['password'], $dbh)) {
+            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  L\'email ou le mot de passe est incorrect.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>';
+        }
+    }
+}
+?>
+
 <script>
     $().ready(function () {
         let formContent = $('#standard_login');
@@ -22,10 +37,10 @@
         <div id="standard_login">
 
             <!-- Login Form -->
-            <form>
-                <input type="text" id="login" name="login" placeholder="email">
-                <input type="text" id="password" name="login" placeholder="mot de passe">
-                <input type="submit" value="Connecter">
+            <form action="#" method="post">
+                <input class="form-input" type="email" id="login" name="email" placeholder="email">
+                <input class="form-input" type="password" id="password" name="password" placeholder="mot de passe">
+                <input type="submit" value="Connecter" name="submit">
             </form>
 
         </div>

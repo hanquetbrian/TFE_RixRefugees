@@ -281,4 +281,47 @@ class Auth
         $loginUrl = $helper->getLoginUrl('https://rixrefugee.site/fb-callback', $permissions);
         header('Location: ' . $loginUrl);
     }
+
+    /**
+     * @param $email string Email of the user
+     * @param $password string Password of the user
+     * @param $dbh PDO Database access
+     * @return bool return true if successfully connected return false if password is incorrect
+     */
+    public function connectWithPassword($email, $password, $dbh) {
+        $email = trim($email);
+        $sql = "
+            SELECT User.id, facebook_id, name, small_picture_url, picture_url, email, password, Coordinator.id AS coord_id
+            FROM rix_refugee.User
+            LEFT JOIN Coordinator ON User.id = user_id
+            where email = ?;
+            ";
+
+        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute([$email]);
+        $user = $sth->fetchAll(PDO::FETCH_ASSOC);
+        if(!empty($user)) {
+            $user = $user[0];
+            if(password_verify($password, $user['password'])) {
+                $_SESSION['fb_access_token'] = "";
+                $_SESSION['fb_name'] = $user['name'];
+                $_SESSION['fb_small_profile_pic'] = $user['small_picture_url'];
+                $_SESSION['fb_profile_pic'] = $user['picture_url'];
+                $_SESSION['fb_email'] = $user['email'];
+                $_SESSION['fb_id'] = $user['facebook_id'];
+                $_SESSION['user_id'] = $user['id'];
+
+                if(isset($user['coord_id'])) {
+                    $_SESSION['coord_id'] = $user['coord_id'];
+                    $_SESSION['isCoordinator'] = true;
+                } else {
+                    $_SESSION['coord_id'] = false;
+                    $_SESSION['isCoordinator'] = true;
+                }
+                header('Location: /');
+                return true;
+            }
+        }
+        return false;
+    }
 }
