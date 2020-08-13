@@ -5,7 +5,7 @@ require_once '../../php_function/Auth.php';
 require_once '../../config.php';
 
 $AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
-if(!$AUTH->isCoordinator()) {
+if(!$AUTH->isConnected()) {
     include '../../error/404.html';
     die();
 }

@@ -33,12 +33,8 @@ class Auth
             die();
         }
 
-        if (isset($_SESSION['fb_access_token']) &&
-            isset($_SESSION['fb_name'])&&
-            isset($_SESSION['fb_small_profile_pic'])&&
-            isset($_SESSION['fb_profile_pic'])&&
+        if (isset($_SESSION['fb_name'])&&
             isset($_SESSION['fb_email'])&&
-            isset($_SESSION['fb_id'])&&
             isset($_SESSION['user_id'])&&
             isset($_SESSION['coord_id'])&&
             isset($_SESSION['isCoordinator'])) {
@@ -262,20 +258,6 @@ class Auth
      * Try to connect the user to his facebook
      */
     public function connectToFacebook() {
-        if(isset($_GET['auth']) && $_GET['auth'] == 'NqH6g7gLYr93WOO9gK0vF2sEy') {
-            $_SESSION['fb_access_token'] = "";
-            $_SESSION['fb_name'] = "Invité";
-            $_SESSION['fb_small_profile_pic'] = "";
-            $_SESSION['fb_profile_pic'] = "";
-            $_SESSION['fb_email'] = "";
-            $_SESSION['fb_id'] = "0";
-            $_SESSION['user_id'] = "1";
-            $_SESSION['coord_id'] = "1";
-            $_SESSION['isCoordinator'] = true;
-            header('Location: /');
-            exit();
-        }
-
         $helper = $this->fb_object->getRedirectLoginHelper();
         $permissions = ['email'];
         $loginUrl = $helper->getLoginUrl('https://rixrefugee.site/fb-callback', $permissions);
@@ -303,6 +285,7 @@ class Auth
         if(!empty($user)) {
             $user = $user[0];
             if(password_verify($password, $user['password'])) {
+
                 $_SESSION['fb_access_token'] = "";
                 $_SESSION['fb_name'] = $user['name'];
                 $_SESSION['fb_small_profile_pic'] = $user['small_picture_url'];
@@ -316,9 +299,14 @@ class Auth
                     $_SESSION['isCoordinator'] = true;
                 } else {
                     $_SESSION['coord_id'] = false;
-                    $_SESSION['isCoordinator'] = true;
+                    $_SESSION['isCoordinator'] = false;
                 }
-                header('Location: /');
+                if(isset($_SESSION['requested_page'])) {
+                    header('Location: ' . $_SESSION['requested_page']);
+                    unset($_SESSION['requested_page']);
+                } else {
+                    header('Location: /');
+                }
                 return true;
             }
         }

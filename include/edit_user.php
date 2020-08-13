@@ -32,6 +32,7 @@ $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
                         </div>
                         <div class="col mt-3" style="padding: 0">
                             <span style=""><input class="form-control" style="width: 80%; font-weight: bold; font-size: 1.3em" type="text" value="<?=$user['name']?>" name="name"></span>
+                            <p><?=($AUTH->isCoordinator()?'Coordinateur': 'Bénévole')?></p>
                         </div>
                     </div>
                     <div class="lodging-item">
@@ -41,23 +42,28 @@ $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
                             </label>
                             <div style="display: inline-block; margin-left: 2em">
                                 <input class="form-check-input" type="checkbox" id="show_email" <?=($user['visible_email']?'checked':'')?> name="show_email">
-                                <label class="form-check-label" for="show_email">Afficher l'email aux bénévoles</label>
+                                <label class="form-check-label" for="show_email">Afficher l'email</label>
                             </div>
                         </div>
 
                         <div>
                             <label>Téléphone:
-                                <input class="form-control" type="text" value="<?=$user['telephone']?>">
+                                <input class="form-control" type="text" value="<?=$user['telephone']?>" name="telephone">
                             </label>
                             <div style="display: inline-block; margin-left: 2em">
                                 <input class="form-check-input" type="checkbox" id="show_telephone" <?=($user['visible_telephone']?'checked':'')?> name="show_telephone">
-                                <label class="form-check-label" for="show_telephone">Afficher le téléphone aux bénévoles</label>
+                                <label class="form-check-label" for="show_telephone">Afficher le téléphone</label>
                             </div>
                         </div>
                         <input class="btn btn-primary" type="submit" value="Modifier">
                     </div>
 
                 </form>
+                <?php if(!$AUTH->isCoordinator()):?>
+                <div style="margin-top: 2em">
+                    <p><a class="btn btn-success" href="/ask_access">Devenir coordinateur</a></p>
+                </div>
+                <?php endif;?>
                 <div style="margin-top: 2em">
                     <a class="btn btn-primary" style="color: white" href="/change_password">
                         <?php
@@ -94,7 +100,7 @@ $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
                 <p>Toutes les données vous concernant seront <b>supprimées du système</b>.</p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-primary" href="/api/delUserAccount.php">Oui</a>
+                <a class="btn btn-danger" href="/api/delUserAccount.php">Oui</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
             </div>
         </div>

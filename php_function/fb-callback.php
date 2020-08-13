@@ -34,4 +34,9 @@ if (! isset($accessToken)) {
 require_once 'db_connection.php';
 $AUTH->updatePrivateInfo($accessToken,$dbh);
 
-header('Location: /#');
+if(isset($_SESSION['requested_page'])) {
+    header('Location: ' . $_SESSION['requested_page']);
+    unset($_SESSION['requested_page']);
+} else {
+    header('Location: /#');
+}

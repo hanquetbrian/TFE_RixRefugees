@@ -106,6 +106,7 @@ class Page
         $hasAccess = false;
         if(isset($this->auth)) {
             if(!$this->auth->isConnected()) {
+                $_SESSION['requested_page'] = $_SERVER['REQUEST_URI'];
                 header('location: /login');
                 exit();
             }

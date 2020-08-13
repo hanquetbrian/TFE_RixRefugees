@@ -34,10 +34,11 @@ $login = $sth->fetchAll(PDO::FETCH_ASSOC);
         <form action="#" method="post">
             <h2>Pourquoi voulez-vous être coordinateur?</h2>
             <textarea name="coord_req" class="form-control" rows="10"></textarea>
-            <input class="btn-secondary form-control mt-3" type="submit" name="submit">
+            <input class="btn-secondary form-control mt-3" type="submit" value="Envoyer la demande" name="submit">
         </form>
         <?php else: ?>
             <p>Votre demande a bien été enregistré au nom de <?=$AUTH->getName()?>. Vous pouvez demander à un coordinateur d'accepter votre demande.</p>
+            <p>Si votre demande a été acceptée, vous pouvez essayer de vous déconnecter puis de vous reconnecter</p>
             <div class="lodging-item" style="margin-bottom: 2em">
                 <h3 style="font-size: 1.2em; text-decoration: underline; margin: 0">Votre demande </h3>
                 <span style="font-size: 0.7em; color: rgba(145,145,145,0.85)">Modifié le <?=$login[0]['request_date']?></span>

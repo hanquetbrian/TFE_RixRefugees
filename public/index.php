@@ -17,8 +17,8 @@ switch ($url) {
                 $page->addScript('js/lodging.js');
                 include "../include/template.php";
             } else {
-                $AUTH->updatePrivateInfo($AUTH->getFbAccessToken(), $dbh);
-                include "../error/access_denied.html";
+
+                header('location: /edit_user');
             }
 
         } else {
@@ -83,7 +83,7 @@ switch ($url) {
         include "../include/template.php";
         break;
     case "/edit_user":
-        $page = new Page('include/edit_user.php', "RixRefugee Modification du profile", $AUTH, Page::coordinator);
+        $page = new Page('include/edit_user.php', "RixRefugee Modification du profile", $AUTH, Page::volunteer);
         include "../include/template.php";
         break;
     case "/volunteer":

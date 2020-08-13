@@ -20,22 +20,22 @@ $coordinator = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
 <main>
     <section>
-        <div class="d-none d-sm-block" id="titlePage">
-            <div class="container">
-                <h1><?=$coordinator['name']?></h1>
-            </div>
-            <hr class="headerSep">
-        </div>
-
-        <div class="container">
+        <div class="container" style="margin-top: 2em">
             <div class="listLodging">
                 <?php
                 if($AUTH->getCoordId() == $_GET['coord_id']) {
                     echo '<div style="text-align: right"><a class="btn btn-primary" href="/edit_user">Modifier</a></div>';
                 }
                 ?>
-                <div>
-                    <img src="<?=$coordinator['picture_url']?>" alt="picture_of_<?=$coordinator['name']?>" width="100">
+
+                <div class="row">
+                    <div class="col-auto">
+                        <img src="<?=$coordinator['picture_url']?>" alt="picture_of_<?=$coordinator['name']?>" width="100">
+                    </div>
+                    <div class="col mt-3" style="padding: 0">
+                        <p style="width: 80%; font-weight: bold; font-size: 1.3em"><?=$coordinator['name']?></p>
+                        <p><?=($AUTH->isCoordinator()?'Coordinateur': 'Bénévole')?></p>
+                    </div>
                 </div>
 
                 <div class="lodging-item">
