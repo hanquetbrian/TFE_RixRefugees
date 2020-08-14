@@ -53,6 +53,50 @@ class Auth
         }
     }
 
+    public function callbackLogin($fb_access_token, $dbh) {
+        $this->fb_access_token = $fb_access_token;
+
+        try {
+            $response = $this->fb_object->get('/me/?fields=id', $this->fb_access_token);
+            $user = $response->getGraphUser();
+        } catch (FacebookSDKException $e) {
+            $this->isConnected = false;
+            return;
+        }
+
+        $sql = "
+            SELECT User.id, name, small_picture_url, picture_url, email, facebook_id, Coordinator.id as coord_id
+            FROM User
+            LEFT JOIN Coordinator on User.id = Coordinator.user_id
+            WHERE facebook_id = :facebook_id;
+        ";
+
+        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth->execute([':facebook_id' => $user['id']]);
+        $login = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+        if(empty($login)) {
+            $this->updatePrivateInfo($fb_access_token, $dbh);
+        } else {
+            $login = $login[0];
+            $_SESSION['fb_access_token'] = (string) $this->fb_access_token;
+            $_SESSION['fb_name'] = $login['name'];
+            $_SESSION['fb_small_profile_pic'] = $login['small_picture_url'];
+            $_SESSION['fb_profile_pic'] = $login['picture_url'];
+            $_SESSION['fb_email'] = $login['email'];
+            $_SESSION['fb_id'] = $login['facebook_id'];
+            $_SESSION['user_id'] = $login['id'];
+
+            if(isset($login['coord_id'])) {
+                $_SESSION['coord_id'] = $login['coord_id'];
+                $_SESSION['isCoordinator'] = true;
+            } else {
+                $_SESSION['coord_id'] = false;
+                $_SESSION['isCoordinator'] = false;
+            }
+        }
+    }
+
     /**
      * Update the info on the connected user.
      * @param AccessToken $fb_access_token set the access token to get access to user info
@@ -118,8 +162,11 @@ class Auth
             }
         }
 
-        file_put_contents('../p_images/user_picture/small/' . $this->user_id . '.jpg', file_get_contents($user['picture']['url']));
-        file_put_contents('../p_images/user_picture/normal/' . $this->user_id . '.jpg', file_get_contents($picture_url));
+        try {
+            file_put_contents('../p_images/user_picture/small/' . $this->user_id . '.jpg', file_get_contents($user['picture']['url']));
+            file_put_contents('../p_images/user_picture/normal/' . $this->user_id . '.jpg', file_get_contents($picture_url));
+        } catch (Exception $e) {}
+
         $sql = "UPDATE rix_refugee.User SET small_picture_url = :small_picture, picture_url = :picture WHERE id = :user_id";
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute([

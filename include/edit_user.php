@@ -25,8 +25,7 @@ $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
             <div class="listLodging">
                 <form action="/api/editUser.php" method="post">
 
-
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 2em">
                         <div class="col-auto">
                             <img src="<?=$user['picture_url']?>" alt="picture_of_<?=$user['name']?>" width="100">
                         </div>
@@ -35,6 +34,12 @@ $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
                             <p><?=($AUTH->isCoordinator()?'Coordinateur': 'Bénévole')?></p>
                         </div>
                     </div>
+                    <?php
+                    if(!empty($_SESSION['fb_access_token'])) {
+                        echo '<a class="btn btn-primary" href="/api/update_info.php"><i class="fas fa-sync-alt"></i> Mettre à jour les informations</a>';
+                    }
+                    ?>
+
                     <div class="lodging-item">
                         <div>
                             <label>Email:

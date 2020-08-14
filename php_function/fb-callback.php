@@ -32,7 +32,7 @@ if (! isset($accessToken)) {
 
 // Logged in
 require_once 'db_connection.php';
-$AUTH->updatePrivateInfo($accessToken,$dbh);
+$AUTH->callbackLogin($accessToken,$dbh);
 
 if(isset($_SESSION['requested_page'])) {
     header('Location: ' . $_SESSION['requested_page']);

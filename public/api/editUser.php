@@ -7,7 +7,6 @@ require_once '../../config.php';
 
 $AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
 if(!$AUTH->isConnected()) {
-    header('Location: edit_user');
     die(0);
 }
 
