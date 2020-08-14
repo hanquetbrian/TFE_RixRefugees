@@ -17,11 +17,11 @@ $name = htmlspecialchars($_POST['name']);
 $comment = htmlspecialchars($_POST['comment']);
 $id_session = htmlspecialchars($_POST['id_session']);
 
-if(!is_numeric($id_session)) {die();}
+if(!is_numeric($id_session)) {echo 'bye';die();}
 
 // insert data in the database
 $dbh->beginTransaction();
-$sql = "INSERT INTO rix_refugee.Hosts (name, comment, lodging_session_id) VALUES (:host_name, :comment, :id_session);";
+$sql = "INSERT INTO rix_refugee.Hosts (name, comment, lodging_session_id) VALUES (AES_ENCRYPT(:host_name, '".$config['db.secret_key']."'), :comment, :id_session);";
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
 $sth->execute(array(

@@ -12,6 +12,7 @@ $(document).ready(function () {
                 type: "POST",
                 data: data
             }).done(function (returned_data) {
+                console.log(returned_data);
                 let result = JSON.parse(returned_data);
                 if(result.error) {
                     $("#hosts_list .alert").remove();
@@ -20,7 +21,7 @@ $(document).ready(function () {
                         "</div>");
                 }
                 if(result.success){
-                    addHostForm.find("input,textarea").each(function () {
+                    addHostForm.find("input[type=text],textarea").each(function () {
                         this.value = "";
                     });
                     let row = $('<div class="mb-3 row">');

@@ -1,16 +1,21 @@
 <?php
 require_once '../php_function/utils.php';
+require_once '../config.php';
 
 $sql = "
-    SELECT Hosts.id, lodging_name, date_from, date_to, name, comment, Lodging_session.id AS lodging_session_id
+    SELECT Hosts.id, lodging_name, date_from, date_to, CAST(AES_DECRYPT(name, :secret_key) AS CHAR(100)) AS name, comment, Lodging_session.id AS lodging_session_id
     FROM rix_refugee.Lodging_session
     LEFT JOIN Hosts ON Lodging_session.id = Hosts.lodging_session_id
     LEFT JOIN Lodging on Lodging_session.lodging_id = Lodging.id
-    WHERE Lodging_session.id = ?;
+    WHERE Lodging_session.id = :session_id;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$_GET['lodging_session_id']]);
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->bindParam(':session_id', $_GET['lodging_session_id'], PDO::PARAM_INT);
+
+$sth->execute();
+
 $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
@@ -25,9 +30,9 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
             <div class="modal-body">
                 <form id="addHostForm">
                     <div class="form-group">
-                        <input id="lodging_session_id" name="lodging_session_id" type="hidden" value="<?=$hosts[0]['lodging_session_id']?>">
+                        <input id="lodging_session_id" name="lodging_session_id" type="hidden" value="<?=$_GET['lodging_session_id']?>">
                         <label for="inputHostName">Nom de la personne hébergé:</label>
-                        <input type="text" class="form-control" id="inputHostName" required>
+                        <input type="text" class="form-control" id="inputHostName">
                         <label for="inputComment">Commentaire:</label>
                         <textarea class="form-control" id="inputComment"></textarea>
 
@@ -44,7 +49,7 @@ $hosts = $sth->fetchAll(PDO::FETCH_ASSOC);
 <main>
     <section>
         <div class="container mt-5">
-            <h2><a style="color: #5a718c" href="/info_lodging?lodging_session_id=<?=$hosts[0]['lodging_session_id']?>"><?=$hosts[0]['lodging_name']?> du <?= formatStrDate($hosts[0]['date_from'])?> au <?=formatStrDate($hosts[0]['date_to'])?></a></h2>
+            <h2><a style="color: #5a718c" href="/info_lodging?lodging_session_id=<?=$_GET['lodging_session_id']?>"><?=$hosts[0]['lodging_name']?> du <?= formatStrDate($hosts[0]['date_from'])?> au <?=formatStrDate($hosts[0]['date_to'])?></a></h2>
             <hr>
             <div id="hosts_list" class="listLodging">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addHost">Ajouter un hébergé</button>
