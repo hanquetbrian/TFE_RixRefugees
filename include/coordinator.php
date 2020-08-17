@@ -1,18 +1,21 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT Coordinator.id, name, small_picture_url, picture_url, facebook_id, email, telephone, added_day
+    SELECT Coordinator.id,
+           CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+           small_picture_url
     FROM rix_refugee.Coordinator
     INNER JOIN User on Coordinator.user_id = User.id;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([]);
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->execute();
 $coordsList = $sth->fetchAll(PDO::FETCH_ASSOC);
 array_shift($coordsList);
 
 $sql = "
-    SELECT facebook_id, request, name, small_picture_url, picture_url, email, telephone, request_date
+    SELECT User.id
     FROM rix_refugee.Coordinator_request
     INNER JOIN User on Coordinator_request.user_id = User.id;
     ";

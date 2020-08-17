@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+echo 'fuck';
 require_once '../config.php';
 require_once '../php_function/db_connection.php';
 require_once '../php_function/Auth.php';
@@ -30,7 +30,7 @@ switch ($url) {
             header('Location: /');
             exit();
         }
-        $page = new Page('include/login.php', "RixRefugee info");
+        $page = new Page('include/login.php', "RixRefugee Login");
         $page->addCSS('css/login.css');
         include "../include/template.php";
         break;

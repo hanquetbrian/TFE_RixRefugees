@@ -16,18 +16,27 @@ if($_GET['volunteer_id'] == 0) {
 } else {
 
 $sql = "
-    SELECT User.name, User.picture_url, lodging_name, date_from, date_to, Survey.id as survey_id, Survey.description, comment
+    SELECT CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+           User.picture_url,
+           lodging_name,
+           date_from,
+           date_to,
+           Survey.id as survey_id,
+           Survey.description,
+           comment
     FROM rix_refugee.Volunteer_request
     INNER JOIN User on Volunteer_request.user_id = User.id
     INNER JOIN rix_refugee.Survey on survey_id = Survey.id
     INNER JOIN Lodging_session ON Lodging_session.survey_id = Survey.id
     INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
-    WHERE user_id = ?
+    WHERE user_id = :user_id
     ORDER BY date_to DESC ;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$_GET['volunteer_id']]);
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->bindParam(':user_id', $_GET['volunteer_id'], PDO::PARAM_INT);
+$sth->execute();
 $surveyList = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 ?>

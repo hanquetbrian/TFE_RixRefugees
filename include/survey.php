@@ -5,18 +5,29 @@ require_once "../php_function/utils.php";
 $sessionId = $_GET["lodging_session_id"];
 
 $sql = "
-    SELECT Lodging_session.id, Lodging.lodging_name, date_from, date_to, Lodging_session.survey_id, Survey_options.id AS option_id, description, option_name, Coordinator.id as coord_id, User.name as coord_name
+    SELECT Lodging_session.id,
+           Lodging.lodging_name,
+           date_from,
+           date_to,
+           Lodging_session.survey_id,
+           Survey_options.id AS option_id,
+           description,
+           option_name,
+           Coordinator.id as coord_id,
+           CAST(AES_DECRYPT(User.name, :secret_key) AS CHAR(60)) AS coord_name
     FROM rix_refugee.Lodging_session
     LEFT JOIN Survey ON Survey.id = Lodging_session.survey_id
     INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
     LEFT JOIN Coordinator ON Coordinator.id = Lodging_session.coordinator_id
     LEFT JOIN User on Coordinator.user_id = User.id
     LEFT JOIN Survey_options ON Survey.id = Survey_options.survey_id
-    WHERE Lodging_session.id = ?;
+    WHERE Lodging_session.id = :sessionId;
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$sessionId]);
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->bindParam(':sessionId', $sessionId, PDO::PARAM_INT);
+$sth->execute();
 $survey = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 

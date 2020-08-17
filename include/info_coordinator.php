@@ -6,14 +6,24 @@ if(!isset($_GET['coord_id'])) {
 
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT name, small_picture_url, picture_url, facebook_id, email, visible_email, telephone, visible_telephone, added_day
+    SELECT CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+           small_picture_url,
+           picture_url,
+           facebook_id,
+           CAST(AES_DECRYPT(email, :secret_key) AS CHAR(255)) AS email,
+           visible_email,
+           CAST(AES_DECRYPT(telephone, :secret_key) AS CHAR(20)) AS telephone,
+           visible_telephone,
+           added_day
     FROM rix_refugee.Coordinator
     INNER JOIN User on Coordinator.user_id = User.id
-    where Coordinator.id = ?;
+    where Coordinator.id = :coord_id;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$_GET['coord_id']]);
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->bindParam(':coord_id', $_GET['coord_id'], PDO::PARAM_INT);
+$sth->execute();
 $coordinator = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
 ?>

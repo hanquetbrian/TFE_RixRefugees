@@ -11,18 +11,31 @@ require_once "../php_function/utils.php";
 
 // Get lodging info
 $sql = "
-SELECT Lodging_session.lodging_id, lodging_name, date_from, date_to, address, nb_place, pic_url, COUNT(DISTINCT Hosts.id) AS nb_hosts, Coordinator.id AS coord_id, User.name AS coord_name, CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments
+SELECT Lodging_session.lodging_id,
+       lodging_name,
+       date_from,
+       date_to,
+       address,
+       nb_place,
+       pic_url,
+       COUNT(DISTINCT Hosts.id) AS nb_hosts,
+       Coordinator.id AS coord_id,
+       CAST(AES_DECRYPT(User.name, :secret_key) AS CHAR(60)) AS coord_name,
+       CONCAT('[\"',GROUP_CONCAT(DISTINCT Lodging_equipment.equipment_name SEPARATOR  '\",\"'),'\"]') AS equipments
 FROM Lodging_session
 INNER JOIN Lodging ON Lodging.id = Lodging_session.lodging_id
 LEFT JOIN Coordinator on Lodging_session.coordinator_id = Coordinator.id
 LEFT JOIN User on Coordinator.user_id = User.id
 LEFT JOIN Lodging_equipment ON Lodging.id = Lodging_equipment.lodging_id
 LEFT JOIN Hosts on Lodging_session.id = lodging_session_id
-WHERE Lodging_session.id = ?;
+WHERE Lodging_session.id = :idSession;
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$idLodgingSession]);
+
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->bindParam(':idSession', $idLodgingSession, PDO::PARAM_INT);
+$sth->execute();
 $lodgingInfo = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 $equipments = json_decode($lodgingInfo["equipments"]);
 
@@ -43,14 +56,16 @@ $survey = $sth->fetchAll(PDO::FETCH_ASSOC);
 if(!empty($survey)) {
     // Get comments
     $sql = "
-SELECT name, comment
+SELECT CAST(AES_DECRYPT(User.name, :secret_key) AS CHAR(60)) AS name, comment
 FROM Volunteer_request
 INNER JOIN User on Volunteer_request.user_id = User.id
-WHERE survey_id = ?
+WHERE survey_id = :survey_id
 ";
 
     $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $sth->execute([$survey[0]['id']]);
+    $sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+    $sth->bindParam(':survey_id', $survey[0]['id'], PDO::PARAM_INT);
+    $sth->execute();
     $listOfComments = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 // Get list of votes

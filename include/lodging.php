@@ -2,7 +2,16 @@
 require_once "../php_function/db_connection.php";
 require_once "../php_function/utils.php";
 $sql = "
-    SELECT Lodging_session.id, Lodging.lodging_name, Lodging_session.date_from, Lodging_session.date_to, Lodging.address, Lodging.nb_place, Lodging.pic_url, Coordinator.id AS coord_id, User.name AS coord_name, COUNT(Hosts.id) AS nb_hosts
+    SELECT Lodging_session.id,
+           Lodging.lodging_name,
+           Lodging_session.date_from,
+           Lodging_session.date_to,
+           Lodging.address,
+           Lodging.nb_place,
+           Lodging.pic_url,
+           Coordinator.id AS coord_id,
+           CAST(AES_DECRYPT(User.name, :secret_key) AS CHAR(60)) AS coord_name,
+           COUNT(Hosts.id) AS nb_hosts
     FROM (SELECT Lodging_session.lodging_id, MAX(Lodging_session.date_from) AS recent_date_from
             FROM Lodging_session
             GROUP BY lodging_id) AS latest_session
@@ -18,6 +27,7 @@ $sql = "
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
 $sth->execute();
 $lodgings = $sth->fetchAll(PDO::FETCH_ASSOC);
 

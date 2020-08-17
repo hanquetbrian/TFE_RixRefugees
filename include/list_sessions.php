@@ -2,17 +2,26 @@
 require_once "../php_function/utils.php";
 
 $sql = "
-SELECT Lodging_session.id, lodging_id, lodging_name, pic_url, date_from, date_to, coordinator_id, User.name AS coord_name
+SELECT Lodging_session.id,
+       lodging_id,
+       lodging_name,
+       pic_url,
+       date_from,
+       date_to,
+       coordinator_id,
+       CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS coord_name
 FROM Lodging_session
 INNER JOIN Lodging ON Lodging_session.lodging_id = Lodging.id
 LEFT JOIN Coordinator ON Coordinator.id = coordinator_id
 LEFT JOIN User ON User.id = Coordinator.user_id
-WHERE lodging_id = ?
+WHERE lodging_id = :lodging_id
 ORDER BY date_from DESC; 
 ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$_GET['lodging_id']]);
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->bindParam(':lodging_id', $_GET['lodging_id'], PDO::PARAM_INT);
+$sth->execute();
 $lodgingSessions = $sth->fetchAll(PDO::FETCH_ASSOC);
 ?>
 

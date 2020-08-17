@@ -19,7 +19,12 @@ $show_telephone = isset($_POST['show_telephone']);
 
 // Update data in the database
 
-$sql = "UPDATE rix_refugee.User SET name = :name, email = :email, telephone = :telephone, visible_email = :show_email, visible_telephone = :show_telephone WHERE id = :id;";
+$sql = "UPDATE rix_refugee.User SET name = AES_ENCRYPT(:name, '".$config['db.secret_key']."'),
+                                    email = AES_ENCRYPT(:email, '".$config['db.secret_key']."'),
+                                    telephone = AES_ENCRYPT(:telephone, '".$config['db.secret_key']."'),
+                                    visible_email = :show_email,
+                                    visible_telephone = :show_telephone
+        WHERE id = :id;";
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
 $sth->bindParam(':id', $id);

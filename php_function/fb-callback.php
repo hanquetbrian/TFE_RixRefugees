@@ -32,7 +32,8 @@ if (! isset($accessToken)) {
 
 // Logged in
 require_once 'db_connection.php';
-$AUTH->callbackLogin($accessToken,$dbh);
+require_once '../config.php';
+$AUTH->callbackLogin($accessToken,$dbh, $config);
 
 if(isset($_SESSION['requested_page'])) {
     header('Location: ' . $_SESSION['requested_page']);

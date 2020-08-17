@@ -1,14 +1,18 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT DISTINCT user_id, name, small_picture_url
+    SELECT DISTINCT user_id,
+                    CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+                    small_picture_url
     FROM rix_refugee.Volunteer_request
     INNER JOIN User on Volunteer_request.user_id = User.id
     WHERE user_id <> 0;
     ";
 
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([]);
+
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->execute();
 $volunteers = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 

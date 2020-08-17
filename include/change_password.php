@@ -2,7 +2,7 @@
 require_once "../php_function/db_connection.php";
 
 $sql = "
-    SELECT id, name, password
+    SELECT id, password
     FROM rix_refugee.User
     where id = ?;
     ";

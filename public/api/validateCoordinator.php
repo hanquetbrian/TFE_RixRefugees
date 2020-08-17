@@ -2,14 +2,25 @@
 
 require_once "../../php_function/db_connection.php";
 
+require_once '../../php_function/Auth.php';
+require_once '../../config.php';
+
 $result = [];
+
+$AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
+if(!$AUTH->isCoordinator()) {
+    $result["error"]["type"] = "Not authorize";
+    $result["error"]["msg"] = "You are not authorize to validate a new coordinator";
+    echo json_encode($result);
+    die(0);
+}
 
 $coordinator_id = htmlspecialchars($_POST['id_coord']);
 
 
 // insert data in the database
 $dbh->beginTransaction();
-$sql = "SELECT Coordinator_request.id, user_id, facebook_id, request, name, small_picture_url, picture_url, email, telephone, request_date
+$sql = "SELECT Coordinator_request.id, user_id
         FROM rix_refugee.Coordinator_request
         INNER JOIN User on Coordinator_request.user_id = User.id
         WHERE Coordinator_request.id = ?";

@@ -11,7 +11,7 @@ if(!$AUTH->isConnected()) {
 }
 
 if(!empty($_SESSION['fb_access_token'])) {
-    $AUTH->updatePrivateInfo($AUTH->getFbAccessToken(), $dbh);
+    $AUTH->updatePrivateInfo($AUTH->getFbAccessToken(), $dbh, $config);
 }
 
 header('location: /edit_user');

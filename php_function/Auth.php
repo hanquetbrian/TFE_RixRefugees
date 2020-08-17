@@ -53,26 +53,35 @@ class Auth
         }
     }
 
-    public function callbackLogin($fb_access_token, $dbh) {
+    public function callbackLogin($fb_access_token, $dbh, $config) {
         $this->fb_access_token = $fb_access_token;
 
         try {
             $response = $this->fb_object->get('/me/?fields=id', $this->fb_access_token);
             $user = $response->getGraphUser();
         } catch (FacebookSDKException $e) {
-            $this->isConnected = false;
+            $this->disconnect();
             return;
         }
+        $facebookId = $user['id'];
 
         $sql = "
-            SELECT User.id, name, small_picture_url, picture_url, email, facebook_id, Coordinator.id as coord_id
+            SELECT User.id,
+                   CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+                   small_picture_url,
+                   picture_url,
+                   CAST(AES_DECRYPT(email, :secret_key) AS CHAR(255)) AS email,
+                   facebook_id,
+                   Coordinator.id as coord_id
             FROM User
             LEFT JOIN Coordinator on User.id = Coordinator.user_id
             WHERE facebook_id = :facebook_id;
         ";
 
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $sth->execute([':facebook_id' => $user['id']]);
+        $sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+        $sth->bindParam(':facebook_id', $facebookId, PDO::PARAM_INT);
+        $sth->execute();
         $login = $sth->fetchAll(PDO::FETCH_ASSOC);
 
         if(empty($login)) {
@@ -101,8 +110,9 @@ class Auth
      * Update the info on the connected user.
      * @param AccessToken $fb_access_token set the access token to get access to user info
      * @param $dbh PDO Is a database connection
+     * @param $config
      */
-    public function updatePrivateInfo($fb_access_token, $dbh) {
+    public function updatePrivateInfo($fb_access_token, $dbh, $config) {
         $this->fb_access_token = $fb_access_token;
 
         try {
@@ -116,15 +126,22 @@ class Auth
             return;
         }
 
+        $facebookId = $user['id'];
+
         $sql = "
-            SELECT User.id, name, facebook_id, Coordinator.id as coord_id
+            SELECT User.id,
+                   CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+                   facebook_id,
+                   Coordinator.id as coord_id
             FROM User
             LEFT JOIN Coordinator on User.id = Coordinator.user_id
             WHERE facebook_id = :facebook_id;
         ";
 
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $sth->execute([':facebook_id' => $user['id']]);
+        $sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+        $sth->bindParam(':facebook_id', $facebookId, PDO::PARAM_INT);
+        $sth->execute();
         $login = $sth->fetchAll(PDO::FETCH_ASSOC);
 
         $this->name = $user['name'];
@@ -138,7 +155,9 @@ class Auth
         $dbh->beginTransaction();
 
         if(empty($login)) {
-            $sql = "INSERT INTO rix_refugee.User(name, email, facebook_id) VALUES (:name, :email, :facebook_id)";
+            $sql = "INSERT INTO rix_refugee.User(name, email, facebook_id) VALUES ( AES_ENCRYPT(:name, '".$config['db.secret_key']."'),
+                                                                                    AES_ENCRYPT(:email, '".$config['db.secret_key']."'),
+                                                                                    :facebook_id)";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $sth->execute([
                 ':name' => $user['name'],
@@ -147,7 +166,9 @@ class Auth
             ]);
             $this->user_id = $dbh->lastInsertId();
         } else {
-            $sql = "UPDATE rix_refugee.User SET name = :name, email = :email WHERE facebook_id = :facebook_id";
+            $sql = "UPDATE rix_refugee.User SET name = AES_ENCRYPT(:name, '".$config['db.secret_key']."'),
+                                                email = AES_ENCRYPT(:email, '".$config['db.secret_key']."')
+                                            WHERE facebook_id = :facebook_id";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $sth->execute([
                 ':name' => $user['name'],
@@ -315,20 +336,34 @@ class Auth
      * @param $email string Email of the user
      * @param $password string Password of the user
      * @param $dbh PDO Database access
+     * @param $config
      * @return bool return true if successfully connected return false if password is incorrect
      */
-    public function connectWithPassword($email, $password, $dbh) {
+    public function connectWithPassword($email, $password, $dbh, $config) {
         $email = trim($email);
         $sql = "
-            SELECT User.id, facebook_id, name, small_picture_url, picture_url, email, password, Coordinator.id AS coord_id
-            FROM rix_refugee.User
-            LEFT JOIN Coordinator ON User.id = user_id
-            where email = ?;
+
+SELECT * FROM (
+  SELECT User.id,
+       facebook_id,
+       CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+       small_picture_url,
+       picture_url,
+       CAST(AES_DECRYPT(email, :secret_key) AS CHAR(255)) AS email,
+       password,
+       Coordinator.id AS coord_id
+FROM rix_refugee.User
+LEFT JOIN Coordinator ON User.id = user_id
+) AS UserInfo
+WHERE email = :email
             ";
 
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $sth->execute([$email]);
+        $sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+        $sth->bindParam(':email', $email, PDO::PARAM_STR);
+        $sth->execute();
         $user = $sth->fetchAll(PDO::FETCH_ASSOC);
+
         if(!empty($user)) {
             $user = $user[0];
             if(password_verify($password, $user['password'])) {

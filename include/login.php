@@ -1,7 +1,7 @@
 <?php
 if(isset($_POST['submit'])) {
     if(!empty($_POST['email']) && !empty($_POST['password'])) {
-        if(!$AUTH->connectWithPassword($_POST['email'], $_POST['password'], $dbh)) {
+        if(!$AUTH->connectWithPassword($_POST['email'], $_POST['password'], $dbh, $config)) {
             echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
   L\'email ou le mot de passe est incorrect.
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">

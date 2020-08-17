@@ -1,13 +1,24 @@
 <?php
 require_once "../php_function/db_connection.php";
 $sql = "
-    SELECT id, facebook_id, name, password, small_picture_url, picture_url, email, visible_email, telephone, visible_telephone
+    SELECT id, facebook_id,
+           CAST(AES_DECRYPT(name, :secret_key) AS CHAR(60)) AS name,
+           password,
+           small_picture_url,
+           picture_url,
+           CAST(AES_DECRYPT(email, :secret_key) AS CHAR(255)) AS email,
+           visible_email,
+           CAST(AES_DECRYPT(telephone, :secret_key) AS CHAR(20)) AS telephone,
+           visible_telephone
     FROM rix_refugee.User
-    where id = ?;
+    where id = :id;
     ";
 
+$userId = $AUTH->getUserId();
 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-$sth->execute([$AUTH->getUserId()]);
+$sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
+$sth->bindParam(':id', $userId, PDO::PARAM_INT);
+$sth->execute();
 $user = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
 ?>
