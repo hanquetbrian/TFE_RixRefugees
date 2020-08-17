@@ -1,6 +1,6 @@
 <?php
 session_start();
-echo 'fuck';
+
 require_once '../config.php';
 require_once '../php_function/db_connection.php';
 require_once '../php_function/Auth.php';

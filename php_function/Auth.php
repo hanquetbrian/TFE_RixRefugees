@@ -85,7 +85,7 @@ class Auth
         $login = $sth->fetchAll(PDO::FETCH_ASSOC);
 
         if(empty($login)) {
-            $this->updatePrivateInfo($fb_access_token, $dbh);
+            $this->updatePrivateInfo($fb_access_token, $dbh, $config);
         } else {
             $login = $login[0];
             $_SESSION['fb_access_token'] = (string) $this->fb_access_token;
@@ -184,8 +184,8 @@ class Auth
         }
 
         try {
-            file_put_contents('../p_images/user_picture/small/' . $this->user_id . '.jpg', file_get_contents($user['picture']['url']));
-            file_put_contents('../p_images/user_picture/normal/' . $this->user_id . '.jpg', file_get_contents($picture_url));
+            file_put_contents(__DIR__ . '/../p_images/user_picture/small/' . $this->user_id . '.jpg', file_get_contents($user['picture']['url']));
+            file_put_contents(__DIR__ . '/../p_images/user_picture/normal/' . $this->user_id . '.jpg', file_get_contents($picture_url));
         } catch (Exception $e) {}
 
         $sql = "UPDATE rix_refugee.User SET small_picture_url = :small_picture, picture_url = :picture WHERE id = :user_id";
