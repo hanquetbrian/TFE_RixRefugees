@@ -46,7 +46,7 @@ $waitingCoords = $sth->fetchAll(PDO::FETCH_ASSOC);
                     <h2>Liste des coordinateurs</h2>
                     <div class="lodging-item">
                         <?php foreach ($coordsList as $validCoord):?>
-                        <div>
+                        <div class="mb-3">
                             <img alt="pic_of_<?=$validCoord['name']?>" src="<?=$validCoord['small_picture_url']?>">
                             <span><a href="info_coordinator?coord_id=<?=$validCoord['id']?>"><?=$validCoord['name']?></a></span>
                         </div>

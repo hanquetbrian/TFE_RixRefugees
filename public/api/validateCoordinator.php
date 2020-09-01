@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once "../../php_function/db_connection.php";
 
 require_once '../../php_function/Auth.php';
@@ -8,6 +8,7 @@ require_once '../../config.php';
 $result = [];
 
 $AUTH = new Auth($config['fb.app_id'], $config['fb.app_secret']);
+
 if(!$AUTH->isCoordinator()) {
     $result["error"]["type"] = "Not authorize";
     $result["error"]["msg"] = "You are not authorize to validate a new coordinator";

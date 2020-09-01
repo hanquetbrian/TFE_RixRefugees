@@ -44,7 +44,7 @@ $coordinator = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
                     </div>
                     <div class="col mt-3" style="padding: 0">
                         <p style="width: 80%; font-weight: bold; font-size: 1.3em"><?=$coordinator['name']?></p>
-                        <p><?=($AUTH->isCoordinator()?'Coordinateur': 'Bénévole')?></p>
+                        <p>Coordinateur</p>
                     </div>
                 </div>
 

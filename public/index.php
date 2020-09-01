@@ -38,7 +38,7 @@ switch ($url) {
         $AUTH->connectToFacebook();
         break;
     case "/change_password":
-        $page = new Page('include/change_password.php', "RixRefugee Modifier le mot de passe", $AUTH, Page::coordinator);
+        $page = new Page('include/change_password.php', "RixRefugee Modifier le mot de passe", $AUTH, Page::volunteer);
         include "../include/template.php";
         break;
     case "/info_lodging":

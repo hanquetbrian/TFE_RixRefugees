@@ -148,7 +148,7 @@ GROUP BY Survey_options.id, option_name
                             Liste des hébergés
                         </a>
                         <a href="/list_sessions?lodging_id=<?=$lodgingInfo['lodging_id']?>" class="btn btn-primary mt-5">
-                            Historique des anciennes sessions
+                            Anciennes sessions
                         </a>
                     </div>
                 </div>
@@ -173,13 +173,15 @@ GROUP BY Survey_options.id, option_name
                                     $volunteers_id = explode(',', $vote['facebook_id_list']);
                                 // Get comments
                                 $sql = "
-                                    SELECT id, name, small_picture_url
+                                    SELECT id, CAST(AES_DECRYPT(User.name, :secret_key) AS CHAR(60)) AS name, small_picture_url
                                     FROM User
-                                    WHERE id = ?
+                                    WHERE id = :userId
                                 ";
                                 $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                                $sth->bindParam(':secret_key', $config['db.secret_key'], PDO::PARAM_STR);
                                 foreach ($volunteers_id as $volunteer_id) {
-                                    $sth->execute([$volunteer_id]);
+                                    $sth->bindParam(':userId', $volunteer_id, PDO::PARAM_INT);
+                                    $sth->execute();
                                     $volunteer = $sth->fetchAll(PDO::FETCH_ASSOC)[0];
 
                                     ?>

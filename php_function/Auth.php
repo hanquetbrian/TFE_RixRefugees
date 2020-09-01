@@ -34,7 +34,6 @@ class Auth
         }
 
         if (isset($_SESSION['fb_name'])&&
-            isset($_SESSION['fb_email'])&&
             isset($_SESSION['user_id'])&&
             isset($_SESSION['coord_id'])&&
             isset($_SESSION['isCoordinator'])) {
